@@ -1,0 +1,8 @@
+Package: Rencoder
+Version: 1.0
+Section: video
+Priority: low
+Architecture: all
+Description: Rencoder is a software package developed in Java language, to be used as a friendly front-end for FFmpeg. This tool can support a wide range of media formats and most of the features present in the FFmpeg.
+Maintainer: Orlando Rocha <ornrocha@gmail.com>
+Depends: openjdk-8-jre-headless

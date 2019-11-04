@@ -1,0 +1,2 @@
+rm -R /opt/rencoder/ffmpeg
+rm -R /opt/rencoder/profiles

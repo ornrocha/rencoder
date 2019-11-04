@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     18/09/2014 13:26:03                                                        
+
+     project    
+     description
+                   
+     orocha                                                                
+     ====================================================================== -->
+<project name="project" basedir="." default="build-releases">
+        <description>description </description>
+	
+	
+        <property name="debug" value="on"/>
+        <property name="optimize" value="off"/>
+	    <property name="deprecation" value="false"/>
+	    <property name="depend" value="true"/>
+	    <property name="verbose" value="false"/>
+
+
+	 <!-- ==================================================================
+	         Initialization target 
+	      ==================================================================-->
+
+	 <target name="init">
+	 	
+	 	<property name="target.dir" value="${project.build.directory}"/>
+	    <property name="build.dir" value="${target.dir}/build_dir"/>
+	 	<property name="distro.dir" value="${build.dir}/distributions"/>
+	 	<property name="build.linuxdir" value="${build.dir}/Linux"/>
+	 	<property name="build.windowsdir" value="${build.dir}/Windows"/>
+	 	<property name="ffmpeg.folder" value="${build.dir}/ffmpeg"/>
+
+	 
+	 </target>
+	 	
+	 
+	 <!-- ==================================================================
+			        Scripts operations
+			      ==================================================================-->
+	
+	<target name="make-linux-run-script">
+			<echo file="${build.dir}/run.sh" append="false">#!/bin/bash
+		###################################################################
+		#
+		echo "Rencoder for Linux"
+		# 
+		#		
+		echo "Orlando Rocha Copyright (c) 2014."
+		#
+		###################################################################
+
+
+		JAR_NAME="rencoderexec.jar"
+		APP_HOME=`dirname $0`
+		XMX=-Xmx512m
+		XMS=-Xms256M
+				 
+		java $XMX $XMS -jar $APP_HOME/$JAR_NAME "$@"</echo>
+				
+		<chmod file="${build.dir}/run.sh" perm="a+x"/>
+
+		</target>
+		
+		<target name="make-windows-run-script">
+			<echo file="${build.dir}/run.bat" append="false">@echo off
+				REM ###############################################################################################
+				REM #
+				REM	# Rencoder for Windows
+				REM	# 
+				REM	#		
+				REM	# Orlando Rocha Copyright (c) 2014.
+				REM	#
+				REM ###############################################################################################
+				REM ################ old #################
+				REM ####   set HOME="%~dp0"  #############
+				REM ####   cd %HOME%  ####################
+				REM ######################################
+				REM ######  for /f %%i in ("%0") do set apppath=%%~dpi
+				REM ######  cd /d %apppath%
+				
+				setlocal
+				cd /d %~dp0
+				start rencoderexec.jar
+				
+		    </echo>
+			<chmod file="${build.dir}/run.bat" perm="a+x"/>
+		</target>
+	
+	
+	 <!-- ==================================================================
+				       Izpack operations
+				      ==================================================================-->
+	
+	
+	<target name="make-izpack-package-unix-script">
+		<echo file="${build.dir}/rencoder_installer_unix_shortcutSpec.xml" append="false"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+				   	     <shortcuts>
+				   	        <skipIfNotSupported/>
+				   	        <defaultCurrentUser/>
+				   	        <programGroup defaultName="Rencoder" location="applications"/>
+				   	        <shortcut 
+				   	  	           name="Rencoder"
+				   	  	           target="$INSTALL_PATH/run.sh"
+				   	  	           description="Rencoder is a FFmpeg frontend, to video conversion"
+				   	               applications="no" 
+				   	               desktop="no"
+				   	               encoding="UTF-8" 
+				   	               iconFile="$INSTALL_PATH/icons/rencoderbluesc.png"
+				   	               workingDirectory="$INSTALL_PATH"
+				   	               iconIndex="0" 
+				   	               initialState="normal" 
+				   	               programGroup="yes" 
+				   	               startMenu="no" 
+				   	               startup="no"
+				   	               type="Application"
+			                       categories="AudioVideo;Video"
+				   	               />    
+				   	 </shortcuts>]]></echo>
+		</target>
+		
+		<target name="make-izpack-package-windows-script">
+			 <echo file="${build.dir}/default_shortcut_specification.xml" append="false"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+					   	    	<shortcuts>
+					   	    	    <skipIfNotSupported/>
+					   	    	    <defaultCurrentUser/>
+					   	    	    <programGroup defaultName="Rencoder" location="applications"/>
+					   	    	    <shortcut 
+					   	    	        name="Rencoder"
+					   	    	        applications="no" 
+					   	    	        desktop="yes"
+					   	    	        iconFile="$INSTALL_PATH\icons\rencoderbluesc.ico" 
+					   	    	        iconIndex="0"
+			 	                        initialState="normal" 
+					   	    	        programGroup="yes"
+					   	    	        startMenu="no" 
+					   	    	        startup="no" 
+					   	    	        target="$INSTALL_PATH/run.bat"
+					   	    	        description="Launch Rencoder">
+					   	    	<createForPack name="Rencoder_Core"/>
+					   	    	</shortcut>
+			 					<shortcut
+			 					   	    name="Uninstall"
+			 					   	    programGroup="yes"
+			 					   	    desktop="no"
+			 					   	    applications="no"
+			 					   	    startMenu="no"
+			 					   	    startup="no"
+			 					   	    target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
+			 					   	    commandLine=""
+			 			 	 			iconFile="%SystemRoot%\system32\SHELL32.dll"
+			 					   	    iconIndex="31"
+			 					   	    description="Rencoder Uninstaller">
+
+			 					    <createForPack name="Rencoder_Core"/>
+			 					</shortcut>
+					   	    	</shortcuts>]]></echo>
+		</target>
+	
+
+
+          <!-- ==================================================================
+	        Creation operations
+	      ==================================================================--> 
+
+       
+	       <target name="recreate-ffmpegfolder" description="build" depends="init">
+	                 <delete dir="${ffmpegfolder}" />
+	                 <mkdir dir="${ffmpegfolder}" />
+		   </target>
+	
+           
+	       <target name="create-ffmpeg-dir" description="build">
+	                <mkdir dir="${ffmpeg.folder}" />
+	                <echo message="Linux directory: was created"/>
+		   </target>
+	
+	    <target name="copy-ffmpeg-x64" description="copy ffmpeg 64">
+	    	<copy file="${ffmpegwin}/default_ffmpeg_64.exe" todir="${ffmpeg.folder}/" />
+	    	<copy file="${ffmpeglinux}/default_ffmpeg_64" todir="${ffmpeg.folder}/" />
+	     </target>
+	
+	       <target name="create-windows-dir" description="build">
+		                <mkdir dir="${build.windowsdir}" />
+		                <echo message="Windows directory: was created"/>
+		   </target>
+	
+	
+	 <target name="prepare-to-linux" description="build">
+	 	     <antcall target="create-linux-dir"/>
+	         <echo message="Linux its configured"/>
+	  </target>
+	
+	
+	  <target name="prepare-to-windows" description="build">
+	  	      <antcall target="create-windows-dir"/>
+	  </target>
+	 
+	   
+	
+	  <target name="build-releases" description="Create  auxiliar files" depends="init">
+	  	   <antcall target="make-linux-run-script"/>
+	  	   <antcall target="make-windows-run-script"/>
+	  	   <antcall target="make-izpack-package-unix-script"/>
+	  	   <antcall target="make-izpack-package-windows-script"/>
+		</target>
+           
+
+</project>

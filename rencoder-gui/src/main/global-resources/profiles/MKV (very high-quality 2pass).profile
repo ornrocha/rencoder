@@ -1,0 +1,21 @@
+audio.ac3.passthrough.if.possible=false
+audio.cbr.value=192k
+audio.codec=aac
+audio.enc.is.CBR=true
+audio.preferred.channels=5.1
+audio.preferred.frequency=48000
+h264.video.const.quant=-1
+h264.video.fastfirstpass=false
+h264.video.preset=veryslow
+h264.video.profile=none
+profile.name=MKV (very high-quality 2pass)
+video.CBR.value=2000k
+video.aspect.ratio=16\:9
+video.aspect.size=HD720p
+video.codec=libx264
+video.container=mkv
+video.enc.is.CBR=true
+video.ffmpeg.commandline=-x264opts frameref\=15\:fast_pskip\=0
+video.frame.rate=30
+video.pixel.format=auto
+video.two.pass.encoding=true

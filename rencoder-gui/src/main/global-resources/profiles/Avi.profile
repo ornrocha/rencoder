@@ -1,0 +1,16 @@
+audio.ac3.passthrough.if.possible=false
+audio.cbr.value=128k
+audio.codec=mp3
+audio.enc.is.CBR=true
+audio.preferred.channels=stereo
+audio.preferred.frequency=Same as source
+profile.name=Avi video
+video.CBR.value=1000k
+video.aspect.ratio=Same as source
+video.aspect.size=Same as source
+video.codec=Xvid
+video.container=avi
+video.enc.is.CBR=true
+video.ffmpeg.threads=0
+video.frame.rate=Same as source
+video.two.pass.encoding=false

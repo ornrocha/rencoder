@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Rencoder
+Type=Application
+Exec=java -Duser.dir=/opt/rencoder -jar /opt/rencoder/rencoderexec.jar
+Terminal=false
+Icon=/opt/rencoder/icons/rencoderblue.png
+Comment=Rencoder is a software package developed in Java language, to be used as a friendly front-end for FFmpeg. This tool can support a wide range of media formats and most of the features present in the FFmpeg.
+NoDisplay=false
+Categories=AudioVideo;Video
+Name[en]=Rencoder
+Name[pt]=Rencoder

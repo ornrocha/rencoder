@@ -1,0 +1,8 @@
+target/
+.settings/
+.metadata/
+.classpath
+.project
+.workspaces
+Rencoder-installer.deb
+Rencoder-installer.jar
