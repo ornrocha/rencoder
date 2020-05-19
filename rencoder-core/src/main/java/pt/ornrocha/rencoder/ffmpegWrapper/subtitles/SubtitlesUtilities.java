@@ -55,9 +55,12 @@ public class SubtitlesUtilities {
 		Pattern regex = Pattern.compile("^\\s*Style:\\s*(.*)");
 		Matcher regexMatcher = null;
 		try {
+			System.out.println("Sub path: "+subpath);
 			in = new FileReader(subpath);
 			br = new BufferedReader(in);
+			System.out.println("IN: "+in);
 			while ((line = br.readLine()) != null) {
+				System.out.println(line);
 				regexMatcher = regex.matcher(line);
 
 				if (regexMatcher.find()) {
@@ -67,6 +70,7 @@ public class SubtitlesUtilities {
 			in.close();
 			br.close();
 		} catch (Exception e) {
+			System.out.println(e);
 			Logger.error(e);
 		}
 		return assprop;

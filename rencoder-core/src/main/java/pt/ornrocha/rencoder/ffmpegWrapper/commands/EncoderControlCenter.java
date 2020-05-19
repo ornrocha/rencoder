@@ -719,7 +719,7 @@ public class EncoderControlCenter {
 
 					SubtitleConverter subconv = new SubtitleConverter(selectedSub, encSettings);
 					subencodcmd.addAll(subconv.getFFmpegSubtitleEncodingCommands(null));
-					deletetempsubscontroler.put(movie.getFilePath(), subconv.getTempSubPath());
+					//deletetempsubscontroler.put(movie.getFilePath(), subconv.getTempSubPath());
 				}
 			} else if (this.isusedSoftSubtitles) {
 				ArrayList<Subtitlefile> subs = movie.getSelectedSubtitleFiles();

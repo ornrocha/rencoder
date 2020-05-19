@@ -18,8 +18,10 @@
  */
 package pt.ornrocha.rencoder.ffmpegWrapper.subtitles;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -174,13 +176,13 @@ public class SubtitleConverter {
 		ProcessBuilder proc = SubtitlesUtilities.convertToAss(encodingSettings.getSubsEncoding().toString(),
 				subtitle.getFilePath(), tempsubpath);
 		Process process = proc.start();
-		/*
-		 * final BufferedReader reader = new BufferedReader( new
-		 * InputStreamReader(process.getErrorStream())); String line = null; while
-		 * ((line = reader.readLine()) != null) { System.out.println(line); }
-		 * 
-		 * reader.close();
-		 */
+		
+		  final BufferedReader reader = new BufferedReader( new
+		  InputStreamReader(process.getErrorStream())); String line = null; while
+		  ((line = reader.readLine()) != null) { System.out.println(line); }
+		  
+		  reader.close();
+		 
 		process.waitFor();
 	}
 
@@ -190,7 +192,9 @@ public class SubtitleConverter {
 	private void changeSubtitleProperties() {
 
 		try {
+			System.out.println(tempsubpath);
 			String assprops = SubtitlesUtilities.FindAssSubtitleProperties(tempsubpath);
+			System.out.println("Ass props: "+assprops);
 
 			// Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour,
 			// BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing,
