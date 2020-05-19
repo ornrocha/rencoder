@@ -58,8 +58,6 @@
 			override="true"></fileset>
 		<fileset dir="@{builddir}/languages" targetdir="${INSTALL_PATH}/languages"
 			override="true"></fileset>	
-		<fileset dir="@{builddir}/manual" targetdir="${INSTALL_PATH}/manual"
-			override="true"></fileset>
 		<fileset dir="@{builddir}/icons" targetdir="${INSTALL_PATH}/icons"
 			override="true"></fileset>	
 		<file src="@{builddir}/rencoder.jar" targetdir="${INSTALL_PATH}"
