@@ -29,6 +29,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.pmw.tinylog.Logger;
+
 import pt.ornrocha.rencoder.exec.execute.RencoderExec;
 
 public class StaticFunctionsUpdater {
@@ -64,16 +66,16 @@ public class StaticFunctionsUpdater {
 	}
 
 
-	public static double checkVersionInFile(File file){
-		double res=0;
+	public static String checkVersionInFile(File file){
+		String res="1.0.0";
 		if(file!=null){
 			try {
 				for(String line: readFileLines(file)){
-					if(line.matches("(\\s+)*[Vv][Ee][Rr][Ss][Ii][Oo][Nn]:\\d+.\\d+(\\s+)*"))
+					if(line.matches("(\\s+)*[Vv][Ee][Rr][Ss][Ii][Oo][Nn]:\\d+.\\d+.\\d+(\\s+)*"))
 						res =extractversion(line);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Logger.error(e);
 			}
 		}
 		return res;
@@ -99,13 +101,13 @@ public class StaticFunctionsUpdater {
 
 
 
-	public static double extractversion(String line){
-		Pattern pat = Pattern.compile("(\\s+)*version:(\\d+.\\d+)(\\s+)*", Pattern.CASE_INSENSITIVE);
+	public static String extractversion(String line){
+		Pattern pat = Pattern.compile("(\\s+)*version:(\\d+.\\d+.\\d+)(\\s+)*", Pattern.CASE_INSENSITIVE);
 		Matcher m = pat.matcher(line);
 		if(m.find())
-			return Double.parseDouble(m.group(2));
+			return m.group(2);
 		else
-			return 0;
+			return "1.0.0";
 	}
 
 

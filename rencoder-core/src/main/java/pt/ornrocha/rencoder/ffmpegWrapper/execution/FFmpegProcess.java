@@ -28,13 +28,17 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;
 
+import pt.ornrocha.rencoder.ffmpegWrapper.commands.ReusableInputStream;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegLogInfoContainer;
 import pt.ornrocha.rencoder.ffmpegWrapper.execution.progress.ProgressBarUpdate;
+import pt.ornrocha.rencoder.ffmpegWrapper.execution.progress.ProgressLogRegister;
 import pt.ornrocha.rencoder.ffmpegWrapper.subtitles.SubtitleConverter;
 import pt.ornrocha.rencoder.ffmpegWrapper.utilities.FFmpegUtils;
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
+import pt.ornrocha.rencoder.helpers.props.logs.LogManager;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -155,10 +159,6 @@ public class FFmpegProcess implements Runnable {
 		this.outputmoviefilepath = moviepath;
 		this.logsave = savelog;
 
-		if (debug) {
-			System.out.println(this.cmd1pass);
-			System.out.println(this.cmd2pass);
-		}
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class FFmpegProcess implements Runnable {
 
 			if (!cancelprocess) {
 				String lcmds = String.join(" ", cmd1pass);
-				Logger.info("FFmpeg input: " + lcmds);
+				Logger.debug("FFmpeg 1st pass encoding cmd: " + lcmds);
 				pbuilder = new ProcessBuilder(this.cmd1pass);
 				pbuilder.redirectErrorStream(true);
 				if (this.cmd2pass == null) {
@@ -243,21 +243,36 @@ public class FFmpegProcess implements Runnable {
 					this.killer.setProcessOnepasstoKill(process);
 
 				ostream = process.getOutputStream();
-				inputstr = process.getInputStream();
+				inputstr = new ReusableInputStream(process.getInputStream());
+				
 
 				this.progbarupdater1pass.setInputStream(inputstr);
 
 				if (this.cmd2pass != null)
 					this.progbarupdater1pass.set2PassFlagInProcess();
+				
+
+				if(LogManager.showFFmpegAtRencoderLog()) {
+					this.progbarupdater1pass.writeLog(true);
+				}
 
 				progressbar = new Thread(this.progbarupdater1pass);
 				progressbar.run();
+				
+				
+				
+					
 
 				Runtime.getRuntime().addShutdownHook(new Thread() {
 					@Override
 					public void run() {
+						boolean delete=false;
+							if(process.exitValue()!=0)
+								delete=true;
 						process.destroy();
-						deleteOutputMovieFile();
+						
+						if(delete)
+							deleteOutputMovieFile();
 					}
 				});
 
@@ -275,7 +290,7 @@ public class FFmpegProcess implements Runnable {
 				}
 
 				if (cmd2pass != null && exitValue == 0) {
-
+					Logger.debug("FFmpeg 2sd pass encoding cmd: " + lcmds);
 					pbuilder = new ProcessBuilder(this.cmd2pass);
 					pbuilder.redirectErrorStream(true);
 					if (this.cmd2pass != null) {
@@ -300,8 +315,13 @@ public class FFmpegProcess implements Runnable {
 					Runtime.getRuntime().addShutdownHook(new Thread() {
 						@Override
 						public void run() {
+							boolean delete=false;
+							if(process2pass.exitValue()!=0)
+								delete=true;
 							process2pass.destroy();
-							deleteOutputMovieFile();
+
+							if(delete)
+								deleteOutputMovieFile();
 						}
 					});
 

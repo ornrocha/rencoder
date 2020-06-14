@@ -30,6 +30,12 @@ public class LogManager {
 		}
 		return Level.INFO;
 	}
+	
+	public static boolean showFFmpegAtRencoderLog() {
+		PropertiesConfiguration prop = PropertiesWorker.loadPropertiesRelativePath(StaticGlobalFields.RENCODERCONFIGFILE);
+		return PropertiesWorker.getBooleanPropertyWithDefault(prop, StaticGlobalFields.LOGFFMPEGRENCODER, false);
+
+	}
 
 	public static Level getLogLevel(String loglevel) {
 		loglevel = loglevel.toLowerCase();

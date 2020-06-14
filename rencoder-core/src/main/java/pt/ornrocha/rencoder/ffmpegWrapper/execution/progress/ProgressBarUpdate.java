@@ -21,6 +21,7 @@ package pt.ornrocha.rencoder.ffmpegWrapper.execution.progress;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.SwingWorker;
@@ -45,6 +46,7 @@ public class ProgressBarUpdate extends SwingWorker<Integer, String> {
 	/** The sc. */
 	Scanner sctime = null;
 
+
 	/** The tmodel. */
 	// FFmpegProgressTable tmodel=null;
 
@@ -55,6 +57,7 @@ public class ProgressBarUpdate extends SwingWorker<Integer, String> {
 	boolean twopassenc = false;
 
 	boolean passenctwostarter = false;
+	boolean writelog=false;
 
 	/**
 	 * Instantiates a new progress bar update.
@@ -75,6 +78,10 @@ public class ProgressBarUpdate extends SwingWorker<Integer, String> {
 	public void setInputStream(InputStream input) {
 		this.sctime = new Scanner(input);
 
+	}
+	
+	public void writeLog(boolean write) {
+		this.writelog=write;
 	}
 
 	/**
@@ -145,29 +152,41 @@ public class ProgressBarUpdate extends SwingWorker<Integer, String> {
 		Pattern durPattern = Pattern.compile("(?<=Duration: )[^,]*");
 		String dur = sctime.findWithinHorizon(durPattern, 0);
 		if (dur == null) {
-			setStringMsg("Error...Could not parse Time.");
-			Logger.error("Could not do movie length analysis.");
-			throw new RuntimeException("Could not parse Time.");
+			setStringMsg("Error...time could not be parsed.");
+			Logger.error("Movie length analysis could not be performed.");
+			throw new RuntimeException("Time could not be parsed.");
 
 		}
 
 		double totalSecs = FFmpegUtils.convertTimetoseconds(dur);
 
 		Pattern timePattern = Pattern.compile("(?<=time=)[\\d.:]*");
+		//Matcher matcher = timePattern.matcher(EXAMPLE_TEST);
 		String match;
 
-		while (null != (match = sctime.findWithinHorizon(timePattern, 0))) {
+		while (sctime.hasNextLine()) {
+			//while (null != (match = sctime.findWithinHorizon(timePattern, 0))) {
+			String currentline = sctime.nextLine();
+			
+			
+			//match = sctime.findWithinHorizon(timePattern, 0);
+			if(writelog)
+				Logger.info(currentline);
+		
+            Matcher matcher = timePattern.matcher(currentline);
+            
+            if(matcher.find()) {
+            	double currtime = FFmpegUtils.convertTimetoseconds(matcher.group());
+            	movietimeprogress = currtime / totalSecs;
 
-			double currtime = FFmpegUtils.convertTimetoseconds(match);
-			movietimeprogress = currtime / totalSecs;
+            	movietimeprogress = movietimeprogress * 100;
 
-			movietimeprogress = movietimeprogress * 100;
-
-			if (twopassenc) {
-				checkPassingTwo(movietimeprogress);
-			} else {
-				setProgressDouble(movietimeprogress);
-			}
+            	if (twopassenc) {
+            		checkPassingTwo(movietimeprogress);
+            	} else {
+            		setProgressDouble(movietimeprogress);
+            	}
+            }
 
 		}
 

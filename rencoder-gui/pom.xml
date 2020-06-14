@@ -5,49 +5,55 @@
 	<parent>
 		<groupId>pt.ornrocha</groupId>
 		<artifactId>rencoder</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0</version>
 	</parent>
 	<artifactId>rencoder-gui</artifactId>
 
 	<properties>
-		<globalResourcesDirectory>src/main/global-resources</globalResourcesDirectory>
-		<builddir>${project.build.directory}/build_dir</builddir>
-		<buildlibdir>${project.build.directory}/build_dir/lib</buildlibdir>
+		<main.rencoder.resources>src/main/global-resources</main.rencoder.resources>
+		<source.snap.resources>src/main/snap</source.snap.resources>
+		<source.appimage.resources>src/main/appimage/resources</source.appimage.resources>
+		<appimage.compiler>src/main/appimage/bin/appimagetool-x86_64.AppImage</appimage.compiler>
+		<source.mime.list>src/main/mime/mimeapps.list</source.mime.list>
+		<jre.custom.dir>src/main/jre</jre.custom.dir>
+		<source.updater>src/main/updates</source.updater>
+		<build.dir>${project.build.directory}/build_dir</build.dir>
+		<build.lib.dir>${project.build.directory}/build_dir/lib</build.lib.dir>
+		<distros.build.dir>${build.dir}/builds</distros.build.dir>
+		<linux.build.dir>${distros.build.dir}/linux</linux.build.dir>
+		<windows.build.dir>${distros.build.dir}/windows</windows.build.dir>
+		<snap.build.dir>${distros.build.dir}/snap</snap.build.dir>
+		<target.snap.resources>${snap.build.dir}/snap</target.snap.resources>
+		<target.snap.rencoder.resources>${snap.build.dir}/rencoder</target.snap.rencoder.resources>
+		<appimage.build.dir>${distros.build.dir}/appimage</appimage.build.dir>
+		<target.appimage.rencoder>${appimage.build.dir}/Rencoder.AppDir</target.appimage.rencoder>
+		<updater.build.dir>${distros.build.dir}/updates</updater.build.dir>
+		<final.distros.dir>${project.build.directory}/build_dir/distros</final.distros.dir>
 		<izpack.version>5.1.2</izpack.version>
-		<installer-output-filename>Rencoder-installer.jar</installer-output-filename>
+		<izpack.app.linux.name>Rencoder-${project.version}-linux-installer.jar</izpack.app.linux.name>
+		<izpack.app.windows.name>Rencoder-${project.version}-windows-installer</izpack.app.windows.name>
+		<izpack.app.windows.name.jar>${izpack.app.windows.name}.jar</izpack.app.windows.name.jar>
 		<jar.finalName>rencoder</jar.finalName>
-		<deb-output-filename>Rencoder-installer.deb</deb-output-filename>
-		<!-- <deb-dir-name>jbiclustge</deb-dir-name> -->
+		<rencoder.version>${project.version}</rencoder.version>
+		<deb-output-filename>Rencoder-${project.version}-installer.deb</deb-output-filename>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>pt.ornrocha</groupId>
 			<artifactId>rencoder-core</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>uk.co.caprica</groupId>
 			<artifactId>vlcj</artifactId>
 			<version>3.12.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.github.insubstantial</groupId>
 			<artifactId>substance</artifactId>
-			<version>7.1</version>
+			<version>7.3</version>
 		</dependency>
-		<dependency>
-			<groupId>com.github.insubstantial</groupId>
-			<artifactId>flamingo</artifactId>
-			<version>6.3</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.insubstantial</groupId>
-			<artifactId>trident</artifactId>
-			<version>6.3</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.jtattoo</groupId>
 			<artifactId>JTattoo</artifactId>
@@ -77,6 +83,11 @@
 			<groupId>com.seaglasslookandfeel</groupId>
 			<artifactId>seaglasslookandfeel</artifactId>
 			<version>0.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.nimbus</groupId>
+			<artifactId>nimbus</artifactId>
+			<version>weekly-080113</version>
 		</dependency>
 
 		<dependency>
@@ -113,6 +124,11 @@
 			<groupId>org.swinglabs</groupId>
 			<artifactId>swingx</artifactId>
 			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vdurmont</groupId>
+			<artifactId>semver4j</artifactId>
+			<version>3.1.0</version>
 		</dependency>
 	</dependencies>
 
@@ -178,20 +194,107 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.1.0</version>
 				<executions>
-					<!-- copy resources -->
 					<execution>
 						<id>copy-global-resources</id>
-						<!-- here the phase you need -->
 						<phase>validate</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${builddir}</outputDirectory>
+							<outputDirectory>${build.dir}</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${globalResourcesDirectory}</directory>
-									<!-- <filtering>true</filtering> -->
+									<directory>${main.rencoder.resources}</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-global-resources-linux</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${linux.build.dir}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${main.rencoder.resources}</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-global-resources-windows</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${windows.build.dir}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${main.rencoder.resources}</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-rencoder-resources-snap</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${target.snap.rencoder.resources}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${main.rencoder.resources}</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-snap-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${target.snap.resources}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${source.snap.resources}</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-appimage-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${target.appimage.rencoder}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${source.appimage.resources}</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-updater-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${updater.build.dir}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${source.updater}</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -204,7 +307,6 @@
 				<executions>
 					<execution>
 						<id>create-staging-area</id>
-						<!--<phase>process-resources</phase> -->
 						<phase>package</phase>
 						<goals>
 							<goal>run</goal>
@@ -214,14 +316,9 @@
 								<ant antfile="${basedir}/src/main/ant/build.xml">
 									<target name="build-releases" />
 								</ant>
-								<copy todir="${builddir}">
+								<copy todir="${build.dir}">
 									<fileset dir="${basedir}/src/main/izpack" />
 								</copy>
-								<!-- <copy todir="${izpack.staging}"> <fileset dir="${basedir}/src/main/izpack" 
-									/> </copy> <copy todir="${izpack.staging}"> <fileset dir="${project.build.directory}/dist" 
-									/> </copy> <delete file="${project.build.directory}/dist/default_shortcut_specification.xml" 
-									failonerror="false" /> <delete file="${project.build.directory}/dist/jbiclustge_installer_unix_shortcutSpec.xml" 
-									failonerror="false" /> -->
 							</target>
 						</configuration>
 					</execution>
@@ -233,15 +330,27 @@
 				<version>${izpack.version}</version>
 				<executions>
 					<execution>
+						<id>installer-build-linux</id>
 						<phase>package</phase>
 						<goals>
 							<goal>izpack</goal>
 						</goals>
 						<configuration>
-							<!-- base for relative paths in izpack descriptor -->
-							<baseDir>${builddir}</baseDir>
-							<installFile>${basedir}/src/main/izpack/install.xml</installFile>
-							<output>${basedir}/${installer-output-filename}</output>
+							<baseDir>${linux.build.dir}</baseDir>
+							<installFile>${basedir}/src/main/izpack/install_linux.xml</installFile>
+							<output>${final.distros.dir}/${izpack.app.linux.name}</output>
+						</configuration>
+					</execution>
+					<execution>
+						<id>installer-build-windows</id>
+						<phase>package</phase>
+						<goals>
+							<goal>izpack</goal>
+						</goals>
+						<configuration>
+							<baseDir>${windows.build.dir}</baseDir>
+							<installFile>${basedir}/src/main/izpack/install_windows.xml</installFile>
+							<output>${final.distros.dir}/${izpack.app.windows.name.jar}</output>
 						</configuration>
 					</execution>
 				</executions>
@@ -252,6 +361,46 @@
 						<version>${izpack.version}</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>com.akathist.maven.plugins.launch4j</groupId>
+				<artifactId>launch4j-maven-plugin</artifactId>
+				<version>1.7.25</version>
+				<executions>
+					<execution>
+						<id>l4j-clui</id>
+						<phase>package</phase>
+						<goals>
+							<goal>launch4j</goal>
+						</goals>
+						<configuration>
+							<headerType>gui</headerType>
+							<jar>${final.distros.dir}/${izpack.app.windows.name.jar}</jar>
+							<outfile>${final.distros.dir}/${izpack.app.windows.name}.exe</outfile>
+							<downloadUrl>http://java.com/download</downloadUrl>
+							<classPath>
+								<mainClass>com.izforge.izpack.installer.bootstrap.Installer</mainClass>
+								<preCp>anything</preCp>
+							</classPath>
+							<icon>${windows.build.dir}/icons/rencoderbluesc.ico</icon>
+							<jre>
+								<minVersion>1.8.0</minVersion>
+								<jdkPreference>jreOnly</jdkPreference>
+							</jre>
+							<versionInfo>
+								<fileVersion>${project.version}.0</fileVersion>
+								<txtFileVersion>${project.version}.0</txtFileVersion>
+								<fileDescription>${jar.finalName}</fileDescription>
+								<productVersion>${project.version}.0</productVersion>
+								<txtProductVersion>${project.version}.0</txtProductVersion>
+								<copyright>2014-2020, Orlando Rocha</copyright>
+								<productName>${jar.finalName}</productName>
+								<internalName>${jar.finalName}</internalName>
+								<originalFilename>${izpack.app.windows.name}.exe</originalFilename>
+							</versionInfo>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.vafer</groupId>
@@ -266,13 +415,13 @@
 						</goals>
 						<configuration>
 							<verbose>false</verbose>
-							<deb>${basedir}/${deb-output-filename}</deb>
+							<deb>${final.distros.dir}/${deb-output-filename}</deb>
 							<controlDir>${basedir}/src/main/deb/control</controlDir>
 							<dataSet>
 								<data>
-									<src>${project.build.directory}/build_dir</src>
+									<src>${linux.build.dir}</src>
 									<type>directory</type>
-									<excludes>default_shortcut_specification.xml,rencoder_installer_unix_shortcutSpec.xml,install.xml,run.bat,ffmpeg/default_ffmpeg.exe</excludes>
+									<excludes>rencoder_installer_unix_shortcutSpec.xml,ffmpeg/default_ffmpeg.exe</excludes>
 									<mapper>
 										<type>perm</type>
 										<prefix>/opt/${jar.finalName}</prefix>
@@ -295,6 +444,10 @@
 	</build>
 
 	<repositories>
+		<repository>
+			<id>repository</id>
+			<url>file://${user.home}/.m2/repository/</url>
+		</repository>
 		<repository>
 			<id>1_maven.apache.org</id>
 			<releases>

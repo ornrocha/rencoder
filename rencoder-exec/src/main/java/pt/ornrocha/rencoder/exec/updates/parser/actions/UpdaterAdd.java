@@ -30,114 +30,114 @@ import pt.ornrocha.rencoder.exec.updates.auxiliar.StaticFunctionsUpdater;
 
 public class UpdaterAdd implements UpdaterAction{
 
-    private String updatesrootfolder;
-    private String destrootfolder;
-    private String addwithfilename;
-    private String addfilename;
-    private String updatessubfolders=null;
-    private String destsubfolders=null;
-    private boolean iscreatefolder=false;
+	private String updatesrootfolder;
+	private String destrootfolder;
+	private String addwithfilename;
+	private String addfilename;
+	private String updatessubfolders=null;
+	private String destsubfolders=null;
+	private boolean iscreatefolder=false;
 
-    public UpdaterAdd(String action, String sourcefolder, String destfolder){
-	this.updatesrootfolder=sourcefolder;
-	this.destrootfolder=destfolder;
-	filterFiles(action);
-    }
-
-    public UpdaterAdd(String action, String destfolder){
-
-	this.destrootfolder=destfolder;
-	filterFiles(action);
-    }
-
-
-
-    private void filterFiles(String action){
-	Pattern pat = Pattern.compile("add:(/*\\w+/(\\w+/)*)*(\\w+(([._-])*\\w+)*)->(/*\\w+/(\\w+/)*)*(\\w+(([._-])*\\w+)*)");
-	Matcher match = pat.matcher(action);
-	String updatessubfolderstemp=null;
-	String destsubfolderstemp=null;
-	if(match.find()){
-	    updatessubfolderstemp=match.group(1);
-	    addfilename=match.group(3);
-	    destsubfolderstemp=match.group(6);
-	    addwithfilename=match.group(8);
+	public UpdaterAdd(String action, String sourcefolder, String destfolder){
+		this.updatesrootfolder=sourcefolder;
+		this.destrootfolder=destfolder;
+		filterFiles(action);
 	}
-	else{
-	    Pattern patdir = Pattern.compile("add:dir:(/*\\w+/(\\w+/)*)*(\\w+(([_-])*\\w+)*)");
-	    Matcher matchdir = patdir.matcher(action);
 
-	    if(matchdir.find()){
-		destsubfolderstemp=matchdir.group(1);
-		addwithfilename=matchdir.group(3);
-		this.iscreatefolder=true;
-	    }
+	public UpdaterAdd(String action, String destfolder){
+
+		this.destrootfolder=destfolder;
+		filterFiles(action);
 	}
 
 
-	if(updatessubfolderstemp!=null)
-	    updatessubfolders=StaticFunctionsUpdater.convertToSystemPath(updatessubfolderstemp);
-	if(destsubfolderstemp!=null)
-	    destsubfolders=StaticFunctionsUpdater.convertToSystemPath(destsubfolderstemp);
 
-    }
+	private void filterFiles(String action){
+		Pattern pat = Pattern.compile("add:(/*\\w+/(\\w+/)*)*(\\w+(([._-])*\\w+)*)->(/*\\w+/(\\w+/)*)*(\\w+(([._-])*\\w+)*)");
+		Matcher match = pat.matcher(action);
+		String updatessubfolderstemp=null;
+		String destsubfolderstemp=null;
+		if(match.find()){
+			updatessubfolderstemp=match.group(1);
+			addfilename=match.group(3);
+			destsubfolderstemp=match.group(6);
+			addwithfilename=match.group(8);
+		}
+		else{
+			Pattern patdir = Pattern.compile("add:dir:(/*\\w+/(\\w+/)*)*(\\w+(([_-])*\\w+)*)");
+			Matcher matchdir = patdir.matcher(action);
 
-
-
-    @Override
-    public String getDestinationFilePath() {
-	if(destsubfolders!=null)
-	    return destrootfolder+destsubfolders+addwithfilename;
-	else
-	    return destrootfolder+RencoderExec.getSystemSeparator()+addwithfilename;
-    }
-
-    @Override
-    public String getUpdateFilePath() {
-	if(updatessubfolders!=null)
-	    return updatesrootfolder+updatessubfolders+addfilename;
-	else
-	    return updatesrootfolder+RencoderExec.getSystemSeparator()+addfilename;
-    }
+			if(matchdir.find()){
+				destsubfolderstemp=matchdir.group(1);
+				addwithfilename=matchdir.group(3);
+				this.iscreatefolder=true;
+			}
+		}
 
 
+		if(updatessubfolderstemp!=null)
+			updatessubfolders=StaticFunctionsUpdater.convertToSystemPath(updatessubfolderstemp);
+		if(destsubfolderstemp!=null)
+			destsubfolders=StaticFunctionsUpdater.convertToSystemPath(destsubfolderstemp);
 
-    @Override
-    public boolean isAllAction() {
-	// TODO Auto-generated method stub
-	return false;
-    }
+	}
 
 
 
-    @Override
-    public void executeAction() throws IOException {
-	File addto = new File(getDestinationFilePath());
-
-	if(iscreatefolder){
-	    if(!addto.exists()){
+	@Override
+	public String getDestinationFilePath() {
 		if(destsubfolders!=null)
-		    addto.mkdirs();
+			return destrootfolder+destsubfolders+addwithfilename;
 		else
-		    addto.mkdir();
-	    }
+			return destrootfolder+RencoderExec.getSystemSeparator()+addwithfilename;
+	}
 
-	}		
-	else{
-	    File addfrom = new File(getUpdateFilePath());
+	@Override
+	public String getUpdateFilePath() {
+		if(updatessubfolders!=null)
+			return updatesrootfolder+updatessubfolders+addfilename;
+		else
+			return updatesrootfolder+RencoderExec.getSystemSeparator()+addfilename;
+	}
 
-	    if(addto.exists())
-		addto.delete();
-	    Logger.info("Adding: "+addto.getAbsolutePath());
-	    Files.copy(addfrom.toPath(), addto.toPath());
+
+
+	@Override
+	public boolean isAllAction() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public void executeAction() throws IOException {
+		File addto = new File(getDestinationFilePath());
+
+		if(iscreatefolder){
+			if(!addto.exists()){
+				if(destsubfolders!=null)
+					addto.mkdirs();
+				else
+					addto.mkdir();
+			}
+
+		}		
+		else{
+			File addfrom = new File(getUpdateFilePath());
+
+			if(addto.exists())
+				addto.delete();
+			Logger.info("Adding: "+addto.getAbsolutePath());
+			Files.copy(addfrom.toPath(), addto.toPath());
+
+		}
+	}
+
+	public static void main(String[] args) {
+		//UpdaterAdd ad = new UpdaterAdd("add:dir:teste1/sub1/sub2", "/home/orocha/eclipse_workspace/VideoConverter");
+		//ad.executeAction();
 
 	}
-    }
-
-    public static void main(String[] args) {
-	//UpdaterAdd ad = new UpdaterAdd("add:dir:teste1/sub1/sub2", "/home/orocha/eclipse_workspace/VideoConverter");
-	//ad.executeAction();
-
-    }
 
 }

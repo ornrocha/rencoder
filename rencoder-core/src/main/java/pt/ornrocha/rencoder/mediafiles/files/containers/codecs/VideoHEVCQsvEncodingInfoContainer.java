@@ -250,4 +250,10 @@ public class VideoHEVCQsvEncodingInfoContainer extends DefaultEncodingInfoContai
 		return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "HEVCQsv";
+	}
+
 }

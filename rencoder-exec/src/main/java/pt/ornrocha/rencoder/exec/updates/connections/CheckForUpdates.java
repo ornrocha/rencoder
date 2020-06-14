@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
+import com.vdurmont.semver4j.Semver;
+
 import pt.ornrocha.rencoder.exec.execute.RencoderExec;
 import pt.ornrocha.rencoder.exec.log.UpdaterLogManager;
 import pt.ornrocha.rencoder.exec.updates.auxiliar.ConfigurationPropertyNotDefinedException;
@@ -54,12 +56,15 @@ public class CheckForUpdates  {
 		} catch (ConfigurationPropertyNotDefinedException | IOException e1) {
 			return false;
 		}
-		double futureversion = StaticFunctionsUpdater.checkVersionInFile(checkcurrentversion);
-		double currentversion = StaticFunctionsUpdater.checkVersionInFile(currentversionfile);
+		
+		String futureversion = StaticFunctionsUpdater.checkVersionInFile(checkcurrentversion);
+		String currentversion = StaticFunctionsUpdater.checkVersionInFile(currentversionfile);
 
 		ArrayList<String> newupdates = StaticFunctionsUpdater.checkUpdatesInfoInFile(checkcurrentversion);
+		
+		Semver sem = new Semver(futureversion);
 
-		if(futureversion>currentversion){
+		if(sem.isGreaterThan(currentversion)){
 			this.inst= new UpdateLaunchPanel(newupdates);
 			launchUpdatePanel();
 			while (this.inst.checkifrunning()) {

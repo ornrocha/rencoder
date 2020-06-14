@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>pt.ornrocha</groupId>
 		<artifactId>rencoder</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0</version>
 	</parent>
 	<artifactId>rencoder-exec</artifactId>
 
@@ -19,6 +19,11 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vdurmont</groupId>
+			<artifactId>semver4j</artifactId>
+			<version>3.1.0</version>
 		</dependency>
 	</dependencies>
 

@@ -277,7 +277,7 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 		this.mainframe = mainframe;
 		rb = ResourceBundle.getBundle("lang", LangTools.getDefinedLanguage(), LangTools.loadLanguagesPath());
 		initGUI();
-		initializeComponents();
+	    initializeComponents();
 		setActionsListeners();
 
 	}

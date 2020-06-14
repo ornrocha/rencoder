@@ -121,4 +121,10 @@ public class VideoCopyEncodingInfoContainer extends DefaultEncodingInfoContainer
 	    return false;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "Copy";
+	}
+
 }

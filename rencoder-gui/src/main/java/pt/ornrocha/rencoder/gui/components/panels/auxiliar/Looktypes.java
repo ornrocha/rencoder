@@ -170,29 +170,29 @@ public enum Looktypes {
 	},
 
 	/** The jtattoo look and feel */
-	JTATTOO {
-
-		@Override
-		public String getType() {
-			return StaticGuiFieldNames.jtatoo;
-		}
-
-		@Override
-		public String toString() {
-			return "JTattoo";
-		}
-
-		@Override
-		public HashSet<OS> getNotSupportedOS() {
-			return null;
-		}
-
-		@Override
-		public boolean haveSkinTag() {
-			return false;
-		}
-
-	},
+//	JTATTOO {
+//
+//		@Override
+//		public String getType() {
+//			return StaticGuiFieldNames.jtatoo;
+//		}
+//
+//		@Override
+//		public String toString() {
+//			return "JTattoo";
+//		}
+//
+//		@Override
+//		public HashSet<OS> getNotSupportedOS() {
+//			return null;
+//		}
+//
+//		@Override
+//		public boolean haveSkinTag() {
+//			return false;
+//		}
+//
+//	},
 
 	TINYLAF {
 
@@ -293,29 +293,29 @@ public enum Looktypes {
 	},
 
 	/** The motif look and feel */
-	MOTIF {
-
-		@Override
-		public String getType() {
-			return StaticGuiFieldNames.motiflook;
-		}
-
-		@Override
-		public String toString() {
-			return "Motif";
-		}
-
-		@Override
-		public HashSet<OS> getNotSupportedOS() {
-			return null;
-		}
-
-		@Override
-		public boolean haveSkinTag() {
-			return false;
-		}
-
-	},
+//	MOTIF {
+//
+//		@Override
+//		public String getType() {
+//			return StaticGuiFieldNames.motiflook;
+//		}
+//
+//		@Override
+//		public String toString() {
+//			return "Motif";
+//		}
+//
+//		@Override
+//		public HashSet<OS> getNotSupportedOS() {
+//			return null;
+//		}
+//
+//		@Override
+//		public boolean haveSkinTag() {
+//			return false;
+//		}
+//
+//	},
 
 	/*
 	 * LiquidLnF{
@@ -339,6 +339,7 @@ public enum Looktypes {
 		@Override
 		public String getType() {
 			return "org.pushingpixels.substance.api.skin.SubstanceNebulaLookAndFeel";
+			//return "org.pushingpixels.substance.api.skin.SubstanceGraphiteGlassLookAndFeel";
 		}
 
 		@Override
@@ -359,6 +360,7 @@ public enum Looktypes {
 		@Override
 		public void setSkin() {
 			SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.NebulaSkin");
+			//SubstanceLookAndFeel.setSkin("org.pushingpixels.substance.api.skin.GraphiteGlassSkin");
 		}
 
 	},

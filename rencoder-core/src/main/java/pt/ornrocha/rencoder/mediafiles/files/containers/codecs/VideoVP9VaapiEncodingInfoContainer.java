@@ -65,6 +65,12 @@ public class VideoVP9VaapiEncodingInfoContainer extends VideoVP8VaapiEncodingInf
 
 		return clone;
 	}
+	
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "VP9 VAAPI";
+	}
 
 
 }

@@ -41,6 +41,7 @@ import javax.swing.table.TableColumn;
 
 import org.pmw.tinylog.Logger;
 
+import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
 import pt.ornrocha.rencoder.gui.components.panels.Scroll.SoftSubtitlesConfigScrollPanel;
 import pt.ornrocha.rencoder.gui.components.panels.Scroll.SubtitleScrollPanel;
 import pt.ornrocha.rencoder.gui.components.tables.SubtitleTable;
@@ -95,10 +96,10 @@ public class SoftSubtitlesConfigPanel extends JDialog implements ActionListener,
 	protected String[] languagesISO = null;
 	
 	/** The maplangtocode. */
-	protected HashMap<String, String> maplangtocode=new HashMap<>();
+	protected HashMap<String, String> maplangtocode=null;
 	
 	/** The mapcodetolang. */
-	protected HashMap<String, String> mapcodetolang=new HashMap<>();
+	protected HashMap<String, String> mapcodetolang=null;
 	
 	/** The comparator. */
 	private Comparator comparator=Collator.getInstance();
@@ -149,28 +150,39 @@ public class SoftSubtitlesConfigPanel extends JDialog implements ActionListener,
 	 /**
  	 * Set language codes.
  	 */
- 	private void setlanguagecodes(){
-	    	String[] languages = Locale.getISOLanguages();
-	    	this.languagesISO=new String[languages.length];
-
-	    	ArrayList<String> countries = new ArrayList<>();
-	    	
-			for (String language : languages) {
-			    Locale locale = new Locale(language);
-			    String isocode = locale.getISO3Language();
-			    String lang = locale.getDisplayLanguage();
-			    countries.add(lang);
-			    maplangtocode.put(lang, isocode);
-			    mapcodetolang.put(isocode, lang);
-			}
-			
-			Collections.sort(countries, this.comparator);
-			
-			for (int i = 0; i < countries.size(); i++) {
-				languagesISO[i]=countries.get(i);
-			}
-			
-	 }
+// 	private void setlanguagecodes(){
+//	    	String[] languages = Locale.getISOLanguages();
+//	    	this.languagesISO=new String[languages.length];
+//
+//	    	ArrayList<String> countries = new ArrayList<>();
+//	    	
+//			for (String language : languages) {
+//			    Locale locale = new Locale(language);
+//			    String isocode = locale.getISO3Language();
+//			    String lang = locale.getDisplayLanguage();
+//			    countries.add(lang);
+//			    maplangtocode.put(lang, isocode);
+//			    mapcodetolang.put(isocode, lang);
+//			}
+//			
+//			Collections.sort(countries, this.comparator);
+//			
+//			for (int i = 0; i < countries.size(); i++) {
+//				languagesISO[i]=countries.get(i);
+//			}
+//			
+//	 }
+ 	
+	private void setlanguagecodes(){
+		ArrayList<String> countries=FFmpegManager.getInstance().getOrderedCountryList();
+		this.languagesISO=new String[countries.size()];
+		for (int i = 0; i < countries.size(); i++) {
+			languagesISO[i]=countries.get(i);
+		}
+		
+		this.mapcodetolang=FFmpegManager.getInstance().getMapcodetolang();
+		this.maplangtocode=FFmpegManager.getInstance().getMaplangtocode();
+	}
 	
 	
 	/**

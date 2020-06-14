@@ -282,4 +282,10 @@ public class VideoOpenH264EncodingInfoContainer extends DefaultEncodingInfoConta
 		return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "OpenH264";
+	}
+
 }

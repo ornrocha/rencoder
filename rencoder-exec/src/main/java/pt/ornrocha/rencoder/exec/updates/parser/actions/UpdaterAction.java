@@ -23,9 +23,9 @@ import java.io.IOException;
 public interface UpdaterAction {
 
 
-    String getDestinationFilePath();
-    String getUpdateFilePath();
-    boolean isAllAction();
-    void executeAction() throws IOException ;
+	String getDestinationFilePath();
+	String getUpdateFilePath();
+	boolean isAllAction();
+	void executeAction() throws IOException ;
 
 }

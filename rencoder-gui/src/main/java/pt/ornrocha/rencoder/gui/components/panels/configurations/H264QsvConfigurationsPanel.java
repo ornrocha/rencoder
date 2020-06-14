@@ -135,7 +135,7 @@ public class H264QsvConfigurationsPanel extends JDialog implements ActionListene
 
 		panel_main = new JPanel();
 		this.panel_main.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)),
-				LangTools.getWordLanguage("H264 Nvenc settings", "h264nvenc.settings"), TitledBorder.LEADING,
+				LangTools.getWordLanguage("H264 Qsv settings", "h264qsv.settings"), TitledBorder.LEADING,
 				TitledBorder.TOP, null, new Color(51, 51, 51)));
 		GridBagConstraints gbc_panel_main = new GridBagConstraints();
 		gbc_panel_main.insets = new Insets(0, 0, 0, 5);

@@ -72,6 +72,14 @@
 			override="true">
 			<os family="windows"/>
 		</file>	
+		<file src="@{builddir}/linux/jre" targetdir="${INSTALL_PATH}"
+			override="true">
+			<os family="unix" />
+		</file>
+		<file src="@{builddir}/windows/jre" targetdir="${INSTALL_PATH}"
+			override="true">
+			<os family="windows"/>
+		</file>	
 		<file src="@{builddir}/run.sh" targetdir="${INSTALL_PATH}"
 			override="true">
 			<os family="unix" />
@@ -85,6 +93,14 @@
 			<os family="unix"/>
 		</executable>
 		<executable targetfile="$INSTALL_PATH/run.bat"
+			type="bin" stage="never" failure="warn" keep="true">
+			<os family="windows"/>
+		</executable>
+				 <executable targetfile="$INSTALL_PATH/jre/bin/java"
+			type="bin" stage="never" failure="warn" keep="true">
+			<os family="unix"/>
+		</executable>
+		<executable targetfile="$INSTALL_PATH//jre/bin/java.exe"
 			type="bin" stage="never" failure="warn" keep="true">
 			<os family="windows"/>
 		</executable>

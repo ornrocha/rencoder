@@ -29,68 +29,68 @@ import pt.ornrocha.rencoder.exec.updates.auxiliar.CommentedProperties;
 
 public class UpdateConfigurationsChecker {
 
-    private CommentedProperties updateprops =new CommentedProperties();
-    private CommentedProperties originalprops =new CommentedProperties();
-    private String updatefile = null;
-    private static final ArrayList<String> lockfields = new ArrayList<>(Arrays.asList("Update.server.url", "Version.file.url", "Update.file.zip"));
+	private CommentedProperties updateprops =new CommentedProperties();
+	private CommentedProperties originalprops =new CommentedProperties();
+	private String updatefile = null;
+	private static final ArrayList<String> lockfields = new ArrayList<>(Arrays.asList("Update.server.url", "Version.file.url", "Update.file.zip"));
 
-    public UpdateConfigurationsChecker(String updatefile, String origfile){
-	try {
-	    this.updatefile=updatefile;
-	    FileInputStream update = new FileInputStream(updatefile);
-	    FileInputStream orig = new FileInputStream(origfile);
-	    updateprops.load(update);
-	    originalprops.load(orig);
+	public UpdateConfigurationsChecker(String updatefile, String origfile){
+		try {
+			this.updatefile=updatefile;
+			FileInputStream update = new FileInputStream(updatefile);
+			FileInputStream orig = new FileInputStream(origfile);
+			updateprops.load(update);
+			originalprops.load(orig);
 
-	    //update.close();
-	    //orig.close();
+			//update.close();
+			//orig.close();
 
-	} catch (IOException e) {
-	    e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
-    }
 
+	public void changeUpdateToExistingProps(){
 
-    public void changeUpdateToExistingProps(){
+		Set<String> updatekeys = updateprops.stringPropertyNames();
+		Set<String> originalkeys = originalprops.stringPropertyNames();
+		try {
+			for (String upkey : updatekeys) {
+				if(originalkeys.contains(upkey) && !lockfields.contains(upkey)){
+					String original = originalprops.getProperty(upkey);
+					String newprop = updateprops.getProperty(upkey);
+					if(!original.equals(newprop))
+						changeProperty(updatefile, upkey, original);
 
-	Set<String> updatekeys = updateprops.stringPropertyNames();
-	Set<String> originalkeys = originalprops.stringPropertyNames();
-	try {
-	    for (String upkey : updatekeys) {
-		if(originalkeys.contains(upkey) && !lockfields.contains(upkey)){
-		    String original = originalprops.getProperty(upkey);
-		    String newprop = updateprops.getProperty(upkey);
-		    if(!original.equals(newprop))
-			changeProperty(updatefile, upkey, original);
-
-		}	
-	    }
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+				}	
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-    }
 
-    private void changeProperty(String filepath, String key, String value) throws IOException{
-	FileInputStream in = new FileInputStream(filepath);
-	CommentedProperties props = new CommentedProperties();
-	props.load(in);
-	in.close();
+	private void changeProperty(String filepath, String key, String value) throws IOException{
+		FileInputStream in = new FileInputStream(filepath);
+		CommentedProperties props = new CommentedProperties();
+		props.load(in);
+		in.close();
 
-	FileOutputStream out = new FileOutputStream(filepath);
-	props.setProperty(key, value);
-	props.store(out, null);
-	out.close();
+		FileOutputStream out = new FileOutputStream(filepath);
+		props.setProperty(key, value);
+		props.store(out, null);
+		out.close();
 
-    }
+	}
 
-    public static void main(String[] args){
-	/*String toreplace="/home/orocha/Eclipse_Projects/kepler/orsvc/testeupd/toreplace/orsvc.conf";
+	public static void main(String[] args){
+		/*String toreplace="/home/orocha/Eclipse_Projects/kepler/orsvc/testeupd/toreplace/orsvc.conf";
 	 String replacer="/home/orocha/Eclipse_Projects/kepler/orsvc/testeupd/replacer/orsvc.conf";
 
 	 UpdateConfigurationsChecker rep= new UpdateConfigurationsChecker(replacer, toreplace);
 	 rep.changeUpdateToExistingProps();*/
-    }
+	}
 
 }

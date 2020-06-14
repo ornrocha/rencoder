@@ -295,6 +295,12 @@ public class VideoVP8EncodingInfoContainer extends DefaultEncodingInfoContainer 
 	    return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "VP8";
+	}
+
 
 
 }

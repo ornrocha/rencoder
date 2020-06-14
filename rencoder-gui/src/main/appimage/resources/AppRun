@@ -1,0 +1,34 @@
+#!/bin/bash
+
+#export APPDIR="$(dirname "$(readlink -f "$0")")"
+SELF=$(readlink -f "$0")
+HERE=${SELF%/*}
+export APPDIR=$HERE
+export PATH="$APPDIR/usr/bin/:$PATH"
+export LD_LIBRARY_PATH="$APPDIR/usr/lib:$PATH"
+export RENCODER_CONFIG_DATA="$APPDIR/usr/share/data"
+export RENCODER_DATA="$HOME/.config/rencoder"
+
+if [ ! -d $RENCODER_DATA ]; then
+	mkdir $RENCODER_DATA
+fi
+if [ ! -d $RENCODER_DATA/ffmpeg ]; then
+	cp -R $RENCODER_CONFIG_DATA/ffmpeg $RENCODER_DATA/ffmpeg
+fi
+if [ ! -d $RENCODER_DATA/settings ]; then
+	cp -R $RENCODER_CONFIG_DATA/settings $RENCODER_DATA/settings
+fi
+if [ ! -d $RENCODER_DATA/languages ]; then
+	cp -R $RENCODER_CONFIG_DATA/languages $RENCODER_DATA/languages
+fi
+if [ ! -d $RENCODER_DATA/profiles ]; then
+	cp -R $RENCODER_CONFIG_DATA/profiles $RENCODER_DATA/profiles
+fi
+if [ ! -f $RENCODER_DATA/rencoder.jar ]; then
+	cp $RENCODER_CONFIG_DATA/rencoder.jar $RENCODER_DATA/rencoder.jar
+fi
+
+EXEC=$(grep -e '^Exec=.*' "${HERE}"/*.desktop | head -n 1 | cut -d "=" -f 2 | cut -d " " -f 1)
+exec "${EXEC}" "$@"
+
+#"$APPDIR"/usr/bin/rencoder $@

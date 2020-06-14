@@ -29,38 +29,38 @@ import javax.swing.table.TableCellRenderer;
  * The Class SubComboBoxRender.
  */
 public class SubComboBoxRender extends JComboBox implements TableCellRenderer{
-   
-	
+
+
 	/**
 	 * Instantiates a new sub combo box render.
 	 *
 	 * @param items the items
 	 */
 	public SubComboBoxRender(String[] items)
-    {
-      super(items);
-    }
+	{
+		super(items);
+	}
 
-    /* (non-Javadoc)
-     * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
-     */
-    public Component getTableCellRendererComponent(JTable table, Object value,
-                                                   boolean isSelected, boolean hasFocus, int row, int column)
-    {
-      if (isSelected)
-      {
-        setForeground(table.getSelectionForeground());
-        super.setBackground(table.getSelectionBackground());
-      }
-      else
-      {
-        setForeground(table.getForeground());
-        setBackground(table.getBackground());
-      }
+	/* (non-Javadoc)
+	 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+	 */
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column)
+	{
+		if (isSelected)
+		{
+			setForeground(table.getSelectionForeground());
+			super.setBackground(table.getSelectionBackground());
+		}
+		else
+		{
+			setForeground(table.getForeground());
+			setBackground(table.getBackground());
+		}
 
-      // Select the current value
-      setSelectedItem(value);
-      return this;
-    }
-  }
+		// Select the current value
+		setSelectedItem(value);
+		return this;
+	}
+}
 

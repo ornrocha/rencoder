@@ -53,12 +53,15 @@ public abstract class BaseFile {
 	 * @param filepath the filepath
 	 */
 	public BaseFile(String filepath){
-		this.filepath = filepath;
-		this.path = Paths.get(filepath);
-		this.name= this.path.getFileName().toString();
-		this.parentdir = this.path.getParent().toString();
-		this.extension=FilenameUtils.getExtension(this.filepath);
-		this.BaseName=FilenameUtils.getBaseName(this.filepath);
+		if(filepath!=null) {
+			this.filepath = filepath;
+			this.path = Paths.get(filepath);
+			this.name= this.path.getFileName().toString();
+			this.parentdir = this.path.getParent().toString();
+			this.extension=FilenameUtils.getExtension(this.filepath);
+			this.BaseName=FilenameUtils.getBaseName(this.filepath);
+		}
+
 	}
 	
 	/**

@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
@@ -127,8 +128,8 @@ public class AboutInformationPanel extends JDialog implements ActionListener {
 
 				thisLayout.columnWidths = new int[] { 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };
 				getContentPane().setLayout(thisLayout);
-				this.setTitle(
-						LangTools.getResourceBundleWordLanguage(rb, "About ORSimpleVideoConverter", "aboutgui.title"));
+				this.setTitle(LangTools.getResourceBundleWordLanguage(rb, "About Rencoder", "aboutgui.title"));
+				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
 				{
 					jTabbedPaneinfos = new JTabbedPane();
 					getContentPane().add(jTabbedPaneinfos, new GridBagConstraints(0, 7, 10, 8, 0.0, 0.0,
@@ -223,13 +224,13 @@ public class AboutInformationPanel extends JDialog implements ActionListener {
 			insertdevinfoIcon(devinfo);
 			devinfo.insertString(devinfo.getLength(), "\n", StyleUtilities.getDefaultStyle(devinfo));
 			//devinfo.insertString(devinfo.getLength(), "ORSimpleVideoConverter" + "\n", boldmod1);
-			devinfo.insertString(devinfo.getLength(), "Version 1.0" + "\n\n",
+			devinfo.insertString(devinfo.getLength(), "Version 1.1.0" + "\n\n",
 					StyleUtilities.getRegularDefaultStyle(devinfo));
 
-			String text = "ORSimpleVideoConverter is a FFmpeg frontend developed in Java language.\n";
+			String text = "Rencoder is a FFmpeg frontend developed in Java language.\n";
 			devinfo.insertString(devinfo.getLength(), text,
 					StyleUtilities.getRegularModsizeandcolor(devinfo, "regmod1", 14, Color.BLACK));
-			devinfo.insertString(devinfo.getLength(), "Copyright \u00a9 2014-2019, Orlando Rocha <ornrocha@gmail.com>",
+			devinfo.insertString(devinfo.getLength(), "Copyright \u00a9 2014-2020, Orlando Rocha <ornrocha@gmail.com>",
 					StyleUtilities.getRegularModsizeandcolor(devinfo, "regmod2", 11, Color.BLUE));
 			jTextPaneInfoauthor.setEditable(false);
 		} catch (BadLocationException e) {
@@ -293,7 +294,7 @@ public class AboutInformationPanel extends JDialog implements ActionListener {
 					+ "it under the terms of the GNU General Public License as published by the Free "
 					+ "Software Foundation, either version 3 of the License, or (at your option) any later version."
 					+ "\n\n"
-					+ "ORSimpleVideoConverter is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; "
+					+ "Rencoder is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; "
 					+ "without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
 					+ "GNU General Public License for more details." + "\n\n"
 					+ "You should have received a copy of the GNU General Public License along with this program.  If not, see "

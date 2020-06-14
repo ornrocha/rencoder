@@ -92,7 +92,7 @@ public class FFmpegInputErrorChecker implements Runnable {
 						int index = validParameters.getIndexOf(word);
 						validParameters.putAt(index, word, true);
 					}
-
+					
 				} else {
 					if (line.toLowerCase().contains(word.toLowerCase()))
 						founderrors = true;

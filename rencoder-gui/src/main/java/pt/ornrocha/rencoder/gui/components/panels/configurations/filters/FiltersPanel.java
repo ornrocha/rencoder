@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -136,6 +137,7 @@ public class FiltersPanel extends JDialog implements ActionListener{
 				
 				thisLayout.columnWidths = new int[] {7, 7, 7, 7};
 				getContentPane().setLayout(thisLayout);
+				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
 				{
 					jTabbedPanemain = new JTabbedPane();
 					getContentPane().add(jTabbedPanemain, new GridBagConstraints(0, 0, 4, 5, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));

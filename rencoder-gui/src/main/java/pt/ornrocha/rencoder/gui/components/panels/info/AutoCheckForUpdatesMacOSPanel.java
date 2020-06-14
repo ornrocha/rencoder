@@ -3,6 +3,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -88,6 +89,7 @@ public class AutoCheckForUpdatesMacOSPanel extends JDialog implements ActionList
 				
 				thisLayout.columnWidths = new int[] {7, 7, 7, 7};
 				getContentPane().setLayout(thisLayout);
+				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
 				{
 					jButtonignore = new JButton();
 					getContentPane().add(jButtonignore, new GridBagConstraints(0, 5, 2, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));

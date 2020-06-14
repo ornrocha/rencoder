@@ -19,6 +19,7 @@
 package pt.ornrocha.rencoder.gui.components.panels.info;
 
 
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javax.swing.JTabbedPane;
@@ -30,7 +31,9 @@ import pt.ornrocha.rencoder.helpers.lang.LangTools;
 import pt.ornrocha.rencoder.mediafiles.files.containers.base.Videofile;
 import pt.ornrocha.rencoder.mediafiles.files.containers.maininfo.MediaInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.streams.AudioStreamInfo;
+import pt.ornrocha.rencoder.mediafiles.files.containers.streams.SubtitleStreamInfo;
 import pt.ornrocha.rencoder.mediafiles.files.containers.streams.VideoStreamInfo;
+import javax.swing.JPanel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -56,6 +59,8 @@ public class VideoMediaInfoPanel extends JTabbedPane {
 	
 	/** The j panelaudio. */
 	private MediaInfoScrollPanel jPanelaudio;
+	
+	private MediaInfoScrollPanel jPanelsubs;
 	
 	/** The selectedmovie. */
 	protected Videofile selectedmovie=null;
@@ -92,8 +97,8 @@ public class VideoMediaInfoPanel extends JTabbedPane {
 					jPanelaudio = new MediaInfoScrollPanel(audiocolnames,false);
 					this.addTab(LangTools.getResourceBundleWordLanguage(rb, "Audio Stream info","audioinfo.streaminfo"), null, jPanelaudio, null);
 				}
-
 			}
+			
 		} catch(Exception e) {
 		    Logger.error(e);
 		}
@@ -127,6 +132,18 @@ public class VideoMediaInfoPanel extends JTabbedPane {
 		if(audioinfo!=null)
 		   this.jPanelaudio.insertData(mediavideoinfo.getAudiostreamsinfo().get(0).getAudioInfoToTable());
 		
+		
+		ArrayList<SubtitleStreamInfo> listsubs= mediavideoinfo.getSubstreamsinfo();
+		if(listsubs!=null && listsubs.size()>0) {
+			
+			String[] subscolnames={LangTools.getResourceBundleWordLanguage(rb, "Stream number","videoaudiogui.streamnumber"),LangTools.getResourceBundleWordLanguage(rb, "Language","videoaudiogui.lang")};
+			jPanelsubs = new MediaInfoScrollPanel(subscolnames,false);
+			this.addTab(LangTools.getResourceBundleWordLanguage(rb, "Subtitles Stream info","subinfo.streaminfo"), null, jPanelsubs, null);
+			
+			jPanelsubs.insertData(mediavideoinfo.getSubsInfoToTable());
+			
+		}
+		
 			
 	}
 	
@@ -136,6 +153,8 @@ public class VideoMediaInfoPanel extends JTabbedPane {
      public void resetTables(){
     	 this.jPanelaudio.reset();
     	 this.jPanelvideo.reset();
+    	 if(jPanelsubs!=null)
+    		 this.remove(jPanelsubs);
      }
 
 }

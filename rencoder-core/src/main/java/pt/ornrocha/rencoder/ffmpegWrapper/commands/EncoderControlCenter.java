@@ -53,6 +53,7 @@ import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoH264Encoding
 import pt.ornrocha.rencoder.mediafiles.files.containers.maininfo.FiltersInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.maininfo.IGeneralVideoEncInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.maininfo.SubtitleInfoContainer;
+import pt.ornrocha.rencoder.mediafiles.files.containers.streams.AudioStreamInfo;
 import pt.ornrocha.rencoder.mediafiles.setfiles.processfiles.ProcessFiles;
 
 // TODO: Auto-generated Javadoc
@@ -256,7 +257,12 @@ public class EncoderControlCenter {
 				} else
 					onepass.addAll(subencodcmd);
 			}
-
+            
+			if(currentvideo.getEncodingInfoContainer().getMaxMuxingQueueSize()>0) {
+				onepass.add("-max_muxing_queue_size");
+				onepass.add(String.valueOf(currentvideo.getEncodingInfoContainer().getMaxMuxingQueueSize()));
+			}
+            onepass.addAll(setMapOfStreams(currentvideo));
 			onepass.addAll(processFileOutput(currentvideo));
 
 		} catch (Exception e) {
@@ -453,14 +459,16 @@ public class EncoderControlCenter {
 		ArrayList<Subtitlefile> subs = currentfile.getSelectedSubtitleFiles();
 
 		for (int i = 0; i < subs.size(); i++) {
-			subsinputcmds.add(StaticFFmpegFields.SUBCHARENCODING);
-			subsinputcmds.add(
-					currentfile.getEncodingInfoContainer().getSubtitleInfoContainer().getSubsEncoding().toString());
-			subsinputcmds.add(StaticFFmpegFields.input);
-			if (OSystem.isWindows())
-				subsinputcmds.add(StaticGlobalFields.QUOTE + subs.get(i).getFilePath() + StaticGlobalFields.QUOTE);
-			else
-				subsinputcmds.add(subs.get(i).getFilePath());
+			if(!subs.get(i).isBuiltinsub()) {
+				subsinputcmds.add(StaticFFmpegFields.SUBCHARENCODING);
+				subsinputcmds.add(
+						currentfile.getEncodingInfoContainer().getSubtitleInfoContainer().getSubsEncoding().toString());
+				subsinputcmds.add(StaticFFmpegFields.input);
+				if (OSystem.isWindows())
+					subsinputcmds.add(StaticGlobalFields.QUOTE + subs.get(i).getFilePath() + StaticGlobalFields.QUOTE);
+				else
+					subsinputcmds.add(subs.get(i).getFilePath());
+			}
 		}
 
 		return subsinputcmds;
@@ -511,6 +519,10 @@ public class EncoderControlCenter {
 			ArrayList<String> aspectparam = processVideoAspectRelatedParameters(encodinfo);
 			if (aspectparam.size() > 0)
 				videocmds.addAll(aspectparam);
+			
+			/*
+			 * videocmds.add("-map"); videocmds.add("0:v:0");
+			 */
 
 		}
 
@@ -666,6 +678,11 @@ public class EncoderControlCenter {
 				}
 
 				audioencparam.addAll(audioencinfo.getAudiochannels().getffmpegcommand());
+				
+				/*
+				 * audioencparam.add("-map"); audioencparam.add("0:v:0");
+				 * audioencparam.add("-map"); audioencparam.add("0:a:0");
+				 */
 			}
 		}
 
@@ -706,6 +723,57 @@ public class EncoderControlCenter {
 	 * @return the array list
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+//	public ArrayList<String> processSubtitleInfo(Videofile movie) throws IOException {
+//
+//		ArrayList<String> subencodcmd = new ArrayList<>();
+//		try {
+//			SubtitleInfoContainer encSettings = movie.getEncodingInfoContainer().getSubtitleInfoContainer();
+//
+//			if (encSettings.isUseHardSubs()) {
+//				Subtitlefile selectedSub = movie.getFirstSelectedSubtitleFile();
+//
+//				if (selectedSub != null) {
+//
+//					SubtitleConverter subconv = new SubtitleConverter(selectedSub, encSettings);
+//					subencodcmd.addAll(subconv.getFFmpegSubtitleEncodingCommands(null));
+//					deletetempsubscontroler.put(movie.getFilePath(), subconv.getTempSubPath());
+//				}
+//			} else if (this.isusedSoftSubtitles) {
+//				ArrayList<Subtitlefile> subs = movie.getSelectedSubtitleFiles();
+//
+//				for (int i = 0; i < subs.size(); i++) {
+//
+//					Subtitlefile sub = subs.get(i);
+//					subencodcmd.add(StaticFFmpegFields.MAPFILE);
+//					subencodcmd.add(String.valueOf(i + 1) + ":0");
+//					subencodcmd.add(StaticFFmpegFields.SUBCODEC);
+//
+//					if (movie.getEncodingInfoContainer().getVideoContainer().equals(VideoContainers.MKV)) {
+//
+//						subencodcmd.add(sub.getExtension());
+//					}
+//
+//					else if (movie.getEncodingInfoContainer().getVideoContainer().equals(VideoContainers.MP4)) {
+//						subencodcmd.add(StaticFFmpegFields.SUBMP4ENCO);
+//					}
+//					String metadata = StaticFFmpegFields.SUBMETADATAORDER + String.valueOf(i);
+//					subencodcmd.add(metadata);
+//
+//					String language = StaticFFmpegFields.SUBLANGUAGE + sub.getLanguage();
+//					subencodcmd.add(language);
+//
+//				}
+//
+//			}
+//
+//		} catch (Exception e) {
+//			Logger.error(e);
+//		}
+//
+//		return subencodcmd;
+//
+//	}
+	
 	public ArrayList<String> processSubtitleInfo(Videofile movie) throws IOException {
 
 		ArrayList<String> subencodcmd = new ArrayList<>();
@@ -713,7 +781,16 @@ public class EncoderControlCenter {
 			SubtitleInfoContainer encSettings = movie.getEncodingInfoContainer().getSubtitleInfoContainer();
 
 			if (encSettings.isUseHardSubs()) {
-				Subtitlefile selectedSub = movie.getFirstSelectedSubtitleFile();
+
+				Subtitlefile selectedSub =null;
+
+				ArrayList<Subtitlefile> subs=movie.getSelectedSubtitleFiles();
+				for (Subtitlefile subtitlefile : subs) {
+					if(!subtitlefile.isBuiltinsub() && subtitlefile.isToUse()) {
+						selectedSub=subtitlefile;
+						break;
+					}
+				}
 
 				if (selectedSub != null) {
 
@@ -723,27 +800,48 @@ public class EncoderControlCenter {
 				}
 			} else if (this.isusedSoftSubtitles) {
 				ArrayList<Subtitlefile> subs = movie.getSelectedSubtitleFiles();
+				ArrayList<String> subslangin=new ArrayList<String>();
+				int mapnumber=0;
 
 				for (int i = 0; i < subs.size(); i++) {
 
 					Subtitlefile sub = subs.get(i);
-					subencodcmd.add(StaticFFmpegFields.MAPFILE);
-					subencodcmd.add(String.valueOf(i + 1) + ":0");
-					subencodcmd.add(StaticFFmpegFields.SUBCODEC);
+					String sublang=sub.getLanguage();
 
-					if (movie.getEncodingInfoContainer().getVideoContainer().equals(VideoContainers.MKV)) {
+					if(!subslangin.contains(sublang)) {
 
-						subencodcmd.add(sub.getExtension());
+						if(!sub.isBuiltinsub()) {
+							subencodcmd.add(StaticFFmpegFields.MAPFILE);
+							subencodcmd.add(String.valueOf(mapnumber + 1) + ":0");
+							subencodcmd.add(StaticFFmpegFields.SUBCODEC);
+
+							if (movie.getEncodingInfoContainer().getVideoContainer().equals(VideoContainers.MKV)) {
+
+								subencodcmd.add(sub.getExtension());
+							}
+
+							else if (movie.getEncodingInfoContainer().getVideoContainer().equals(VideoContainers.MP4)) {
+								subencodcmd.add(StaticFFmpegFields.SUBMP4ENCO);
+							}
+							String metadata = StaticFFmpegFields.SUBMETADATAORDER + String.valueOf(i);
+							subencodcmd.add(metadata);
+
+							String language = StaticFFmpegFields.SUBLANGUAGE + sublang;
+							subencodcmd.add(language);
+							//-disposition:s:s:0 forced
+							
+							mapnumber++;
+						}
+						else {
+							int subindex=movie.getBuiltInSubIndex(sublang);
+							if(subindex!=-1) {
+								subencodcmd.add(StaticFFmpegFields.MAPFILE);
+								subencodcmd.add("0:s:"+String.valueOf(subindex));
+							}
+						}
+						
+						subslangin.add(sublang);
 					}
-
-					else if (movie.getEncodingInfoContainer().getVideoContainer().equals(VideoContainers.MP4)) {
-						subencodcmd.add(StaticFFmpegFields.SUBMP4ENCO);
-					}
-					String metadata = StaticFFmpegFields.SUBMETADATAORDER + String.valueOf(i);
-					subencodcmd.add(metadata);
-
-					String language = StaticFFmpegFields.SUBLANGUAGE + sub.getLanguage();
-					subencodcmd.add(language);
 
 				}
 
@@ -755,6 +853,65 @@ public class EncoderControlCenter {
 
 		return subencodcmd;
 
+	}
+	
+	private ArrayList<String> setMapOfStreams(Videofile movie){
+
+		ArrayList<String> cmds = new ArrayList<>();
+
+		SubtitleInfoContainer encSettings = movie.getEncodingInfoContainer().getSubtitleInfoContainer();
+
+		if(!encSettings.isUseSoftSubs()) {
+			cmds.add(StaticFFmpegFields.MAPFILE);
+			cmds.add("0:v:0");
+			cmds.add(StaticFFmpegFields.MAPFILE);
+			int audiostream=0;
+			ArrayList<AudioStreamInfo> audiostreams=movie.getMovieinfocontainer().getAudiostreamsinfo();
+			if(audiostreams.size()>1)
+				for (int i = 0; i <audiostreams.size(); i++) {
+					if(audiostreams.get(i).isDefaultstream()) {
+						audiostream=i;
+						break;
+					}
+				}
+			cmds.add("0:a:"+String.valueOf(audiostream));
+		}
+
+		if (encSettings.isUseHardSubs()) {
+
+			ArrayList<Subtitlefile> subs=movie.getSubtitles();
+			ArrayList<Integer> builtinsubs= new ArrayList<Integer>();
+			for (int i = 0; i < subs.size(); i++) {
+				if(subs.get(i).isBuiltinsub() && subs.get(i).isToUse()) {
+					builtinsubs.add(i);
+				}
+			}
+
+			if(builtinsubs.size()==0) {
+				cmds.add("-sn");
+			}
+			else if(builtinsubs.size()==movie.getNumberBuiltInSubs()) {
+				cmds.add(StaticFFmpegFields.MAPFILE);
+				cmds.add("0:s?");
+			}
+			else {
+				for (Integer subnumber : builtinsubs) {
+					cmds.add(StaticFFmpegFields.MAPFILE);
+					cmds.add("0:s:"+String.valueOf(subnumber));
+				}
+			}
+
+		}
+
+
+
+
+		//cmds.add("-sn");
+		//cmds.add("-map");
+		//cmds.add("0:s?");
+
+
+		return cmds;
 	}
 
 	/**
