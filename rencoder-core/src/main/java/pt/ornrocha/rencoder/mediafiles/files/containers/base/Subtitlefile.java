@@ -20,6 +20,9 @@ package pt.ornrocha.rencoder.mediafiles.files.containers.base;
 
 import java.io.File;
 
+import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
+import pt.ornrocha.rencoder.mediafiles.files.containers.streams.SubtitleStreamInfo;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -34,7 +37,11 @@ public class Subtitlefile extends BaseFile{
 	private boolean selectedToUse=false;
 	
 	/** The language. */
-	private String language="eng";
+	private String language=FFmpegManager.getInstance().getDefaultSoftSubtitleLanguage();
+	
+	private boolean builtinsub=false;
+	
+	private SubtitleStreamInfo subtitlestream=null;
 	
 	/**
 	 * Instantiates a new subtitlefile.
@@ -49,6 +56,13 @@ public class Subtitlefile extends BaseFile{
 	
 	public Subtitlefile(File file){
 		super(file.getAbsolutePath());
+	}
+	
+	public Subtitlefile(SubtitleStreamInfo substream) {
+		super(null);
+		this.subtitlestream=substream;
+		this.builtinsub=true;
+		this.name="Built-in "+FFmpegManager.getInstance().getLanguageFromISO3Code(this.subtitlestream.getLanguage())+" Stream";
 	}
 	
 	
@@ -73,12 +87,26 @@ public class Subtitlefile extends BaseFile{
 	
 	
 
+	public boolean isBuiltinsub() {
+		return builtinsub;
+	}
+	
+	
+
+
+	public SubtitleStreamInfo getSubtitlestream() {
+		return subtitlestream;
+	}
+
+
 	/**
 	 * Gets the language.
 	 *
 	 * @return the language
 	 */
 	public String getLanguage() {
+		if(isBuiltinsub())
+			return subtitlestream.getLanguage();
 		return language;
 	}
 

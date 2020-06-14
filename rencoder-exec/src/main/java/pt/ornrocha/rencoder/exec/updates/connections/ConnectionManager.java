@@ -24,20 +24,20 @@ import java.net.URLConnection;
 
 public class ConnectionManager {
 
-    URLConnection conn=null;
+	URLConnection conn=null;
 
-    public ConnectionManager(){
+	public ConnectionManager(){
 
-    }
+	}
 
-    public ConnectionManager(String url) throws IOException{
-	URL link = new URL(url);
-	this.conn=link.openConnection();
-    }
+	public ConnectionManager(String url) throws IOException{
+		URL link = new URL(url);
+		this.conn=link.openConnection();
+	}
 
-    public URLConnection getConnection(){
-	return this.conn;
-    }
+	public URLConnection getConnection(){
+		return this.conn;
+	}
 
 
 }

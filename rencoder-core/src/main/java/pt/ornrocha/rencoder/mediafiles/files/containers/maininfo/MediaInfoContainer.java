@@ -20,10 +20,14 @@ package pt.ornrocha.rencoder.mediafiles.files.containers.maininfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.FileInformationChecker;
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.FileInformationIOException;
+import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
+import pt.ornrocha.rencoder.helpers.lang.LangTools;
 import pt.ornrocha.rencoder.mediafiles.files.containers.streams.AudioStreamInfo;
+import pt.ornrocha.rencoder.mediafiles.files.containers.streams.SubtitleStreamInfo;
 import pt.ornrocha.rencoder.mediafiles.files.containers.streams.VideoStreamInfo;
 
 // TODO: Auto-generated Javadoc
@@ -39,6 +43,7 @@ public class MediaInfoContainer {
 	/** The audio streams info. */
 	protected ArrayList<AudioStreamInfo> audiostreamsinfo =null;
 	
+	protected ArrayList<SubtitleStreamInfo> substreamsinfo =null;
     
 	/**
 	 * Instantiates a new media info container.
@@ -67,9 +72,28 @@ public class MediaInfoContainer {
 		FileInformationChecker infochecker = new FileInformationChecker(filepath);
 		this.videoinfo=infochecker.getVideoStreamInfo();
 		this.audiostreamsinfo=infochecker.getAudioStreamsInfo();
-
+		this.substreamsinfo=infochecker.getSubtitlestreams();
+		checkDefaultAudioStream();
 	}
 
+	private void checkDefaultAudioStream() {
+		if(this.audiostreamsinfo.size()==1)
+			this.audiostreamsinfo.get(0).setDefaultstream(true);
+		else {
+			boolean found=false;
+			for (AudioStreamInfo audioStreamInfo : audiostreamsinfo) {
+				String lang=audioStreamInfo.getLanguage();
+				if(lang.toLowerCase().equals("eng")) {
+					audioStreamInfo.setDefaultstream(true);
+					found=true;
+					break;
+				}
+			}
+			if(!found) {
+				this.audiostreamsinfo.get(0).setDefaultstream(true);
+			}
+		}
+	}
 
 
 	/**
@@ -104,10 +128,40 @@ public class MediaInfoContainer {
 		else
 			return null;
 	}
+
+
+
+	public ArrayList<SubtitleStreamInfo> getSubstreamsinfo() {
+		return substreamsinfo;
+	}
+	
+	public int getSubStreamPosition(String language) {
+		for (int i = 0; i < substreamsinfo.size(); i++) {
+			if(substreamsinfo.get(i).getLanguage().toLowerCase().equals(language.toLowerCase()))
+				return i;
+		}
+		return -1;
+	}
 	
 	
 	
 	
+	public List<Object[]> getSubsInfoToTable() {
+		ArrayList<Object[]> info = new ArrayList<>();
+		if(getSubstreamsinfo()!=null) {
+			
+			for (int i = 0; i < getSubstreamsinfo().size(); i++) {
+				String lang=getSubstreamsinfo().get(i).getLanguage();
+				String disp=FFmpegManager.getInstance().getLanguageFromISO3Code(lang);
+				Object[] subinfo = { getSubstreamsinfo().get(i).getNumberstream(),disp };
+				info.add(subinfo);
+			}
+		}
+
+		return info;
+
+	}
+
 	
 	
 	

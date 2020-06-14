@@ -45,6 +45,7 @@ import pt.ornrocha.rencoder.gui.components.panels.Scroll.SubtitleScrollPanel;
 import pt.ornrocha.rencoder.gui.components.panels.Scroll.VideoScrollPanel;
 import pt.ornrocha.rencoder.gui.components.panels.configurations.SoftSubtitlesConfigPanel;
 import pt.ornrocha.rencoder.gui.components.panels.info.VideoMediaInfoPanel;
+import pt.ornrocha.rencoder.gui.components.panels.info.VideoMediaInfoPanel2;
 import pt.ornrocha.rencoder.helpers.IndexedHashMap;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
 import pt.ornrocha.rencoder.mediafiles.files.auxiliar.ProcessFilesAux;
@@ -100,7 +101,7 @@ public class VideoMainPanel extends JPanel implements ListSelectionListener {
 	private JButton jButtonloadfiles;
 
 	/** The j panelinfo. */
-	private VideoMediaInfoPanel jPanelinfo;
+	private VideoMediaInfoPanel2 jPanelinfo;
 
 	/** The subtitles panel. */
 	private SubtitleScrollPanel subtitlesPanel;
@@ -293,7 +294,7 @@ public class VideoMainPanel extends JPanel implements ListSelectionListener {
 					}
 				}
 				{
-					jPanelinfo = new VideoMediaInfoPanel();
+					jPanelinfo = new VideoMediaInfoPanel2();
 					this.add(jPanelinfo, new GridBagConstraints(8, 5, 4, 7, 0.0, 0.0, GridBagConstraints.CENTER,
 							GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 					this.setBorder(BorderFactory.createTitledBorder(null,

@@ -21,6 +21,7 @@ package pt.ornrocha.rencoder.gui.components.panels.configurations;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -356,6 +357,7 @@ public class ConverterConfigurations extends JDialog implements ChangeListener, 
 				thisLayout.columnWidths = new int[] {7, 7, 7, 7, 7, 7, 7, 7, 7, 7};
 				getContentPane().setLayout(thisLayout);
 				this.setTitle(LangTools.getResourceBundleWordLanguage(rb,"Conversion settings for selected movie","convertergui.configurations"));
+				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
 				{
 					jPanelchooser = new JPanel();
 					GridBagLayout jPanelchooserLayout = new GridBagLayout();
@@ -446,7 +448,7 @@ public class ConverterConfigurations extends JDialog implements ChangeListener, 
 			}
 			{
 				//this.setSize(595, 646);
-				this.setSize(700, 700);
+				this.setSize(700, 800);
 				//this.setPreferredSize(new Dimension(645, 800));
 			}
 		} catch(Exception e) {

@@ -263,4 +263,10 @@ public class VideoH264QSVEncodingInfoContainer extends DefaultEncodingInfoContai
 		return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "H264QSV";
+	}
+
 }

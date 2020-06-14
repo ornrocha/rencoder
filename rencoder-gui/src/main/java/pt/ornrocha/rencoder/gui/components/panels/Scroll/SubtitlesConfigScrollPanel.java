@@ -48,6 +48,7 @@ import javax.swing.event.ChangeListener;
 import org.pmw.tinylog.Logger;
 
 import eu.hansolo.custom.SteelCheckBox;
+import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.subtitles.SubEncodings;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.subtitles.SubtiltesAlignment;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.subtitles.SubtitlesBorderStyle;
@@ -176,6 +177,8 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 	
 	/** The j buttonsubsoftconfigure. */
 	private JButton jButtonsubsoftconfigure;
+	
+	private JComboBox jComboBoxsubsoftlanguage;
 
 	/** The fontpanelpreview. */
 	private FontDisplayPanel fontpanelpreview;
@@ -218,6 +221,8 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 	private JDialog parent=null;
 	
 	private boolean isGeneralUserProfile=false;
+	
+	private String langinuse="eng";
 	
 
 	/**
@@ -286,8 +291,20 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 		SpinnerNumberModel modelshadow = new SpinnerNumberModel(0, 0, 5, 1);
 		jSpinnershadow.setModel(modelshadow);
 		
+		
+		ArrayList<String> langs= FFmpegManager.getInstance().getOrderedCountryList();
+		String[] arraylangs = langs.stream().toArray(String[]::new);
+		DefaultComboBoxModel<String> softsublanguages = new DefaultComboBoxModel<>(arraylangs);
+		jComboBoxsubsoftlanguage.setModel(softsublanguages);
+		String defaultlangcode=FFmpegManager.getInstance().getDefaultSoftSubtitleLanguage();
+		this.langinuse=defaultlangcode;
+		String defaultlang=FFmpegManager.getInstance().getLanguageFromISO3Code(defaultlangcode);
+		jComboBoxsubsoftlanguage.setSelectedItem(defaultlang);
+		
 		hardSubSelectionAtion();
 		SoftSubSelectionAction();
+		
+		
 	}
 	
 	
@@ -495,6 +512,12 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 						//jButtonsubsoftconfigure.addActionListener(this);
 						
 					}
+					{
+						jComboBoxsubsoftlanguage= new JComboBox<>();
+						jPanelmain.add(jComboBoxsubsoftlanguage, new GridBagConstraints(8, 1, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+						jComboBoxsubsoftlanguage.setToolTipText("Default language of the subtitle");
+						jComboBoxsubsoftlanguage.setEnabled(false);
+					}
 				}
 
 			}
@@ -623,6 +646,7 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 			jComboBoxFont.setEnabled(true);
 			steelCheckBoxsoftsubs.setSelected(false);
 			jButtonsubsoftconfigure.setEnabled(false);
+			jComboBoxsubsoftlanguage.setEnabled(false);
 			if(jButtonPreview!=null){
 			     jButtonPreview.setEnabled(true);	
 			}
@@ -655,14 +679,17 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 	private void SoftSubSelectionAction(){
 		if(steelCheckBoxsoftsubs.isSelected()){
 			steelCheckBoxHardsubs.setSelected(false);
+			jComboBoxsubsoftlanguage.setEnabled(true);
 			hardSubSelectionAtion();
 			if(isGeneralUserProfile)
 				jButtonsubsoftconfigure.setEnabled(false);
 			else
 			   jButtonsubsoftconfigure.setEnabled(true);
 		}
-		else
+		else {
 			jButtonsubsoftconfigure.setEnabled(false);
+			jComboBoxsubsoftlanguage.setEnabled(false);
+		}
 	}
 	
 	/**
@@ -721,7 +748,11 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 		  
 		  if(subinfocont.isUseSoftSubs() && (this.videoContainer.equals(VideoContainers.MKV) || this.videoContainer.equals(VideoContainers.MP4))){
 			  this.steelCheckBoxsoftsubs.setSelected(true);
-			  SoftSubSelectionAction(); 
+			  SoftSubSelectionAction();
+			  String savedlangcode=FFmpegManager.getInstance().getDefaultSoftSubtitleLanguage();
+			  String savedlang=FFmpegManager.getInstance().getLanguageFromISO3Code(savedlangcode);
+			  jComboBoxsubsoftlanguage.setSelectedItem(savedlang);
+			  this.langinuse=savedlangcode;
 		  }
 		  else if(subinfocont.isUseHardSubs()){
 			  this.steelCheckBoxHardsubs.setSelected(true);
@@ -774,14 +805,16 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
   		
 		  if(this.steelCheckBoxsoftsubs.isSelected()){
 			  
-			
-			 
 			 subinfocont.setUseHardSubs(false);
 			 if(this.videoContainer.equals(VideoContainers.MP4))
 				 subinfocont.setUseMp4SubtitleEncCodec(true);
 			 else
 				 subinfocont.setUseMp4SubtitleEncCodec(false);
-			 subinfocont.setUseSoftSubs(true);  
+			 subinfocont.setUseSoftSubs(true);
+			 String currentlang=FFmpegManager.getInstance().getISO3CodeFromLanguage((String) jComboBoxsubsoftlanguage.getSelectedItem());
+			 if(!currentlang.equals(langinuse)) {
+				 FFmpegManager.getInstance().setDefaultSoftSubtitleLanguage(currentlang);
+			 }
 		  }
 		  else if(this.steelCheckBoxHardsubs.isSelected()){
 			  subinfocont.setUseSoftSubs(false);

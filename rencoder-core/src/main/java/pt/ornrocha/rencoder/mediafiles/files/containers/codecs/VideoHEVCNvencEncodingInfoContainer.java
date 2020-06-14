@@ -348,4 +348,10 @@ public class VideoHEVCNvencEncodingInfoContainer extends DefaultEncodingInfoCont
 		return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "HEVCNvenc";
+	}
+
 }

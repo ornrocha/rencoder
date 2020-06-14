@@ -65,6 +65,12 @@ public class VideoVP9EncodingInfoContainer extends VideoVP8EncodingInfoContainer
 
 		return clone;
 	}
+	
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "VP9";
+	}
 
 	/*
 	 * (non-Javadoc)

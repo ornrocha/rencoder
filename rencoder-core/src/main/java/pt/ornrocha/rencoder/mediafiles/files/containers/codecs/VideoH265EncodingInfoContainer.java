@@ -230,4 +230,10 @@ public class VideoH265EncodingInfoContainer extends DefaultEncodingInfoContainer
 		return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "H265";
+	}
+
 }

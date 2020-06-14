@@ -131,4 +131,10 @@ public class VideoTheoraEncodingInfoContainer extends DefaultEncodingInfoContain
 	    return false;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "Theora";
+	}
+
 }

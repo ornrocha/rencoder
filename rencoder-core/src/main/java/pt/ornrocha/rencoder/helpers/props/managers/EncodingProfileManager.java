@@ -116,10 +116,12 @@ public class EncodingProfileManager {
 						if (profilemap == null)
 							profilemap = new IndexedHashMap<>();
 						String profilename = (String) prop.getProperty(StaticVideoEncoderFields.PROFILENAME);
+						Logger.debug("Loading Profile: "+profilename);
 						if (CheckifVideoCodecisValid(prop))
 							if (!profilemap.containsKey(profilename)) {
 								IGeneralVideoEncInfoContainer info = extractVideoEncInformation(prop, false);
 								if (info != null) {
+									
 									ProfileVideoEncodingInfoContainer profile = new ProfileVideoEncodingInfoContainer(
 											profilename, info);
 									profilemap.put(profilename, profile);
@@ -252,7 +254,7 @@ public class EncodingProfileManager {
 			InfoContainer.setConfigurations(props);
 		}
 
-		Logger.debug("Loaded profile using " + vcodec + " container");
+		Logger.debug("Profile was loaded with a " + InfoContainer.getContainerName() + " container");
 
 		return InfoContainer;
 
@@ -335,7 +337,7 @@ public class EncodingProfileManager {
 						allowed = true;
 					else if (vcodec.toLowerCase().equals(codec.getFFmpegID().toLowerCase()))
 						allowed = true;
-					if (allowed && FFmpegManager.getInstance().isCodecSupported(codec.getFFmpegID(),
+					if (allowed && FFmpegManager.getInstance().isCodecSupported(codec.toString(),codec.getFFmpegID(),
 							codec.needsSupportVerification()))
 						return true;
 				}

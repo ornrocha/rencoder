@@ -257,4 +257,10 @@ public class VideoAV1EncodingInfoContainer extends DefaultEncodingInfoContainer 
 		return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "AV1";
+	}
+
 }

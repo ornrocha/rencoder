@@ -27,6 +27,7 @@ import pt.ornrocha.rencoder.helpers.props.managers.auxiliar.EncodingPropsAuxilia
 import pt.ornrocha.rencoder.mediafiles.files.auxiliar.ProcessFilesAux;
 import pt.ornrocha.rencoder.mediafiles.files.containers.maininfo.IGeneralVideoEncInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.maininfo.MediaInfoContainer;
+import pt.ornrocha.rencoder.mediafiles.files.containers.streams.SubtitleStreamInfo;
 
 
 // TODO: Auto-generated Javadoc
@@ -54,11 +55,11 @@ public class Videofile extends BaseFile{
 	 * @param path the path
 	 * @throws IOException 
 	 */
-	public Videofile(String path) throws IOException{
-		super(path);
-		this.movieinfocontainer=new MediaInfoContainer(path);
-		
-	}
+//	public Videofile(String path) throws IOException{
+//		super(path);
+//		this.movieinfocontainer=new MediaInfoContainer(path);
+//		
+//	}
 	
 	/**
 	 * Instantiates a new videofile.
@@ -76,7 +77,20 @@ public class Videofile extends BaseFile{
 		if(this.movieinfocontainer!=null)
 		   this.movieEncodingInfoContainer=EncodingPropsAuxiliar.setMaxAllowedAudioSettings(genInfoCont,this.movieinfocontainer);
 		
+		processBuiltinSubtitles();
 		
+	}
+	
+	
+	private void processBuiltinSubtitles() {
+		
+		if(this.movieinfocontainer.getSubstreamsinfo()!=null && this.movieinfocontainer.getSubstreamsinfo().size()>0) {
+			if(this.subtitles==null)
+				this.subtitles=new ArrayList<>();
+			for (SubtitleStreamInfo substream: this.movieinfocontainer.getSubstreamsinfo()) {
+				this.subtitles.add(new Subtitlefile(substream));
+			}
+		}
 	}
 	
 	/**
@@ -86,13 +100,13 @@ public class Videofile extends BaseFile{
 	 * @param subtitlefilepath the subtitlefilepath
 	 * @throws IOException 
 	 */
-	public Videofile(String videofilepath, String subtitlefilepath) throws IOException{
-		super(videofilepath);
-		this.movieinfocontainer= new MediaInfoContainer(videofilepath);
-		this.subtitles = new ArrayList<>();
-		this.subtitles.add(new Subtitlefile(subtitlefilepath));
-		
-	}
+//	public Videofile(String videofilepath, String subtitlefilepath) throws IOException{
+//		super(videofilepath);
+//		this.movieinfocontainer= new MediaInfoContainer(videofilepath);
+//		this.subtitles = new ArrayList<>();
+//		this.subtitles.add(new Subtitlefile(subtitlefilepath));
+//		
+//	}
 	
 
 	/* (non-Javadoc)
@@ -118,11 +132,11 @@ public class Videofile extends BaseFile{
 	 *
 	 * @param subtitlepath the subtitlepath
 	 */
-	public void addSubtitleFromPath(String subtitlepath) {
-		if (this.subtitles==null)
-			this.subtitles=new ArrayList<>();
-		this.subtitles.add(new Subtitlefile(subtitlepath));	
-	}
+//	public void addSubtitleFromPath(String subtitlepath) {
+//		if (this.subtitles==null)
+//			this.subtitles=new ArrayList<>();
+//		this.subtitles.add(new Subtitlefile(subtitlepath));	
+//	}
 	
 	/**
 	 * Adds the subtitle object.
@@ -132,10 +146,28 @@ public class Videofile extends BaseFile{
 	public void addSubtitleObject(Subtitlefile subtitle){
 		if (this.subtitles==null)
 			this.subtitles=new ArrayList<>();
-		if(this.subtitles.size()<1)
+		if(this.subtitles.size()==0 || isAllBuiltInSubs())
 			subtitle.selectToUse(true);
 		this.subtitles.add(subtitle);	
-		
+	}
+	
+	private boolean isAllBuiltInSubs() {
+        boolean allbuiltin=true;
+		for (Subtitlefile subf : this.subtitles) {
+             if(!subf.isBuiltinsub()) {
+            	 allbuiltin=false;
+            	 break;
+             }
+		}
+		return allbuiltin;
+	}
+	
+	
+	public int getBuiltInSubIndex(String language) {
+		if(subtitles!=null) {
+			return movieinfocontainer.getSubStreamPosition(language);
+		}
+		return -1;
 	}
 	
 	/**
@@ -269,6 +301,18 @@ public class Videofile extends BaseFile{
 
 		return outputsubs;
 
+	}
+	
+	public int getNumberBuiltInSubs() {
+		if(subtitles!=null) {
+			int n=0;
+			for (int i = 0; i < subtitles.size(); i++) {
+				if(subtitles.get(i).isBuiltinsub())
+					n++;
+			}
+			return n;
+		}
+		return 0;
 	}
 	
 	

@@ -36,6 +36,7 @@ public final class RencoderExec {
 	public static final String JARNAME="rencoder.jar";
 	public static final String NEWRENCODERJAR="newrencoder.jar";
 	public static final String RESTARTTAG=".restart";
+	public static final String JREDIR="jre";
 	public static final int PTAG=2;
 
 	private enum OSType {
@@ -173,6 +174,17 @@ public final class RencoderExec {
 			String maindir= getCurrentDir();
 			String mainjar = getMainJarPath();
 			String[] commands = {"java", "-jar", mainjar};
+			//if(getOperationSystem().equals(OSType.WINDOWS)) {
+				String jrepath = getCurrentDir()+getSystemSeparator()+JREDIR;
+				File f = new File(jrepath);
+				if(f.exists()) {
+					commands = new String[3];
+					commands[0]=jrepath+getSystemSeparator()+"bin"+getSystemSeparator()+"java";
+					commands[1]="-jar";
+					commands[2]=mainjar;
+				}
+			//}
+			
 			File dir = new File(maindir);
 
 			removeRestartTag();

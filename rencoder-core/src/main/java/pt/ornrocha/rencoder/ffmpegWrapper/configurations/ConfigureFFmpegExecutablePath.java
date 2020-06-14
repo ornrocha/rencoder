@@ -47,7 +47,7 @@ public class ConfigureFFmpegExecutablePath {
 	private boolean importinside = false;
 	private boolean issystemversion = false;
 
-	private ArrayList<String> mandatoryffmpegFeatures = new ArrayList(Arrays.asList("libx264", "libass"));
+	private ArrayList<String> mandatoryffmpegFeatures = new ArrayList(Arrays.asList("libx264", "ass"));
 	/** The errors. */
 	private ArrayList<String> errors = null;
 
@@ -198,8 +198,8 @@ public class ConfigureFFmpegExecutablePath {
 			if (!param.getValue()) {
 				if (param.getKey().equals("libx264"))
 					errors.add("libx264" + "\n");
-				else if (param.getKey().equals("libass"))
-					errors.add("libass" + "\n");
+				else if (param.getKey().equals("ass"))
+					errors.add("ass" + "\n");
 			}
 
 		}
@@ -244,13 +244,8 @@ public class ConfigureFFmpegExecutablePath {
 		boolean valid = true;
 
 		FFmpegParametersChecker.setFFmpegExecutable(ffmpegpath);
-		Process proc = Runtime.getRuntime().exec(ffmpegpath);
-		InputStream inStream = proc.getErrorStream();
-		FFmpegInputErrorChecker errorchecker = new FFmpegInputErrorChecker(inStream, mandatoryffmpegFeatures, true);
-		Thread t = new Thread(errorchecker);
-		t.run();
-
-		checkedffmpegfeatures = errorchecker.getValidationOfParameters();
+		checkedffmpegfeatures=FFmpegParametersChecker.checkMandatoryCodecs(ffmpegpath, mandatoryffmpegFeatures);
+		
 		if (!checkifallParamTrue(checkedffmpegfeatures))
 			valid = false;
 
@@ -267,8 +262,6 @@ public class ConfigureFFmpegExecutablePath {
 
 		try {
 
-			// Process proc=Runtime.getRuntime().exec("/bin/bash -c "+ffmpegpath);
-			// in=new InputStreamReader(proc.getInputStream());
 			FFmpegParametersChecker.setFFmpegExecutable(ffmpegpath);
 
 			Process proc = Runtime.getRuntime().exec(ffmpegpath);

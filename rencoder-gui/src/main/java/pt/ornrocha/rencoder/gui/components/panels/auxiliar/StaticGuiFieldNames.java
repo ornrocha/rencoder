@@ -42,7 +42,7 @@ public final class StaticGuiFieldNames {
 	public static final String jtatoo = "com.jtattoo.plaf.smart.SmartLookAndFeel";
 
 	/** The Constant tinylaf. */
-	public static final String tinylaf = "de.muntjak.tinylookandfeel.TinyLookAndFeel";
+	public static final String tinylaf = "net.sf.tinylaf.TinyLookAndFeel";
 
 	/** The Constant PgsLookAndFeel. */
 	public static final String PgsLookAndFeel = "com.pagosoft.plaf.PgsLookAndFeel";

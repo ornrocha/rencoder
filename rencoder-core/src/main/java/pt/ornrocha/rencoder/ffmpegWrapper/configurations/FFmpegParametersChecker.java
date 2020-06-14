@@ -45,161 +45,198 @@ import pt.ornrocha.rencoder.helpers.props.readwrite.PropertiesWorker;
  */
 public class FFmpegParametersChecker {
 
-    /**
-     * Gets the ffmpeg info scanner from command.
-     *
-     * @param checkcmds  the checkcmds
-     * @param typeoutput the typeoutput
-     * @return the ffmpeg info scanner from command
-     * @throws IOException
-     */
-    public static Scanner getFFmpegInfoScannerFromCommand(ArrayList<String> checkcmds, String typeoutput)
-	    throws IOException {
+	public static Scanner getFFmpegInfoScannerFromCommand(String ffmpegpath, ArrayList<String> checkcmds, String typeoutput)
+			throws IOException {
 
-	Scanner sc = null;
-	String ffmpegpath = FFmpegManager.getInstance().getFFmpegPath();
+		Scanner sc = null;
 
-	ArrayList<String> inputcmds = new ArrayList<>();
-	inputcmds.add(ffmpegpath);
+		ArrayList<String> inputcmds = new ArrayList<>();
+		inputcmds.add(ffmpegpath);
 
-	if (checkcmds != null)
-	    inputcmds.addAll(checkcmds);
+		if (checkcmds != null)
+			inputcmds.addAll(checkcmds);
 
-	if (ffmpegpath != null) {
-	    try {
-		ProcessBuilder pb = new ProcessBuilder(inputcmds);
-		Process p = pb.start();
+		if (ffmpegpath != null) {
+			try {
+				ProcessBuilder pb = new ProcessBuilder(inputcmds);
+				Process p = pb.start();
 
-		if (typeoutput.equals(FFmpegInfoPatterns.GETERRORSTREAM))
-		    sc = new Scanner(p.getErrorStream());
-		else if (typeoutput.equals(FFmpegInfoPatterns.GETINPUTSTREAM))
-		    sc = new Scanner(p.getInputStream());
+				if (typeoutput.equals(FFmpegInfoPatterns.GETERRORSTREAM))
+					sc = new Scanner(p.getErrorStream());
+				else if (typeoutput.equals(FFmpegInfoPatterns.GETINPUTSTREAM))
+					sc = new Scanner(p.getInputStream());
 
-	    } catch (IOException e) {
-		Logger.error(e);
-		throw e;
-	    }
-	}
-	return sc;
-    }
-
-    /**
-     * Gets the version ffmpeg.
-     *
-     * @return the version ffmpeg
-     */
-    public static String getVersionFFmpeg() {
-
-	String version = null;
-
-	try {
-
-	    Scanner sc = getFFmpegInfoScannerFromCommand(null, FFmpegInfoPatterns.GETERRORSTREAM);
-	    if (sc != null)
-		version = FFmpegInfoPatterns.getFFmpegVersion(sc);
-
-	} catch (Exception e) {
-	    Logger.error(e);
+			} catch (IOException e) {
+				Logger.error(e);
+				throw e;
+			}
+		}
+		return sc;
 	}
 
-	return version;
-    }
-
-    /**
-     * Gets the ffmpeg encoders.
-     *
-     * @param encodertype the encodertype
-     * @return the ffmpeg encoders
-     */
-    public static IndexedHashMap<String, String> getFFmpegEncoders(EncoderType encodertype) {
-
-	IndexedHashMap<String, String> encoders = null;
-	ArrayList<String> checkcmd = new ArrayList<>();
-	checkcmd.add("-encoders");
-	Scanner sc = null;
-	try {
-	    sc = getFFmpegInfoScannerFromCommand(checkcmd, FFmpegInfoPatterns.GETINPUTSTREAM);
-	} catch (IOException e) {
-	    Logger.error(e);
-	}
-	encoders = FFmpegInfoPatterns.getExistingEncoderTypeInfo(encodertype, sc);
-	
-	return encoders;
-    }
-
-    public static void setFFmpegExecutable(String path) {
-	if (path != null) {
-	    File ffmpeg = new File(path);
-	    ffmpeg.setExecutable(true);
-	    ffmpeg.setWritable(true);
-	    ffmpeg.setReadable(true);
-	} else {
-	    String file = PropertiesWorker.getStringProperty(StaticGlobalFields.RENCODERCONFIGFILE,
-		    StaticGlobalFields.ENCODERPATH);
-	    File ffmpeg = new File(file);
-	    if (!ffmpeg.canExecute())
-		ffmpeg.setExecutable(true);
-	}
-    }
-
-    public static boolean isSupportedCodec(VideoCodecs codec, boolean checkhwaccel) {
-	ArrayList<String> checkcmd = new ArrayList<>();
-
-	if (checkhwaccel)
-	    checkcmd.addAll(codec.getDecodingHWAcceleration());
-
-	checkcmd.add(StaticFFmpegFields.input);
-	checkcmd.add(FFmpegUtils.getMovieDemo());
-	if (codec.needsDecodingFilter())
-	    checkcmd.addAll(codec.getCmdDecodingFilter());
-	checkcmd.add(StaticFFmpegFields.encodevideocodec);
-	checkcmd.add(codec.getFFmpegID());
-	checkcmd.add(StaticFFmpegFields.encodeaudiocodec);
-	checkcmd.add(AudioCodecs.COPY.getFFmpegID());
-	checkcmd.add("-ss");
-	checkcmd.add("00:00:00");
-	checkcmd.add("-t");
-	checkcmd.add("00:00:05");
-	checkcmd.add("-y");
-	checkcmd.add(getTMPDemoTestFilePath());
-
-	Scanner sc = null;
-
-	try {
-	    sc = getFFmpegInfoScannerFromCommand(checkcmd, FFmpegInfoPatterns.GETERRORSTREAM);
-	} catch (IOException e) {
-	    Logger.error(e);
+	/**
+	 * Gets the ffmpeg info scanner from command.
+	 *
+	 * @param checkcmds  the checkcmds
+	 * @param typeoutput the typeoutput
+	 * @return the ffmpeg info scanner from command
+	 * @throws IOException
+	 */
+	public static Scanner getFFmpegInfoScannerFromCommand(ArrayList<String> checkcmds, String typeoutput)
+			throws IOException {
+		String ffmpegpath = FFmpegManager.getInstance().getFFmpegPath();
+		return getFFmpegInfoScannerFromCommand(ffmpegpath, checkcmds, typeoutput);
 	}
 
-	Pattern pat = Pattern.compile("Conversion failed!| " + "*Unknown decoder* | " + "*Unknown encoder* | "
-		+ "*No NVENC capable devices found* | " + "*No NVENC capable devices* | " + "*Unrecognized option* | "
-		+ "Cannot load cuvidGetDecodeStatus| " + "Failed to initialise VAAPI connection:* | "
-		+ "*Cannot load nvcuda.dll*| " + "*No VA display found for device:* | "
-		+ "*Function not implemented* | *Cannot init CUDA|" + "Failed setup for format cuda:* | "
-		+ "*Error reinitializing* ");
 
-	Logger.info("Analysing codec: " + codec.toString());
-	while (sc.hasNextLine()) {
-	    String currentline = sc.nextLine();
-	    Matcher m = pat.matcher(currentline);
-	    Logger.debug(currentline);
-	    // System.out.println(currentline);
-	    if (m.find()) {
+	/**
+	 * Gets the version ffmpeg.
+	 *
+	 * @return the version ffmpeg
+	 */
+	public static String getVersionFFmpeg() {
+
+		String version = null;
+
+		try {
+
+			Scanner sc = getFFmpegInfoScannerFromCommand(null, FFmpegInfoPatterns.GETERRORSTREAM);
+			if (sc != null)
+				version = FFmpegInfoPatterns.getFFmpegVersion(sc);
+
+		} catch (Exception e) {
+			Logger.error(e);
+		}
+
+		return version;
+	}
+
+	/**
+	 * Gets the ffmpeg encoders.
+	 *
+	 * @param encodertype the encodertype
+	 * @return the ffmpeg encoders
+	 */
+	public static IndexedHashMap<String, String> getFFmpegEncoders(EncoderType encodertype) {
+
+		IndexedHashMap<String, String> encoders = null;
+		ArrayList<String> checkcmd = new ArrayList<>();
+		checkcmd.add("-encoders");
+		Scanner sc = null;
+		try {
+			sc = getFFmpegInfoScannerFromCommand(checkcmd, FFmpegInfoPatterns.GETINPUTSTREAM);
+		} catch (IOException e) {
+			Logger.error(e);
+		}
+		encoders = FFmpegInfoPatterns.getExistingEncoderTypeInfo(encodertype, sc);
+
+		return encoders;
+	}
+
+
+	public static IndexedHashMap<String, Boolean> checkMandatoryCodecs(String ffmpegpath, ArrayList<String> codecnames){
+
+
+		ArrayList<String> checkcmd = new ArrayList<>();
+		checkcmd.add("-encoders");
+		Scanner sc = null;
+		try {
+			sc = getFFmpegInfoScannerFromCommand(ffmpegpath,checkcmd, FFmpegInfoPatterns.GETINPUTSTREAM);
+		} catch (IOException e) {
+			Logger.error(e);
+		}
+
+		IndexedHashMap<String, Boolean> state=new IndexedHashMap<String, Boolean>();
+		IndexedHashMap<String, String> videoencoders = FFmpegInfoPatterns.getExistingEncoderTypeInfo(EncoderType.VIDEO, sc);
+		IndexedHashMap<String, String> audioencoders = FFmpegInfoPatterns.getExistingEncoderTypeInfo(EncoderType.AUDIO, sc);
+		IndexedHashMap<String, String> subencoders = FFmpegInfoPatterns.getExistingEncoderTypeInfo(EncoderType.SUBTITLES, sc);
+
+
+		for (String codec : codecnames) {
+			if (videoencoders.containsKey(codec))
+				state.put(codec, true);
+			else if(audioencoders.containsKey(codec))
+				state.put(codec, true);
+			else if (subencoders.containsKey(codec))
+				state.put(codec, true);
+			else state.put(codec, false);		
+		}
+
+		return state;
+	}
+
+
+	public static void setFFmpegExecutable(String path) {
+		if (path != null) {
+			File ffmpeg = new File(path);
+			ffmpeg.setExecutable(true);
+			ffmpeg.setWritable(true);
+			ffmpeg.setReadable(true);
+		} else {
+			String file = PropertiesWorker.getStringProperty(StaticGlobalFields.RENCODERCONFIGFILE,
+					StaticGlobalFields.ENCODERPATH);
+			File ffmpeg = new File(file);
+			if (!ffmpeg.canExecute())
+				ffmpeg.setExecutable(true);
+		}
+	}
+
+	public static boolean isSupportedCodec(VideoCodecs codec, boolean checkhwaccel) {
+		ArrayList<String> checkcmd = new ArrayList<>();
+
 		if (checkhwaccel)
-		    Logger.info(codec.toString() + " with " + codec.getDecodingHWACCType()
-		    + " HWAcceleration is not supported -> will be deactivated\n");
-		else
-		    Logger.info(codec.toString() + " is not supported -> will be deactivated\n");
-		return false;
-	    }
+			checkcmd.addAll(codec.getDecodingHWAcceleration());
+
+		checkcmd.add(StaticFFmpegFields.input);
+		checkcmd.add(FFmpegUtils.getMovieDemo());
+		if (codec.needsDecodingFilter())
+			checkcmd.addAll(codec.getCmdDecodingFilter());
+		checkcmd.add(StaticFFmpegFields.encodevideocodec);
+		checkcmd.add(codec.getFFmpegID());
+		checkcmd.add(StaticFFmpegFields.encodeaudiocodec);
+		checkcmd.add(AudioCodecs.COPY.getFFmpegID());
+		checkcmd.add("-ss");
+		checkcmd.add("00:00:00");
+		checkcmd.add("-t");
+		checkcmd.add("00:00:05");
+		checkcmd.add("-y");
+		checkcmd.add(getTMPDemoTestFilePath());
+		Scanner sc = null;
+
+		try {
+			sc = getFFmpegInfoScannerFromCommand(checkcmd, FFmpegInfoPatterns.GETERRORSTREAM);
+		} catch (IOException e) {
+			Logger.error(e);
+		}
+
+		Pattern pat = Pattern.compile("Conversion failed!| " + "*Unknown decoder* | " + "*Unknown encoder* | "
+				+ "*No NVENC capable devices found* | " + "*No NVENC capable devices* | " + "*Unrecognized option* | "
+				+ "Cannot load cuvidGetDecodeStatus| " + "Failed to initialise VAAPI connection:* | "
+				+ "*Cannot load nvcuda.dll*| " + "*No VA display found for device:* | "
+				+ "*Function not implemented* | *Cannot init CUDA|" + "Failed setup for format cuda:* | "
+				+ "*Error reinitializing* ");
+
+		Logger.info("Analysing codec: " + codec.toString()+"\n");
+		while (sc.hasNextLine()) {
+			String currentline = sc.nextLine();
+			Matcher m = pat.matcher(currentline);
+			Logger.debug(currentline);
+			if (m.find()) {
+				if (checkhwaccel)
+					Logger.info(codec.toString() + " with " + codec.getDecodingHWACCType()
+					+ " HWAcceleration is not supported -> will be deactivated\n");
+				else
+					Logger.info(codec.toString() + " is not supported and it will be deactivated\n");
+				return false;
+			}
+		}
+
+		return true;
+
 	}
 
-	return true;
-
-    }
-
-    private static String getTMPDemoTestFilePath() {
-	return FilenameUtils.concat(OSystem.getSystemTemporaryFolder(), "democonv.mp4");
-    }
+	private static String getTMPDemoTestFilePath() {
+		return FilenameUtils.concat(OSystem.getSystemTemporaryFolder(), "democonv.mp4");
+	}
 
 }

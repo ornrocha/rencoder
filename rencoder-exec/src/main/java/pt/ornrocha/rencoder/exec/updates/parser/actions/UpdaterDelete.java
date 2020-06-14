@@ -30,85 +30,85 @@ import pt.ornrocha.rencoder.exec.updates.auxiliar.StaticFunctionsUpdater;
 
 public class UpdaterDelete implements UpdaterAction{
 
-    private String deletefilename;
-    private String destrootfolder;
-    private String destsubfolders=null;
-    private boolean deleteall=false;
+	private String deletefilename;
+	private String destrootfolder;
+	private String destsubfolders=null;
+	private boolean deleteall=false;
 
-    public UpdaterDelete(String action, String destfolderfile){
-	this.destrootfolder=destfolderfile;
-	filterFiles(action);
-    }
+	public UpdaterDelete(String action, String destfolderfile){
+		this.destrootfolder=destfolderfile;
+		filterFiles(action);
+	}
 
 
-    private void filterFiles(String action){
-	Pattern pat = Pattern.compile("(\\s+)*delete:(/*\\w+/(\\w+/)*)*(all|(\\w+(([._-])*\\w+)*))(\\s+)*",Pattern.CASE_INSENSITIVE);
-	Matcher match = pat.matcher(action);
-	String destsubfolderstemp=null;
-	if(match.find()){
-	    destsubfolderstemp=match.group(2);
-	    deletefilename=match.group(4);
-	    if(deletefilename.toLowerCase().equals("all"))
-		deleteall=true;
+	private void filterFiles(String action){
+		Pattern pat = Pattern.compile("(\\s+)*delete:(/*\\w+/(\\w+/)*)*(all|(\\w+(([._-])*\\w+)*))(\\s+)*",Pattern.CASE_INSENSITIVE);
+		Matcher match = pat.matcher(action);
+		String destsubfolderstemp=null;
+		if(match.find()){
+			destsubfolderstemp=match.group(2);
+			deletefilename=match.group(4);
+			if(deletefilename.toLowerCase().equals("all"))
+				deleteall=true;
+
+		}
+
+		if(destsubfolderstemp!=null)
+			destsubfolders=StaticFunctionsUpdater.convertToSystemPath(destsubfolderstemp);
 
 	}
 
-	if(destsubfolderstemp!=null)
-	    destsubfolders=StaticFunctionsUpdater.convertToSystemPath(destsubfolderstemp);
 
-    }
+	@Override
+	public String getDestinationFilePath() {
+		if(destsubfolders!=null){
+			if(deleteall)
+				return destrootfolder+destsubfolders;
+			else
+				return destrootfolder+destsubfolders+deletefilename;
+		}
+		else{
+			if(deleteall)
+				return destrootfolder;
+			else
+				return destrootfolder+RencoderExec.getSystemSeparator()+deletefilename;
+		}
 
-
-    @Override
-    public String getDestinationFilePath() {
-	if(destsubfolders!=null){
-	    if(deleteall)
-		return destrootfolder+destsubfolders;
-	    else
-		return destrootfolder+destsubfolders+deletefilename;
-	}
-	else{
-	    if(deleteall)
-		return destrootfolder;
-	    else
-		return destrootfolder+RencoderExec.getSystemSeparator()+deletefilename;
 	}
 
-    }
+
+	@Override
+	public String getUpdateFilePath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
-    @Override
-    public String getUpdateFilePath() {
-	// TODO Auto-generated method stub
-	return null;
-    }
+	@Override
+	public boolean isAllAction() {
+		// TODO Auto-generated method stub
+		return deleteall;
+	}
 
 
-    @Override
-    public boolean isAllAction() {
-	// TODO Auto-generated method stub
-	return deleteall;
-    }
-
-
-    @Override
-    public void executeAction() throws IOException {
-	File delfile= new File(getDestinationFilePath());
-        Logger.info("deleting: "+delfile.getAbsolutePath());
-	if(delfile.exists()){
-	    if(delfile.isDirectory())
-		StaticFunctionsUpdater.deleteFolder(delfile);
-	    else
-		delfile.delete();
-	}		
-    }
+	@Override
+	public void executeAction() throws IOException {
+		File delfile= new File(getDestinationFilePath());
+		Logger.info("deleting: "+delfile.getAbsolutePath());
+		if(delfile.exists()){
+			if(delfile.isDirectory())
+				StaticFunctionsUpdater.deleteFolder(delfile);
+			else
+				delfile.delete();
+		}		
+	}
 
 
 
 
-    public static void main(String[] args) {
-	//UpdaterDelete del = new UpdaterDelete("delete:pasta2/pasta3/fich2.jar", "/home/orocha/eclipse_workspace/testedelete/pasta1/");
-	//del.executeAction();
-    }
+	public static void main(String[] args) {
+		//UpdaterDelete del = new UpdaterDelete("delete:pasta2/pasta3/fich2.jar", "/home/orocha/eclipse_workspace/testedelete/pasta1/");
+		//del.executeAction();
+	}
 
 }

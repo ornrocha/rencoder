@@ -38,6 +38,8 @@ import pt.ornrocha.rencoder.helpers.IndexedHashMap;
  * The Interface IGeneralVideoEncInfoContainer.
  */
 public interface IGeneralVideoEncInfoContainer {
+	
+	String getContainerName();
 
 	/**
 	 * Checks if is overwritefile.
@@ -497,6 +499,10 @@ public interface IGeneralVideoEncInfoContainer {
 	boolean useSpecificVideoEncodingParameters();
 
 	ArrayList<String> getSpecificVideoEncoderParameters(ArrayList<String> appendcmds);
+	
+	void setMaxMuxingQueueSize(int size);
+	
+	int getMaxMuxingQueueSize();
 
 	/**
 	 * Copy common info of container.

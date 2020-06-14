@@ -364,4 +364,10 @@ public class VideoKvazaarEncodingInfoContainer extends DefaultEncodingInfoContai
 		return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "Kvazaar";
+	}
+
 }

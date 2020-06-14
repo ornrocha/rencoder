@@ -223,4 +223,10 @@ public class VideoH264VAAPIEncodingInfoContainer extends DefaultEncodingInfoCont
 		return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "H264VAAPI";
+	}
+
 }

@@ -349,7 +349,7 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 	private Maingui() {
 		super();
 		Logger.info("Starting Rencoder");
-		this.setIconImage(new ImageIcon(getClass().getResource("/icons/rencoder_2_small.png")).getImage());
+		this.setIconImage(new ImageIcon(getClass().getResource("/icons/rencoderbig.png")).getImage());
 		this.setTitle(TITLEAPP);
 		setLookandFeel();
 
@@ -376,14 +376,14 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 		long startTime = System.currentTimeMillis();
 		checkFFmpegExecutable();
 		long duration = (System.currentTimeMillis() - startTime);
-		Logger.info("FFmpeg information was checked in : " + PropertiesWorker.millisToShortDHMS(duration));
+		Logger.debug("FFmpeg information was checked in : " + PropertiesWorker.millisToShortDHMS(duration));
 		configureFFmpegFontsInbackground();
 
 		startTime = System.currentTimeMillis();
 		LoadProfiles();
 		LoadGeneralEncodingInfo();
 		duration = (System.currentTimeMillis() - startTime);
-		Logger.info("Profiles were loaded in : " + PropertiesWorker.millisToShortDHMS(duration));
+		Logger.debug("Profiles were loaded in : " + PropertiesWorker.millisToShortDHMS(duration));
 		populateProfileComboBox();
 		setGeneralOutputFolder();
 		FFmpegUtils.checkLogsFolder();
@@ -477,7 +477,9 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 								}
 
 							} catch (Exception ex) {
-								ex.printStackTrace();
+								Maingui.getInstance().showErrorMessage(ex.getMessage(), "Error in changing output folder");
+								Logger.error(ex);
+								//ex.printStackTrace();
 							}
 						}
 					};
@@ -551,7 +553,7 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 								}
 
 							} catch (Exception ex) {
-								ex.printStackTrace();
+								Logger.error(ex);
 							}
 						}
 					};
@@ -886,7 +888,7 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 				StaticGuiFieldNames.fileLookandFeelPropkey);
 		Looktypes look = StyleUtilities.getLookAndFeel(looktag);
 		try {
-
+            //System.out.println(looktag);
 			UIManager.setLookAndFeel(looktag);
 			if (look.haveSkinTag())
 				look.setSkin();
@@ -978,7 +980,7 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 
 	public void resetGeneralEncodingPropertiesToDefault() {
 		IGeneralVideoEncInfoContainer defaultcont=null;
-		if(FFmpegManager.getInstance().isCodecSupported(VideoCodecs.H264.getFFmpegID(), false))
+		if(FFmpegManager.getInstance().isCodecSupported(VideoCodecs.H264.toString(),VideoCodecs.H264.getFFmpegID(), false))
 			defaultcont=new VideoH264EncodingInfoContainer();
 		else
 			defaultcont=new VideoMPEG4EncodingInfoContainer();
@@ -1359,12 +1361,14 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 					msg = LangTools.getResourceBundleWordLanguage(rb, "The following file it is corrupted:",
 							"warngui.errorinputfile") + " " + msg;
 					showErrorMessage(msg, null);
+					Logger.error(msg);
 				}
 
 				else {
 					String msg = LangTools.getResourceBundleWordLanguage(rb, "Please check FFmpeg settings",
 							"warngui.errorffmpegfile");
 					showWarningMessage(msg, null);
+					Logger.error(msg);
 				}
 			}
 			if (proc != null) {
@@ -1442,6 +1446,8 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 
 		PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE,
 				StaticVideoEncoderFields.SAVECONVERTEDFILEPATH, folderpath == null ? "" : folderpath);
+		
+		Logger.debug("Output folder was changed to: "+folderpath);
 
 
 	}

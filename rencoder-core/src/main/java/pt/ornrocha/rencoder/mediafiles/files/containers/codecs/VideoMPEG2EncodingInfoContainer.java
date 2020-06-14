@@ -407,4 +407,10 @@ public class VideoMPEG2EncodingInfoContainer extends DefaultEncodingInfoContaine
 	    return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "MPEG2";
+	}
+
 }

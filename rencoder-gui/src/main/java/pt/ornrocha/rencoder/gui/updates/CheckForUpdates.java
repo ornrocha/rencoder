@@ -15,6 +15,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.pmw.tinylog.Logger;
 
+import com.vdurmont.semver4j.Semver;
+
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
 import pt.ornrocha.rencoder.helpers.props.fields.StaticGlobalFields;
 import pt.ornrocha.rencoder.helpers.props.readwrite.PropertiesWorker;
@@ -117,7 +119,7 @@ public class CheckForUpdates {
 			
 			if(serverurl!=null && versionfilename!=null){
 			    serverversionurl=serverurl+versionfilename;
-			    
+
 			    URL link = new URL(serverversionurl);
 					conn= link.openConnection();
 			    
@@ -138,10 +140,13 @@ public class CheckForUpdates {
 
 				
 				
-				double currentversion= checkVersionInFile(appversion);
-				double futureversion=checkVersionInFile(tempcheckversion);
+				String currentversion= checkVersionInFile(appversion);
+				String futureversion=checkVersionInFile(tempcheckversion);
 				
-				if(futureversion>currentversion){
+				Semver sem = new Semver(futureversion);
+		
+				
+				if(sem.isGreaterThan(currentversion)){
 					needsupdate=true;
 				}
 				
@@ -159,11 +164,11 @@ public class CheckForUpdates {
 	
 	
   
-    public static double checkVersionInFile(File file){
-		double res=0;
+    public static String checkVersionInFile(File file){
+		String res="1.0.0";
 		try {
 			for(String line: FileUtils.readLines(file)){
-				if(line.matches("(\\s+)*[Vv][Ee][Rr][Ss][Ii][Oo][Nn]:\\d+.\\d+(\\s+)*"))
+				if(line.matches("(\\s+)*[Vv][Ee][Rr][Ss][Ii][Oo][Nn]:\\d+.\\d+.\\d+(\\s+)*"))
 				   res =extractversion(line);
 			}
 		} catch (IOException e) {
@@ -173,13 +178,13 @@ public class CheckForUpdates {
 	 }
     
     
-    public static double extractversion(String line){
-		Pattern pat = Pattern.compile("(\\s+)*version:(\\d+.\\d+)(\\s+)*", Pattern.CASE_INSENSITIVE);
+    public static String extractversion(String line){
+		Pattern pat = Pattern.compile("(\\s+)*version:(\\d+.\\d+.\\d+)(\\s+)*", Pattern.CASE_INSENSITIVE);
 		Matcher m = pat.matcher(line);
 		if(m.find())
-			return Double.parseDouble(m.group(2));
+			return m.group(2);
 		else
-			return 0;
+			return "1.0.0";
 	}
     
     public static void main(String[] args){

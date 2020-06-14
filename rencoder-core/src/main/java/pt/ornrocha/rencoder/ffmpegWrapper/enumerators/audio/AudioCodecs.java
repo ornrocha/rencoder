@@ -93,7 +93,7 @@ public enum AudioCodecs {
 
 		@Override
 		public String getFFmpegID() {
-			return FFmpegManager.getInstance().isCodecSupported(StaticFFmpegFields.FDKAAC, false)
+			return FFmpegManager.getInstance().isCodecSupported(this.toString(),StaticFFmpegFields.FDKAAC, false)
 					? StaticFFmpegFields.FDKAAC
 					: StaticFFmpegFields.AAC;
 		}
@@ -151,7 +151,7 @@ public enum AudioCodecs {
 
 		@Override
 		public boolean isCodecSupported() {
-			return FFmpegManager.getInstance().isCodecSupported(StaticFFmpegFields.FDKAAC, false);
+			return FFmpegManager.getInstance().isCodecSupported(this.toString(),StaticFFmpegFields.FDKAAC, false);
 		}
 
 		@Override
@@ -203,7 +203,7 @@ public enum AudioCodecs {
 
 		@Override
 		public boolean isCodecSupported() {
-			return FFmpegManager.getInstance().isCodecSupported(StaticFFmpegFields.VORBIS, false);
+			return FFmpegManager.getInstance().isCodecSupported(this.toString(),StaticFFmpegFields.VORBIS, false);
 		}
 
 		@Override
@@ -250,7 +250,7 @@ public enum AudioCodecs {
 
 		@Override
 		public boolean isCodecSupported() {
-			return FFmpegManager.getInstance().isCodecSupported(StaticFFmpegFields.OPUS, false);
+			return FFmpegManager.getInstance().isCodecSupported(this.toString(),StaticFFmpegFields.OPUS, false);
 		}
 
 		@Override
@@ -381,7 +381,7 @@ public enum AudioCodecs {
 
 		@Override
 		public String getFFmpegID() {
-			return FFmpegManager.getInstance().isCodecSupported(StaticFFmpegFields.LAMEMP2, false)
+			return FFmpegManager.getInstance().isCodecSupported(this.toString(),StaticFFmpegFields.LAMEMP2, false)
 					? StaticFFmpegFields.LAMEMP2
 					: StaticFFmpegFields.MP2;
 		}

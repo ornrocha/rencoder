@@ -342,4 +342,10 @@ public class VideoXvidEncodingInfoContainer extends DefaultEncodingInfoContainer
 	    }
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "Xvid";
+	}
+
 }

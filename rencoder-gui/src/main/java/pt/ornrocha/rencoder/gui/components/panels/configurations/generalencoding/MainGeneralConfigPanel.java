@@ -20,6 +20,7 @@ package pt.ornrocha.rencoder.gui.components.panels.configurations.generalencodin
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
@@ -254,6 +255,8 @@ public class MainGeneralConfigPanel extends JDialog implements ChangeListener, A
 				thisLayout.columnWidths = new int[] {7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7};
 				getContentPane().setLayout(thisLayout);
 				this.setTitle(LangTools.getResourceBundleWordLanguage(rb,"Main conversion profile configurations","maingui.mainconverterconfigurations"));
+				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
+				//this.setIconImage(new ImageIcon(getClass().getResource("/icons/rencoderpic2medium.png")).getImage());
 				{
 					jTabbedPanemain = new JTabbedPane();
 					getContentPane().add(jTabbedPanemain, new GridBagConstraints(0, 0, 14, 11, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
@@ -429,7 +432,7 @@ public class MainGeneralConfigPanel extends JDialog implements ChangeListener, A
 	public void saveNewEncodingProperties(){
 		saveNewEncodingConfigurations();
 		this.mainencodpropsmanager.setIGeneralVideoEncInfoContainer(usinginfocontainer);
-		this.videoPanel.saveNumberSimultaneousProcesses();
+		this.videoPanel.saveConfigurationsToFile();
 		usinginfocontainer.saveConfigurations(StaticVideoEncoderFields.GENERALSETTINGSFILEPATH, null, false);
 		
 	}

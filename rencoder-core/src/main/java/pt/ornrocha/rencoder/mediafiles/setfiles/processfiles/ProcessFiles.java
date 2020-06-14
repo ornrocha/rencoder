@@ -42,29 +42,26 @@ import pt.ornrocha.rencoder.mediafiles.setfiles.foldersandfiles.FileTypeFilter;
  * The Class ProcessFiles.
  */
 public class ProcessFiles {
-	
-	
+
+
 	/** The all files. */
 	protected ArrayList<String> allfiles;
-	
+
 	/** The video files. */
 	protected ArrayList<Videofile> videoFiles = null;
-	
+
 	/** The genencinfomanager. */
 	protected GeneralEncodingPropertiesManager genencinfomanager= null;
-	
+
 	protected boolean executing=true;
-	
+
 	/**
 	 * Instantiates a new process files.
 	 */
-	public ProcessFiles(){
-		
-		
-	}
-	
-	
-	
+	public ProcessFiles(){}
+
+
+
 	/**
 	 * Instantiates a new process files.
 	 *
@@ -77,9 +74,9 @@ public class ProcessFiles {
 	public ProcessFiles(ArrayList<String> files, GeneralEncodingPropertiesManager generalinfo) throws IOException {
 		this.allfiles = checkforSpecialCharsInFileNames(files);
 		this.genencinfomanager= generalinfo;
-		
+
 	}
-	
+
 	/**
 	 * Sets the files to treat.
 	 *
@@ -88,7 +85,7 @@ public class ProcessFiles {
 	public void SetFilesToTreat(ArrayList<String> files){
 		this.allfiles =files;
 	}
-	
+
 	/**
 	 * Gets the filtered video files.
 	 *
@@ -97,11 +94,11 @@ public class ProcessFiles {
 	public ArrayList<Videofile> getFilteredVideoFiles(){
 		return this.videoFiles;
 	}
-	
+
 	public boolean isExecuting(){
 		return executing;
 	}
-	
+
 	/**
 	 * Process video files.
 	 *
@@ -111,20 +108,20 @@ public class ProcessFiles {
 	 * @throws IOException 
 	 */
 	public void processVideoFiles() throws CloneNotSupportedException, IOException{
-		
+
 		if(allfiles!=null){
-		ArrayList<Subtitlefile> subtitles = filterallsubtitlefiles(allfiles);
-		this.videoFiles = filterallVideofiles(allfiles);
-		checkandsetifexistmatchingSubtitles(subtitles);
+			ArrayList<Subtitlefile> subtitles = filterallsubtitlefiles(allfiles);
+			this.videoFiles = filterallVideofiles(allfiles);
+			checkandsetifexistmatchingSubtitles(subtitles);
 		}
 		this.executing=false;
 		//else
-			//throw new Error("None suported file was found");
-		
-	}
-	
+		//throw new Error("None suported file was found");
 
-	
+	}
+
+
+
 	/**
 	 * Filter all subtitle files.
 	 *
@@ -134,36 +131,36 @@ public class ProcessFiles {
 	protected  ArrayList<Subtitlefile> filterallsubtitlefiles(ArrayList<String> listfiles){
 		ArrayList<Subtitlefile> subfiles = new ArrayList<>();
 		IndexedHashMap<String, FileTypeFilter> allowedsubs = ProcessFilesAux.getAllowedSubtitlesExtension();
-		
+
 		for (String filepath : listfiles) {
 			String ext = FilenameUtils.getExtension(filepath);
 			if(allowedsubs.containsKey(ext.toLowerCase()))
 				subfiles.add(new Subtitlefile(filepath));
 		}
-		
+
 		return subfiles;
 	}
-	
-	
+
+
 	public static ArrayList<Subtitlefile> filterallsubtitlesfiles(ArrayList<File> files){
 		ArrayList<Subtitlefile> subfiles = null;
 		IndexedHashMap<String, FileTypeFilter> allowedsubs = ProcessFilesAux.getAllowedSubtitlesExtension();
-		
+
 		for (File f : files) {
 			String filepath = f.getAbsolutePath();
 			String ext = FilenameUtils.getExtension(filepath);
 			if(allowedsubs.containsKey(ext.toLowerCase())){
 				if(subfiles==null)
 					subfiles=new ArrayList<>();
-					
+
 				subfiles.add(new Subtitlefile(filepath));
-				
+
 			}
 		}
-		
+
 		return subfiles;
 	}
-	
+
 	/**
 	 * Filter all video files.
 	 *
@@ -186,41 +183,41 @@ public class ProcessFiles {
 			if(allowedvideos.containsKey(ext.toLowerCase())){
 
 				Videofile toadd = new Videofile(filepath,(IGeneralVideoEncInfoContainer) this.genencinfomanager.getGenEncInfoContainer().clone());
-	
+
 				if(toadd!=null)
-				   vidfiles.add(toadd);				
+					vidfiles.add(toadd);				
 			}
 		}
-	
+
 		return vidfiles;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Check and set if exist matching subtitles.
 	 *
 	 * @param subs the subs
 	 */
 	protected void checkandsetifexistmatchingSubtitles(ArrayList<Subtitlefile> subs){
-		
-		if(this.videoFiles!=null){
-		for (Videofile vfile : this.videoFiles) {
-			for (Subtitlefile subtitlefile : subs) {
-				String namewithoutext = subtitlefile.getNameWithoutExtension();
-				String name = subtitlefile.getName();
 
-				
-				if(namewithoutext.equals(vfile.getNameWithoutExtension())){
-				   if(!vfile.containsSubtitle(name))
-					  vfile.addSubtitleObject(subtitlefile);
+		if(this.videoFiles!=null){
+			for (Videofile vfile : this.videoFiles) {
+				for (Subtitlefile subtitlefile : subs) {
+					String namewithoutext = subtitlefile.getNameWithoutExtension();
+					String name = subtitlefile.getName();
+
+
+					if(namewithoutext.equals(vfile.getNameWithoutExtension())){
+						if(!vfile.containsSubtitle(name))
+							vfile.addSubtitleObject(subtitlefile);
+					}
 				}
 			}
-		 }
-       }
-     }
-	
-	
+		}
+	}
+
+
 	/**
 	 * Filter allowed subtitle file.
 	 *
@@ -229,17 +226,17 @@ public class ProcessFiles {
 	 * @return the subtitlefile
 	 */
 	public static Subtitlefile FilterAllowedSubtitleFile(String filepath, IndexedHashMap<String, FileTypeFilter> allowedSubtitles){
-		 Subtitlefile sub=null;
-		 String ext = FilenameUtils.getExtension(filepath);
-		 if(allowedSubtitles.containsKey(ext))
-			 sub= new Subtitlefile(filepath);
-		 
-		 
-		 return sub;
-		
+		Subtitlefile sub=null;
+		String ext = FilenameUtils.getExtension(filepath);
+		if(allowedSubtitles.containsKey(ext))
+			sub= new Subtitlefile(filepath);
+
+
+		return sub;
+
 	}
-	
-	
+
+
 	/**
 	 * Check for special chars in file names.
 	 *
@@ -247,7 +244,7 @@ public class ProcessFiles {
 	 * @return the array list
 	 */
 	public static ArrayList<String> checkforSpecialCharsInFileNames(ArrayList<String> files){
-		
+
 		ArrayList<String> newnames = new ArrayList<>(files.size());
 		for (int i = 0; i < files.size(); i++) {
 			String newname = getFileNameWithoutSpecialChar(files.get(i));
@@ -256,12 +253,12 @@ public class ProcessFiles {
 			else
 				newnames.add(files.get(i));
 		}
-		
-		
+
+
 		return newnames;
 	}
-	
-	
+
+
 	/**
 	 * Gets the file name without special char.
 	 *
@@ -269,30 +266,30 @@ public class ProcessFiles {
 	 * @return the file name without special char
 	 */
 	public static String getFileNameWithoutSpecialChar(String filepath){
-		
+
 		Path path = Paths.get(filepath);
 		String parentdirs = path.getParent().toString();
 		String extension=FilenameUtils.getExtension(filepath);
 		String BaseName=FilenameUtils.getBaseName(filepath);
 
-	
-		
+
+
 		if(BaseName.contains("'")){
 			String newBaseName=BaseName.replace("'", "");
-	        
+
 			String newfilepath= parentdirs+OSystem.getSystemSeparator()+newBaseName+"."+extension;
-		    
+
 			File oldfile=new File(filepath);
 			File newfile = new File(newfilepath);
-			
+
 			oldfile.renameTo(newfile);
-		    return newfilepath;
+			return newfilepath;
 		}
 
-	   return null;
+		return null;
 	}
-	
-	
+
+
 	/**
 	 * Check if file exists and return new name.
 	 *
@@ -304,60 +301,60 @@ public class ProcessFiles {
 	 * @return the string
 	 */
 	public static String checkIfFileExistsandReturnNewname(String directory, String filenamewithoutext,String extension,int numb, boolean recurs) {
-		   
-	    int num = numb;
-	    String filepath =null;
-	     if(!recurs)
-	        filepath = directory+OSystem.getSystemSeparator()+filenamewithoutext+"."+extension;
-	     else
-	    	 filepath = directory+OSystem.getSystemSeparator()+filenamewithoutext+num+"."+extension; 
 
-	    
-	    if(new File(filepath).exists()){
-	    	
-	    	return checkIfFileExistsandReturnNewname(directory,filenamewithoutext,extension,(num+1),true);
-	    	
-	    }
+		int num = numb;
+		String filepath =null;
+		if(!recurs)
+			filepath = directory+OSystem.getSystemSeparator()+filenamewithoutext+"."+extension;
+		else
+			filepath = directory+OSystem.getSystemSeparator()+filenamewithoutext+num+"."+extension; 
 
-       return filepath;
-   }
-	
-	
+
+		if(new File(filepath).exists()){
+
+			return checkIfFileExistsandReturnNewname(directory,filenamewithoutext,extension,(num+1),true);
+
+		}
+
+		return filepath;
+	}
+
+
 	public static String checkIfFileExistsOrInPipelineandReturnNewname(String directory,Videofile origfile,String extension,int numb, boolean recurs, IndexedHashMap<String, String> processed) {
-		
-	    int num = numb;
-	    String filepath =null;
-	  
-	     if(!recurs)
-	        filepath = directory+OSystem.getSystemSeparator()+origfile.getNameWithoutExtensionAndFFmpegInvChars()+"."+extension;
-	     else
-	    	 filepath = directory+OSystem.getSystemSeparator()+origfile.getNameWithoutExtensionAndFFmpegInvChars()+num+"."+extension; 
+
+		int num = numb;
+		String filepath =null;
+
+		if(!recurs)
+			filepath = directory+OSystem.getSystemSeparator()+origfile.getNameWithoutExtensionAndFFmpegInvChars()+"."+extension;
+		else
+			filepath = directory+OSystem.getSystemSeparator()+origfile.getNameWithoutExtensionAndFFmpegInvChars()+num+"."+extension; 
 
 
-	   if(processed.containsValue(filepath)){
-		   filepath=checkIfFileExistsOrInPipelineandReturnNewname(directory,origfile, extension, (numb+1), true, processed);
-	      
-	   }
-	     
-	    if(new File(filepath).exists()){
-	    	
-	    	return checkIfFileExistsOrInPipelineandReturnNewname(directory,origfile,extension,(num+1),true,processed);
-	    }
-	  
+		if(processed.containsValue(filepath)){
+			filepath=checkIfFileExistsOrInPipelineandReturnNewname(directory,origfile, extension, (numb+1), true, processed);
 
-       return filepath;
-   }
-	
-	
+		}
+
+		if(new File(filepath).exists()){
+
+			return checkIfFileExistsOrInPipelineandReturnNewname(directory,origfile,extension,(num+1),true,processed);
+		}
+
+
+		return filepath;
+	}
+
+
 	public static void setSameConvConfigInAllMovies(IGeneralVideoEncInfoContainer convconfig, ArrayList<Videofile> moviefiles){
-		
+
 		if(moviefiles!=null){
 			for (int i = 0; i < moviefiles.size(); i++) {
-		     moviefiles.get(i).setEncodingInfoContainer(convconfig);
+				moviefiles.get(i).setEncodingInfoContainer(convconfig);
 			}
 		}
 	}
-	
+
 	public static IndexedHashMap<String, Videofile> makeconvertList(ArrayList<Videofile> movlist){
 		IndexedHashMap<String, Videofile> list = new IndexedHashMap<>();
 		for (Videofile videofile : movlist) {
@@ -365,7 +362,7 @@ public class ProcessFiles {
 		}
 		return list;
 	}
-	
+
 
 
 }

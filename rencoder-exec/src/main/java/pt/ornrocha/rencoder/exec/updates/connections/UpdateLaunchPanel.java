@@ -304,7 +304,7 @@ public class UpdateLaunchPanel extends JFrame implements ActionListener,Property
 		else if("startapp" == evt.getPropertyName()){
 			jTextAreaprogress.setText("Finishing... update");
 			jLabelmsg.setText("Starting Rencoder...");
-			this.warn=new WarnJTextPanePanel("Updates were successfully performed. Close this windows to start Rencoder",this, "Rencoder Update");
+			this.warn=new WarnJTextPanePanel("Updates were successfully installed. Close this windows to start Rencoder",this, "Rencoder Update");
 			this.running=false;
 			this.dispose();
 		}

@@ -222,6 +222,7 @@ public class MergeVideosPanel extends JFrame implements ActionListener, Property
 				getContentPane().setLayout(thisLayout);
 				String panellabel="Concatenate Videos";
 				this.setTitle(LangTools.getWordLanguage(panellabel, "mergegui.mergevideostag"));
+				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
 				{
 					jScrollPaneMovies = new MergeVideosScrollpanel();
 					getContentPane().add(jScrollPaneMovies, new GridBagConstraints(0, 0, 8, 10, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));

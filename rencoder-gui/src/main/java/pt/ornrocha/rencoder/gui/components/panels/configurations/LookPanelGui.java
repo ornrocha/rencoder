@@ -21,6 +21,7 @@ package pt.ornrocha.rencoder.gui.components.panels.configurations;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -138,6 +139,7 @@ public class LookPanelGui extends JDialog {
 				thisLayout.columnWidths = new int[] { 7, 7, 7, 7 };
 				getContentPane().setLayout(thisLayout);
 				this.setTitle(LangTools.getResourceBundleWordLanguage(rb, "Look settings", "profilegui.lookpanel"));
+				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
 				{
 					jButtonok = new JButton();
 					getContentPane().add(jButtonok, new GridBagConstraints(2, 5, 2, 1, 0.0, 0.0,

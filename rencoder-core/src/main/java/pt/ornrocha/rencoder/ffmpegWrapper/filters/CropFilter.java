@@ -42,7 +42,7 @@ public class CropFilter implements IFFmpegFilter {
 		this.limit = limit;
 		this.round = round;
 		this.reset_count = reset;
-		System.out.println(limit + " " + round);
+
 	}
 
 	public String getOut_width() {

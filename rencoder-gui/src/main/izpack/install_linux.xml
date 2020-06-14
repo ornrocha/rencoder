@@ -1,0 +1,95 @@
+<installation version="5.0"
+	xmlns:izpack="http://izpack.org/schema/installation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+
+	<info>
+		<appname>Rencoder</appname>
+		<appversion>1.1.0</appversion>
+		<javaversion>1.8</javaversion>
+	</info>
+
+	<guiprefs width="800" height="600" resizable="no">
+		<splash>images/rencoderbluesc.png</splash>
+		<laf name="substance">
+			<os family="unix" />
+			<param name="variant" value="mist-silver" />
+		</laf>
+	</guiprefs>
+
+	<locale>
+		<langpack iso3="eng" />
+		<langpack iso3="prt" />
+		<langpack iso3="fra" />
+		<langpack iso3="spa" />
+		<langpack iso3="deu" />
+	</locale>
+
+	<resources>
+		<res id="LicencePanel.licence" parse="yes" src="settings/license.txt" />
+<!-- 		<res id="shortcutSpec.xml" src="default_shortcut_specification.xml"/> -->
+		<res id="Unix_shortcutSpec.xml" src="rencoder_installer_unix_shortcutSpec.xml"/>
+<!-- 		<res id="jbiclustge" src="images/rencoderbluesc.png"/> -->
+		<res id="installer.langsel.img" src="icons/rencoderbluesc.png"/>
+		<res id="Installer.image" src="icons/rencoderbluesc.png"/>
+	</resources>
+
+	<panels>
+		<panel classname="HelloPanel" />
+		<panel classname="LicencePanel" />
+		<panel classname="TargetPanel" />
+		<panel classname="InstallPanel" />
+		<panel classname="ShortcutPanel"/>
+		<panel classname="FinishPanel" />
+	</panels>
+
+	<variables>
+		<variable name="DesktopShortcutCheckboxEnabled" value="true" />
+<!-- 		<variable name="TargetPanel.dir.windows" value="$USER_HOME/Rencoder" /> -->
+		<variable name="TargetPanel.dir.unix" value="$USER_HOME/Rencoder" />
+	</variables>
+
+	<packs>
+	<pack name="Rencoder_Core" required="yes" id="pack.core" preselected="yes">
+		<description>Core files</description>
+		<fileset dir="@{linux.build.dir}/profiles" targetdir="${INSTALL_PATH}/profiles"
+			override="true"></fileset>
+		<fileset dir="@{linux.build.dir}/settings" targetdir="${INSTALL_PATH}/settings"
+			override="true"></fileset>
+		<fileset dir="@{linux.build.dir}/languages" targetdir="${INSTALL_PATH}/languages"
+			override="true"></fileset>	
+		<fileset dir="@{linux.build.dir}/icons" targetdir="${INSTALL_PATH}/icons"
+			override="true"></fileset>	
+		<file src="@{linux.build.dir}/rencoder.jar" targetdir="${INSTALL_PATH}"
+			override="true"></file>
+		<file src="@{linux.build.dir}/rencoderexec.jar" targetdir="${INSTALL_PATH}"
+			override="true"></file>
+		<file src="@{linux.build.dir}/ffmpeg/default_ffmpeg" targetdir="${INSTALL_PATH}/ffmpeg"
+			override="true">
+			<os family="unix" />
+		</file>
+		<file src="@{linux.build.dir}/jre" targetdir="${INSTALL_PATH}"
+			override="true">
+			<os family="unix" />
+		</file>
+		<file src="@{linux.build.dir}/run.sh" targetdir="${INSTALL_PATH}"
+			override="true">
+			<os family="unix" />
+		</file>
+		 <executable targetfile="$INSTALL_PATH/run.sh"
+			type="bin" stage="never" failure="warn" keep="true">
+			<os family="unix"/>
+		</executable>
+		<executable targetfile="$INSTALL_PATH/jre/bin/java"
+			type="bin" stage="never" failure="warn" keep="true">
+			<os family="unix"/>
+		</executable>
+	</pack>
+
+</packs>
+
+<info>
+    <pack-compression-format>xz</pack-compression-format>
+</info>
+
+
+</installation>

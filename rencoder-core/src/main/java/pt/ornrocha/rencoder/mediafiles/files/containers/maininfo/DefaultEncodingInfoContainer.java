@@ -159,6 +159,8 @@ public abstract class DefaultEncodingInfoContainer implements IGeneralVideoEncIn
 	protected HWAccel decoder = HWAccel.NONE;
 
 	protected IExtraInfoContainer extrainfocont = null;
+	
+	protected int maxmuxingqueue=0;
 
 	/**
 	 * Instantiates a new main video encoding info container.
@@ -861,6 +863,17 @@ public abstract class DefaultEncodingInfoContainer implements IGeneralVideoEncIn
 		return decoder;
 	}
 	
+	@Override
+	public void setMaxMuxingQueueSize(int size) {
+		this.maxmuxingqueue=size;
+		
+	}
+
+	@Override
+	public int getMaxMuxingQueueSize() {
+		return maxmuxingqueue;
+	}
+	
 	
 
 	public IExtraInfoContainer getExtrainfocont() {
@@ -1028,8 +1041,7 @@ public abstract class DefaultEncodingInfoContainer implements IGeneralVideoEncIn
 		getSubtitleInfoContainer()
 				.setUseHardSubs(PropertiesWorker.checkProperty(props, StaticVideoEncoderFields.SUBSUSEHARDSUBS, false));
 
-		// System.out.println("SUBS: "+PropertiesWorker.checkProperty(props,
-		// StaticVideoEncoderFields.SUBSUSEHARDSUBS, false));
+
 		if (!getSubtitleInfoContainer().isUseHardSubs())
 			getSubtitleInfoContainer().setUseSoftSubs(
 					PropertiesWorker.checkProperty(props, StaticVideoEncoderFields.SUBSUSESOFTSUBS, false));
@@ -1310,6 +1322,8 @@ public abstract class DefaultEncodingInfoContainer implements IGeneralVideoEncIn
 		newcont.setFilters(this.getFilters());
 
 		newcont.setHardwareAccelerationDecoder(this.getHardwareAccelerationDecoder());
+		
+		newcont.setMaxMuxingQueueSize(this.getMaxMuxingQueueSize());
 
 		return newcont;
 	}

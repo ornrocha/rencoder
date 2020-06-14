@@ -26,9 +26,7 @@
 	 	
 	 	<property name="target.dir" value="${project.build.directory}"/>
 	    <property name="build.dir" value="${target.dir}/build_dir"/>
-	 	<property name="distro.dir" value="${build.dir}/distributions"/>
-	 	<property name="build.linuxdir" value="${build.dir}/Linux"/>
-	 	<property name="build.windowsdir" value="${build.dir}/Windows"/>
+        <property name="distro.dir" value="${build.dir}/distros"/>
 	 	<property name="ffmpeg.folder" value="${build.dir}/ffmpeg"/>
 
 	 
@@ -40,13 +38,13 @@
 			      ==================================================================-->
 	
 	<target name="make-linux-run-script">
-			<echo file="${build.dir}/run.sh" append="false">#!/bin/bash
+			<echo file="${linux.build.dir}/run.sh" append="false">#!/bin/bash
 		###################################################################
 		#
 		echo "Rencoder for Linux"
 		# 
 		#		
-		echo "Orlando Rocha Copyright (c) 2014."
+		echo "Orlando Rocha Copyright (c) 2014-2020."
 		#
 		###################################################################
 
@@ -56,20 +54,82 @@
 		XMX=-Xmx512m
 		XMS=-Xms256M
 				 
-		java $XMX $XMS -jar $APP_HOME/$JAR_NAME "$@"</echo>
+		$APP_HOME/jre/bin/java $XMX $XMS -jar $APP_HOME/$JAR_NAME "$@"</echo>
 				
-		<chmod file="${build.dir}/run.sh" perm="a+x"/>
+		<chmod file="${linux.build.dir}/run.sh" perm="a+x"/>
+
+		</target>
+	
+	<target name="make-snap-linux-run-script">
+			<echo file="${target.snap.rencoder.resources}/rencoder.sh" append="false">#!/bin/bash
+		###################################################################
+		#
+		echo "Rencoder for Linux"
+		# 
+		#		
+		echo "Orlando Rocha Copyright (c) 2014-2020."
+		#
+		###################################################################
+
+
+		JAR_NAME="rencoderexec.jar"
+		APP_HOME=`dirname $0`
+		XMX=-Xmx512m
+		XMS=-Xms256M
+
+		if [ ! -d $SNAP_USER_DATA/ffmpeg ]; then
+		    cp -R $SNAP/rencoder/ffmpeg $SNAP_USER_DATA/ffmpeg
+		fi
+		if [ ! -d $SNAP_USER_DATA/settings ]; then
+			cp -R $SNAP/rencoder/settings $SNAP_USER_DATA/settings
+		fi
+		if [ ! -d $SNAP_USER_DATA/languages ]; then
+			cp -R $SNAP/rencoder/languages $SNAP_USER_DATA/languages
+		fi
+		if [ ! -d $SNAP_USER_DATA/profiles ]; then
+			cp -R $SNAP/rencoder/profiles $SNAP_USER_DATA/profiles
+		fi
+		if [ ! -f $SNAP_USER_DATA/rencoder.jar ]; then
+			cp $SNAP/rencoder/rencoder.jar $SNAP_USER_DATA/rencoder.jar
+		fi
+				 
+		java $XMX $XMS -Duser.dir=$SNAP_USER_DATA -jar $APP_HOME/$JAR_NAME "$@"</echo>
+				
+		<chmod file="${target.snap.rencoder.resources}/rencoder.sh" perm="a+x"/>
+
+		</target>
+	
+	<target name="make-appimage-run-script">
+			<echo file="${target.appimage.rencoder}/usr/bin/rencoder" append="false">#!/bin/bash
+				###################################################################
+						#
+						echo "Rencoder for Linux"
+						# 
+						#		
+						echo "Orlando Rocha Copyright (c) 2014-2020."
+						#
+						###################################################################
+
+
+						JAR_NAME="rencoderexec.jar"
+						APP_HOME=`dirname $0`
+						XMX=-Xmx512m
+						XMS=-Xms256M
+
+						$APPDIR/usr/bin/jre/bin/java $XMX $XMS -Duser.dir=$RENCODER_DATA -jar $APP_HOME/$JAR_NAME "$@"</echo>
+				
+		<chmod file="${target.appimage.rencoder}/usr/bin/rencoder" perm="a+x"/>
 
 		</target>
 		
 		<target name="make-windows-run-script">
-			<echo file="${build.dir}/run.bat" append="false">@echo off
+			<echo file="${windows.build.dir}/run.bat" append="false">@echo off
 				REM ###############################################################################################
 				REM #
 				REM	# Rencoder for Windows
 				REM	# 
 				REM	#		
-				REM	# Orlando Rocha Copyright (c) 2014.
+				REM	# Orlando Rocha Copyright (c) 2014-2020.
 				REM	#
 				REM ###############################################################################################
 				REM ################ old #################
@@ -84,7 +144,30 @@
 				start rencoderexec.jar
 				
 		    </echo>
-			<chmod file="${build.dir}/run.bat" perm="a+x"/>
+			<chmod file="${windows.build.dir}/run.bat" perm="a+x"/>
+		</target>
+	
+	   <target name="make-snap-build-script">
+			<echo file="${distros.build.dir}/build-snap.sh" append="false">#!/bin/bash
+
+		SCRIPT_HOME=`dirname $0`
+        cd $SCRIPT_HOME/snap
+		snapcraft clean
+		snapcraft</echo>
+				
+		<chmod file="${distros.build.dir}/build-snap.sh" perm="a+x"/>
+
+		</target>
+	
+	   <target name="make-appimage-build-script">
+			<echo file="${appimage.build.dir}/build-appimage.sh" append="false">#!/bin/bash
+
+		SCRIPT_HOME=`dirname $0`
+        cd $SCRIPT_HOME
+		./appimagetool-x86_64.AppImage Rencoder.AppDir Rencoder.AppImage</echo>
+				
+		<chmod file="${appimage.build.dir}/build-appimage.sh" perm="a+x"/>
+
 		</target>
 	
 	
@@ -94,7 +177,7 @@
 	
 	
 	<target name="make-izpack-package-unix-script">
-		<echo file="${build.dir}/rencoder_installer_unix_shortcutSpec.xml" append="false"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		<echo file="${linux.build.dir}/rencoder_installer_unix_shortcutSpec.xml" append="false"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 				   	     <shortcuts>
 				   	        <skipIfNotSupported/>
 				   	        <defaultCurrentUser/>
@@ -102,7 +185,7 @@
 				   	        <shortcut 
 				   	  	           name="Rencoder"
 				   	  	           target="$INSTALL_PATH/run.sh"
-				   	  	           description="Rencoder is a FFmpeg frontend, to video conversion"
+				   	  	           description="Rencoder is a front-end for FFmpeg."
 				   	               applications="no" 
 				   	               desktop="no"
 				   	               encoding="UTF-8" 
@@ -120,7 +203,7 @@
 		</target>
 		
 		<target name="make-izpack-package-windows-script">
-			 <echo file="${build.dir}/default_shortcut_specification.xml" append="false"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+			 <echo file="${windows.build.dir}/default_shortcut_specification.xml" append="false"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 					   	    	<shortcuts>
 					   	    	    <skipIfNotSupported/>
 					   	    	    <defaultCurrentUser/>
@@ -136,7 +219,7 @@
 					   	    	        startMenu="no" 
 					   	    	        startup="no" 
 					   	    	        target="$INSTALL_PATH/run.bat"
-					   	    	        description="Launch Rencoder">
+					   	    	        description="Rencoder is a front-end for FFmpeg.">
 					   	    	<createForPack name="Rencoder_Core"/>
 					   	    	</shortcut>
 			 					<shortcut
@@ -162,6 +245,12 @@
           <!-- ==================================================================
 	        Creation operations
 	      ==================================================================--> 
+	
+	      <target name="create-dist-dir" description="distribution directory">
+	      	            <delete dir="${distro.dir}" />
+		                <mkdir dir="${distro.dir}" />
+		                <echo message="Distribution directory: was created"/>
+		  </target>
 
        
 	       <target name="recreate-ffmpegfolder" description="build" depends="init">
@@ -180,30 +269,164 @@
 	    	<copy file="${ffmpeglinux}/default_ffmpeg_64" todir="${ffmpeg.folder}/" />
 	     </target>
 	
-	       <target name="create-windows-dir" description="build">
-		                <mkdir dir="${build.windowsdir}" />
-		                <echo message="Windows directory: was created"/>
-		   </target>
 	
-	
-	 <target name="prepare-to-linux" description="build">
-	 	     <antcall target="create-linux-dir"/>
-	         <echo message="Linux its configured"/>
+	  <target name="unzip-jre-linux">
+	  	 <unzip src="${basedir}/src/main/jre/OpenJDK8U-jre_x64_linux_hotspot.zip" dest="${linux.build.dir}"/> 
 	  </target>
 	
-	
-	  <target name="prepare-to-windows" description="build">
-	  	      <antcall target="create-windows-dir"/>
+	  <target name="unzip-jre-windows">
+	  	 <unzip src="${basedir}/src/main/jre/OpenJDK8U-jre_x64_windows_hotspot.zip" dest="${windows.build.dir}"/> 
 	  </target>
+	
 	 
-	   
+    <target name="copy-rencoderexe" description="copy rencoder exe">
+    	<copy file="${build.dir}/rencoderexec.jar" todir="${linux.build.dir}/" />
+    	<copy file="${build.dir}/rencoderexec.jar" todir="${windows.build.dir}/" />
+    	<copy file="${build.dir}/rencoderexec.jar" todir="${target.snap.rencoder.resources}/" />
+     </target>
+	 
+    <target name="copy-rencoderjar" description="copy rencoder jar">
+    	<copy file="${build.dir}/rencoder.jar" todir="${linux.build.dir}/" />
+    	<copy file="${build.dir}/rencoder.jar" todir="${windows.build.dir}/" />
+    	<copy file="${build.dir}/rencoder.jar" todir="${target.snap.rencoder.resources}/" />
+     </target>
 	
+	<target name="copy-snap-mime" description="copy mime list to snap">
+		    	<copy file="${source.mime.list}" todir="${snap.build.dir}/" />
+    </target>
+	
+	
+	<target name="archive-to-snap" description="make a tar.gz file">
+		<tar destfile="${final.distros.dir}/rencoder-${rencoder.version}-snap.tar.gz" longfile="gnu" compression="gzip">
+
+		<tarfileset dir="${snap.build.dir}/" filemode="755">
+			<include name="rencoder/rencoder.sh" />
+			<include name="rencoder/ffmpeg/default_ffmpeg"/>
+			<include name="rencoder/rencoderexec.jar"/>
+		</tarfileset>
+		<tarfileset dir="${snap.build.dir}/">
+			<include name="rencoder/ffmpeg/fontconfig/*" />
+			<include name="rencoder/icons/*" />
+			<include name="rencoder/languages/*" />
+			<include name="rencoder/profiles/*" />
+			<include name="rencoder/settings/*" />
+			<include name="rencoder/rencoder.jar" />
+			<include name="mimeapps.list" />
+		</tarfileset>
+		</tar>
+	</target>
+	
+	<target name="build-snap" description="build snap package">
+		 <exec dir="${distros.build.dir}" executable="/bin/bash">
+		    <arg value="build-snap.sh"/>
+		  </exec>
+		<!--<exec executable="snapcraft" dir="${snap.build.dir}" failonerror="yes" />-->
+	</target>
+	
+	 <target name="snap.check">
+	    <condition property="snap.exists">
+	      <available file="${snap.build.dir}/rencoder_${rencoder.version}_amd64.snap" type="file" />
+	    </condition>
+	  </target>
+	
+	<target name="move-snap" depends="snap.check" if="snap.exists" description="move snap package">
+		    <echo>${snap.build.dir}/rencoder_${rencoder.version}_amd64.snap exists</echo>
+		  	<move file="${snap.build.dir}/rencoder_${rencoder.version}_amd64.snap" todir="${final.distros.dir}"/>
+	</target>
+	
+	
+    <target name="create-appimage-dirs" description="make directories for building appimage">
+	                <mkdir dir="${target.appimage.rencoder}/usr/bin" />
+    	            <mkdir dir="${target.appimage.rencoder}/usr/share/data" />
+	                <echo message="Distribution directory: was created"/>
+	  </target>
+	
+    <target name="setup-appimage-build" description="setup resources for building appimage">
+    			<copy todir="${target.appimage.rencoder}/usr/bin" >  
+    	  			<fileset dir="${linux.build.dir}" includes="jre/**"/>
+    			</copy>
+    	        <copy todir="${target.appimage.rencoder}/usr/share/data" >  
+    	    	  	<fileset dir="${main.rencoder.resources}" includes="ffmpeg/default_ffmpeg"/>
+    	        	<fileset dir="${main.rencoder.resources}" includes="ffmpeg/fontconfig/**"/>
+    	        	<fileset dir="${main.rencoder.resources}" includes="icons/**"/>
+    	        	<fileset dir="${main.rencoder.resources}" includes="languages/**"/>
+    	        	<fileset dir="${main.rencoder.resources}" includes="profiles/**"/>
+    	        	<fileset dir="${main.rencoder.resources}" includes="settings/**"/>
+    	    	</copy>
+    	        <chmod file="${main.rencoder.resources}/ffmpeg/default_ffmpeg" perm="a+x"/>
+    	        <copy file="${build.dir}/rencoderexec.jar" todir="${target.appimage.rencoder}/usr/bin" />
+    	        <copy file="${build.dir}/rencoder.jar" todir="${target.appimage.rencoder}/usr/share/data" />
+    	        <chmod file="${target.appimage.rencoder}/usr/bin/rencoderexec.jar" perm="a+x"/>
+    	        <chmod file="${target.appimage.rencoder}/AppRun" perm="a+x"/>
+    	        <chmod file="${target.appimage.rencoder}/usr/bin/jre/bin/java" perm="a+x"/>
+	  </target>
+	
+	<target name="copy-appimage-builder" description="copy appimage compiler">
+		    	<copy file="${appimage.compiler}" todir="${appimage.build.dir}/" />
+		        <chmod file="${appimage.build.dir}/appimagetool-x86_64.AppImage" perm="a+x"/>
+    </target>
+	
+	<target name="build-appimage" description="build appimage package">
+		 <exec dir="${appimage.build.dir}" executable="/bin/bash">
+		    <arg value="build-appimage.sh"/>
+		  </exec>
+	</target>
+	
+	 <target name="appimage.check">
+	    <condition property="appimage.exists">
+	      <available file="${appimage.build.dir}/Rencoder.AppImage" type="file" />
+	    </condition>
+	  </target>
+	
+	<target name="move-appimage" depends="appimage.check" if="appimage.exists" description="move appimage package">
+		    <echo>Rencoder.AppImage exists</echo>
+		  	<move file="${appimage.build.dir}/Rencoder.AppImage" todir="${final.distros.dir}"/>
+	</target>
+	
+	<target name="setup-updater"  description="setup resources for updating">
+		<copy todir="${updater.build.dir}" >  
+		  <fileset dir="${linux.build.dir}" includes="icons/**"/>
+		  <fileset dir="${linux.build.dir}" includes="languages/**"/>
+		  <fileset dir="${linux.build.dir}" includes="profiles/**"/>
+		  <fileset dir="${linux.build.dir}" includes="settings/**"/>
+		  <fileset dir="${linux.build.dir}" includes="rencoder.jar"/>		
+		</copy>
+	</target>
+	
+	<target name="zip-updater"  description="zip resources for updating">
+		<zip destfile="${final.distros.dir}/updates.zip"
+	       basedir="${updater.build.dir}"
+	  	/>
+	</target>
+
 	  <target name="build-releases" description="Create  auxiliar files" depends="init">
+	  	   <antcall target="create-dist-dir"/>
+	  	   <antcall target="create-appimage-dirs"/>
 	  	   <antcall target="make-linux-run-script"/>
 	  	   <antcall target="make-windows-run-script"/>
 	  	   <antcall target="make-izpack-package-unix-script"/>
 	  	   <antcall target="make-izpack-package-windows-script"/>
-		</target>
-           
+	  	   <antcall target="make-snap-linux-run-script"/>
+	  	   <antcall target="make-appimage-run-script"/>
+	  	   <antcall target="make-snap-build-script"/>
+	  	   <antcall target="make-appimage-build-script"/>
+	  	   <antcall target="copy-rencoderexe"/>
+	  	   <antcall target="copy-rencoderjar"/>
+	  	   <antcall target="unzip-jre-linux"/>
+	  	   <antcall target="unzip-jre-windows"/>
+	  	   <antcall target="setup-updater"/>
+	  	   <antcall target="zip-updater"/>	  	   
+	  	   <antcall target="copy-snap-mime"/>
+	  	   <antcall target="archive-to-snap"/>
+	  	   <antcall target="build-snap"/>
+	  	   <antcall target="move-snap"/>
+	  	   <antcall target="setup-appimage-build"/>
+	  	   <antcall target="copy-appimage-builder"/>
+	  	   <antcall target="build-appimage"/>
+	  	   <antcall target="move-appimage"/>
+
+	</target>
+	
+    
 
 </project>

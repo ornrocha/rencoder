@@ -27,11 +27,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.pmw.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.utilities.FFmpegUtils;
 import pt.ornrocha.rencoder.mediafiles.files.containers.streams.AudioStreamInfo;
+import pt.ornrocha.rencoder.mediafiles.files.containers.streams.SubtitleStreamInfo;
 import pt.ornrocha.rencoder.mediafiles.files.containers.streams.VideoStreamInfo;
 
 // TODO: Auto-generated Javadoc
@@ -45,6 +47,8 @@ public class FileInformationChecker {
 
 	/** The audiostreams. */
 	protected ArrayList<AudioStreamInfo> audiostreams = null;
+	
+	protected ArrayList<SubtitleStreamInfo> substreams = null;
 
 	/**
 	 * Instantiates a new file information checker.
@@ -78,9 +82,10 @@ public class FileInformationChecker {
 
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(ffmpegout, writer, StandardCharsets.UTF_8);
-		Logger.debug("File: " + filepath);
+		Logger.debug("Checking file: " + filepath);
 		Logger.debug(writer.toString());
 
+		@SuppressWarnings("resource")
 		Scanner checkerrors = new Scanner(ffmpegout);
 		Pattern checkerrorsPattern = Pattern.compile("Invalid data found when processing input",
 				Pattern.CASE_INSENSITIVE);
@@ -88,6 +93,7 @@ public class FileInformationChecker {
 		if (checkstream != null)
 			throw new FileInformationIOException(filepath, "Invalid data:");
 
+		@SuppressWarnings("resource")
 		Scanner checkpermission = new Scanner(ffmpegout);
 		Pattern checkpermissionpat = Pattern.compile("Permission denied", Pattern.CASE_INSENSITIVE);
 		String checkpermerror = checkpermission.findWithinHorizon(checkpermissionpat, 0);
@@ -102,14 +108,21 @@ public class FileInformationChecker {
 		Pattern streamPattern = Pattern.compile("Stream #.*");
 		String stream;
 
+		Logger.debug("Stream information: "+FilenameUtils.getName(filepath)+"\n");
 		while (null != (stream = sc.findWithinHorizon(streamPattern, 0))) {
+			Logger.debug(stream);
 
 			if (stream.contains("Video:"))
 				getVideoFields(stream);
 
 			if (stream.contains("Audio:"))
 				getAudioFields(stream);
+			
+			if (stream.contains("Subtitle:"))
+				getSubtitleFields(stream);
 		}
+		Logger.debug("\n");
+
 
 	}
 
@@ -144,6 +157,7 @@ public class FileInformationChecker {
 			this.audiostreams = new ArrayList<>();
 
 		AudioStreamInfo ainfo = new AudioStreamInfo();
+		ainfo.setLanguage(FFmpegInfoPatterns.getLanguage(stream));
 		ainfo.setNumberstream(FFmpegInfoPatterns.getStreamNumber(stream));
 		ainfo.setCodectype(FFmpegInfoPatterns.getAudioCodecInfo(stream));
 		ainfo.setBitrate(FFmpegInfoPatterns.getAudioBitrate(stream));
@@ -152,6 +166,19 @@ public class FileInformationChecker {
 
 		this.audiostreams.add(ainfo);
 
+	}
+	
+	private void getSubtitleFields(String stream) {
+		
+		if(this.substreams==null)
+			this.substreams=new ArrayList<>();
+		
+		SubtitleStreamInfo subinfo = new SubtitleStreamInfo();
+		subinfo.setNumberstream(FFmpegInfoPatterns.getStreamNumber(stream));
+		subinfo.setCodectype(FFmpegInfoPatterns.getSubtitleCodecInfo(stream));
+		subinfo.setLanguage(FFmpegInfoPatterns.getLanguage(stream));
+		
+		this.substreams.add(subinfo);
 	}
 
 	/**
@@ -185,6 +212,7 @@ public class FileInformationChecker {
 	public ArrayList<AudioStreamInfo> getAudioStreamsInfo() {
 		return this.audiostreams;
 	}
+	
 
 	/**
 	 * Gets the audio stream number.
@@ -201,6 +229,13 @@ public class FileInformationChecker {
 		else
 			return audiostreams.get(n);
 
+	}
+	
+	
+	
+
+	public ArrayList<SubtitleStreamInfo> getSubtitlestreams() {
+		return substreams;
 	}
 
 	public static boolean validFFmpegExec(String ffmpegpath) {

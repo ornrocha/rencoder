@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
 
 // TODO: Auto-generated Javadoc
@@ -35,6 +36,13 @@ public class AudioStreamInfo extends StreamInfo {
 
 	/** The audiochanneltype. */
 	protected String audiochanneltype;
+	
+	
+	protected String language;
+	
+	protected boolean defaultstream=false;
+	
+	
 
 	/** The rb. */
 	private ResourceBundle rb;
@@ -81,6 +89,26 @@ public class AudioStreamInfo extends StreamInfo {
 	public void setAudiochanneltype(String audiochanneltype) {
 		this.audiochanneltype = audiochanneltype;
 	}
+	
+	
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+	
+	
+
+	public boolean isDefaultstream() {
+		return defaultstream;
+	}
+
+	public void setDefaultstream(boolean defaultstream) {
+		this.defaultstream = defaultstream;
+	}
 
 	/**
 	 * Gets the audio info to table.
@@ -89,14 +117,15 @@ public class AudioStreamInfo extends StreamInfo {
 	 */
 	public List<Object[]> getAudioInfoToTable() {
 
-		Object[] Stream = { LangTools.getWordLanguage("Stream", "general.Stream"), this.numberstream };
+		//Object[] Stream = { LangTools.getWordLanguage("Stream", "general.Stream"), this.numberstream };
+		Object[] lang = { LangTools.getWordLanguage("Language", "general.language"), this.language != null? FFmpegManager.getInstance().getLanguageFromISO3Code(this.language): "Unknown" };
 		Object[] codec = { LangTools.getWordLanguage("Codec", "videoaudiogui.codec"), this.codectype };
 		Object[] bitrate = { LangTools.getWordLanguage("Bit rate (kb/s)", "videoaudiogui.bitrate"), this.bitrate };
 		Object[] freq = { LangTools.getWordLanguage("Frequency (Hz)", "audiogui.frequency"), this.audiofrequency };
 		Object[] chan = { LangTools.getWordLanguage("Channels", "general.channels"), this.audiochanneltype };
 
 		ArrayList<Object[]> info = new ArrayList<>();
-		info.add(Stream);
+		info.add(lang);
 		info.add(codec);
 		info.add(bitrate);
 		info.add(freq);

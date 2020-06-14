@@ -262,4 +262,10 @@ public class VideoH264NvencEncodingInfoContainer extends DefaultEncodingInfoCont
 		return true;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "H264Nvenc";
+	}
+
 }

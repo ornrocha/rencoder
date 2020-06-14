@@ -21,6 +21,7 @@ package pt.ornrocha.rencoder.gui.components.panels.info;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -234,8 +235,8 @@ public class InformationEncodersPanel extends JDialog implements ActionListener 
 				thisLayout.columnWeights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
 				thisLayout.columnWidths = new int[] { 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 };
 				getContentPane().setLayout(thisLayout);
-				this.setTitle(LangTools.getResourceBundleWordLanguage(rb, "FFmpeg encoders information/configuration",
-						"ffmpegconfgui.panel"));
+				this.setTitle(LangTools.getResourceBundleWordLanguage(rb, "FFmpeg encoders information/configuration","ffmpegconfgui.panel"));
+				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
 				{
 					jTabbedPanemain = new JTabbedPane();
 					getContentPane().add(jTabbedPanemain, new GridBagConstraints(0, 0, 10, 14, 0.0, 0.0,

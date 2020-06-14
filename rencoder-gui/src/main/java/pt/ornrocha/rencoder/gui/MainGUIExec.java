@@ -16,10 +16,10 @@ import pt.ornrocha.rencoder.gui.execute.ShutdownRencoder;
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
 
 public class MainGUIExec implements Runnable{
-	
+
 	private ShutdownRencoder shutdown=null;
 	private RestartRencoder restart=null;
-	
+
 	public MainGUIExec(ShutdownRencoder off, RestartRencoder restart){
 		this.shutdown=off;
 		this.restart=restart;
@@ -30,9 +30,9 @@ public class MainGUIExec implements Runnable{
 		Maingui inst = Maingui.getInstance();
 		inst.setShutdownProcess(this.shutdown);
 		inst.setRestartProcess(this.restart);
-		
+
 		deletePreviousUpdate();
-		
+
 		inst.backupCheckRencoderConf();
 		inst.checkIfExistUpdateForExecutor();
 		inst.setLocationRelativeTo(null);
@@ -41,16 +41,16 @@ public class MainGUIExec implements Runnable{
 		inst.addWarnFlag(new JLabel("<html><center><font color='red'>Loading<br>FFmpeg</font><center/><html/>"));
 		SwingUtilities.invokeLater(new SwingWorker<Void,Void>(){
 
-		    @Override
-		    protected Void doInBackground() throws Exception {
-			inst.loadRequirements();
-			return null;
-		    }
-	        });
-		
+			@Override
+			protected Void doInBackground() throws Exception {
+				inst.loadRequirements();
+				return null;
+			}
+		});
+
 	}
-	
-	
+
+
 	private void deletePreviousUpdate() {
 		File f = new File(FilenameUtils.concat(OSystem.getCurrentDir(), "update.zip"));
 		if(f.exists())
@@ -60,8 +60,8 @@ public class MainGUIExec implements Runnable{
 				Logger.error(e);
 			}
 	}
-	
-		
+
+
 
 
 }

@@ -130,4 +130,10 @@ public class VideoMPEG4EncodingInfoContainer extends DefaultEncodingInfoContaine
 	    return false;
 	}
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "MPEG4";
+	}
+
 }

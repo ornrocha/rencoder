@@ -455,17 +455,19 @@ public class ListFiles {
      */
     public static void OpenSystemFolder(String folder) {
 
-	try {
-	    if (OSystem.isLinux())
-		Runtime.getRuntime().exec("xdg-open " + folder);
-	    else if (OSystem.isWindows())
-		Runtime.getRuntime().exec("explorer /select,  " + folder);
-	    else if (OSystem.isMacOS())
-		Runtime.getRuntime().exec("usr/bin/open" + folder);
+    	try {
+    		if (OSystem.isLinux()) {
+    			Logger.debug("Opening folder "+folder+ " with xdg-open");
+    			Runtime.getRuntime().exec("xdg-open " + folder);
+    		}
+    		else if (OSystem.isWindows())
+    			Runtime.getRuntime().exec("explorer /select,  " + folder);
+    		else if (OSystem.isMacOS())
+    			Runtime.getRuntime().exec("usr/bin/open" + folder);
 
-	} catch (Exception e) {
-	    Logger.error(e);
-	}
+    	} catch (Exception e) {
+    		Logger.error(e);
+    	}
     }
 
     /**

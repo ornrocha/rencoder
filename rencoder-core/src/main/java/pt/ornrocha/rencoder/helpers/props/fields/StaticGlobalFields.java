@@ -87,6 +87,7 @@ public class StaticGlobalFields {
 
 	/** The Constant NUMBERSIMULTANEOUSCONVERSIONS. */
 	public static final String NUMBERSIMULTANEOUSCONVERSIONS = "concurrent.processes";
+	public static final String MAXMUXINGQUEUESIZE = "max.muxing.size";
 
 	/** The Constant FONTSFILE. */
 	public static final String FONTSCONFIGPATH = "settings/fontsconf/";
@@ -124,6 +125,7 @@ public class StaticGlobalFields {
 	public static final String LOGLEVELKEY = "log.level";
 
 	public static final String LOGLEVELRENCODER = "rencoder.log.level";
+	public static final String LOGFFMPEGRENCODER = "rencoder.log.ffmpeg";
 
 	/** The Constant ENCODEPANELFIXKEY. */
 	public static final String ENCODEPANELFIXKEY = "lock.encoder.gui.panel";
@@ -154,5 +156,7 @@ public class StaticGlobalFields {
 	public static final String RESTARTTAG = ".restart";
 	public static final String LOG4JCONFIG = "settings/log4j.properties";
 	public static final String RENCODERLOGPATH = "rencoder.log";
+	
+	public static final String DEFAULTSOFTSUBLANG = "subtitles.default.language";
 
 }

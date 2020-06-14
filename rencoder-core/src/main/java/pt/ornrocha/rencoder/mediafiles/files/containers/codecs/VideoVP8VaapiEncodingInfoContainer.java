@@ -199,6 +199,14 @@ public class VideoVP8VaapiEncodingInfoContainer extends DefaultEncodingInfoConta
 	return true;
     }
 
+	@Override
+	public String getContainerName() {
+		// TODO Auto-generated method stub
+		return "VP8 Vaapi";
+	}
+
+	
+
 
 
 }

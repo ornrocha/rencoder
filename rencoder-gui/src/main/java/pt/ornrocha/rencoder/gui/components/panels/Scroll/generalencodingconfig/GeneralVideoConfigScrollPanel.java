@@ -61,6 +61,10 @@ public class GeneralVideoConfigScrollPanel extends VideoConfigScrollPanel {
 
 	/** The j labelffmpegthreads. */
 	private JLabel jLabelffmpegthreads;
+	
+	private JLabel maxmuxsizelabel;
+	
+	private JSpinner maxmuxsizespinner;
 
 	/**
 	 * Instantiates a new general video config scroll panel.
@@ -121,6 +125,18 @@ public class GeneralVideoConfigScrollPanel extends VideoConfigScrollPanel {
 			jPanelmain.add(numberprocesses, new GridBagConstraints(2, 11, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 					GridBagConstraints.BOTH, new Insets(5, 0, 0, 0), 0, 0));
 		}
+		{
+			maxmuxsizelabel = new JLabel();
+			jPanelmain.add(maxmuxsizelabel, new GridBagConstraints(0, 12, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+					GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+			maxmuxsizelabel.setText(LangTools.getResourceBundleWordLanguage(rb, "Max. muxing queue size",
+					"videoaudiogui.maxmuxingsize"));
+		}
+		{
+			maxmuxsizespinner = new JSpinner();
+			jPanelmain.add(maxmuxsizespinner, new GridBagConstraints(2, 12, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+					GridBagConstraints.BOTH, new Insets(5, 0, 0, 0), 0, 0));
+		}
 	}
 
 	/**
@@ -131,6 +147,9 @@ public class GeneralVideoConfigScrollPanel extends VideoConfigScrollPanel {
 
 		SpinnerNumberModel modelnumberproc = new SpinnerNumberModel(1, 1, cores, 1);
 		numberprocesses.setModel(modelnumberproc);
+		
+		SpinnerNumberModel modelmaxmuxsize = new SpinnerNumberModel(0, 0, 9999, 100);
+		maxmuxsizespinner.setModel(modelmaxmuxsize);
 
 		SpinnerNumberModel modelffmpegthreads = new SpinnerNumberModel(0, 0, cores, 1);
 		ffmpegthreads.setModel(modelffmpegthreads);
@@ -141,9 +160,12 @@ public class GeneralVideoConfigScrollPanel extends VideoConfigScrollPanel {
 	/**
 	 * Save number simultaneous processes.
 	 */
-	public void saveNumberSimultaneousProcesses() {
+	public void saveConfigurationsToFile() {
 		PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE,
 				StaticGlobalFields.NUMBERSIMULTANEOUSCONVERSIONS, String.valueOf(numberprocesses.getValue()));
+		
+		PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE,
+				StaticGlobalFields.MAXMUXINGQUEUESIZE, String.valueOf(maxmuxsizespinner.getValue()));
 	}
 
 	/*
@@ -159,6 +181,7 @@ public class GeneralVideoConfigScrollPanel extends VideoConfigScrollPanel {
 			setValueIntoSlider();
 		ffmpegthreads.setValue(infocont.getNumberThreads());
 		numberprocesses.setValue(EncodingPropsAuxiliar.getNumberSimultaneousConversions());
+		maxmuxsizespinner.setValue(EncodingPropsAuxiliar.getMaxMuxingQueueSize());
 		setOutputFormat();
 		jComboBoxcontainer.setSelectedItem(infocont.getVideoContainer());
 	}
@@ -173,6 +196,7 @@ public class GeneralVideoConfigScrollPanel extends VideoConfigScrollPanel {
 	public void saveSelectedInformationIntoContainer() {
 		super.saveSelectedInformationIntoContainer();
 		infocont.setNumberThreads((int) ffmpegthreads.getValue());
+		infocont.setMaxMuxingQueueSize((int) maxmuxsizespinner.getValue());
 
 	}
 
