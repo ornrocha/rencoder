@@ -33,7 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.H264VaapiCoder;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.H264VaapiProfile;

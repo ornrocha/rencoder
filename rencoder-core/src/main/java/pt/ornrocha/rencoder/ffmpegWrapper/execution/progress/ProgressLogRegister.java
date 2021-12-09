@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 import javax.swing.SwingWorker;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 public class ProgressLogRegister extends SwingWorker<Integer, String> {
 	
@@ -21,7 +21,6 @@ public class ProgressLogRegister extends SwingWorker<Integer, String> {
 		Scanner sc = new Scanner(stream);
 		while (sc.hasNextLine()) {
 			String currentline = sc.nextLine();
-			System.out.println(currentline);
 			Logger.debug(currentline);
 		}
 		return null;

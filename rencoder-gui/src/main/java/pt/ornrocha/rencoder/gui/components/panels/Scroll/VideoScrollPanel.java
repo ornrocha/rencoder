@@ -43,7 +43,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.FileInformationIOException;
 import pt.ornrocha.rencoder.gui.components.panels.VideoMainPanel;

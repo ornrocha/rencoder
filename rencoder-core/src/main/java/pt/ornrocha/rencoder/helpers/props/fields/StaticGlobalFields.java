@@ -18,8 +18,6 @@
  */
 package pt.ornrocha.rencoder.helpers.props.fields;
 
-import java.io.File;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class ConstantsProperties.
@@ -80,10 +78,15 @@ public class StaticGlobalFields {
 	public static final String REDCOLOR = "SubtitlesConfigScrollPanel.setRedColor";
 
 	/** The Constant ENCODERFOLDERPATH. */
-	public static final String ENCODERFOLDERPATH = "ffmpeg/";
+	public static final String FFMPEGFOLDERPATH = "ffmpeg/";
+	
+	public static final String FFMPEGSAVEDINFO = "ffmpeg/ffmpeg_info.json";
 
 	/** The Constant ENCODERPATH. */
-	public static final String ENCODERPATH = "ffmpeg.path";
+	public static final String FFMPEGPATH = "ffmpeg.path";
+	
+	public static final String VIDEOSAMPLEPATH = "demo.video.path";
+	public static final String SUBTITLESAMPLEPATH = "subtitle.video.path";
 
 	/** The Constant NUMBERSIMULTANEOUSCONVERSIONS. */
 	public static final String NUMBERSIMULTANEOUSCONVERSIONS = "concurrent.processes";
@@ -99,12 +102,12 @@ public class StaticGlobalFields {
 	public static final String QUOTE = "\"";
 
 	public static final String APOSTH = "'";
-
-	/** The Constant FFMPEGLINUX. */
-	public static final String FFMPEGLINUX = "http://johnvansickle.com/ffmpeg/";
-	// public static final String FFMPEGLINUX="http://ffmpeg.gusari.org/static/";
-	/** The Constant FFMPEGWINDOWS. */
-	public static final String FFMPEGWINDOWS = "http://ffmpeg.zeranoe.com/builds/";
+//
+//	/** The Constant FFMPEGLINUX. */
+//	public static final String FFMPEGLINUX = "http://johnvansickle.com/ffmpeg/";
+//	// public static final String FFMPEGLINUX="http://ffmpeg.gusari.org/static/";
+//	/** The Constant FFMPEGWINDOWS. */
+//	public static final String FFMPEGWINDOWS = "http://ffmpeg.zeranoe.com/builds/";
 
 	/** The Constant FFMPEGMACOS. */
 	public static final String FFMPEGMACOS = "https://www.evermeet.cx/ffmpeg/";
@@ -144,8 +147,9 @@ public class StaticGlobalFields {
 	public static final String MOVIEDEMO = "settings/demo/demo.mp4";
 	public static final String SUBDEMO = "settings/demo/demo.ass";
 
-	public static final String CONFFFMPEGFONTSTAG = ENCODERFOLDERPATH + ".ffmpegfontsok";
+	public static final String CONFFFMPEGFONTSTAG = FFMPEGFOLDERPATH + ".ffmpegfontsok";
 
+	
 	/*
 	 * Temporary field names
 	 */
@@ -158,5 +162,8 @@ public class StaticGlobalFields {
 	public static final String RENCODERLOGPATH = "rencoder.log";
 	
 	public static final String DEFAULTSOFTSUBLANG = "subtitles.default.language";
+	
+	
+	public static final String APPIMAGEINSTALL =".appimage";
 
 }

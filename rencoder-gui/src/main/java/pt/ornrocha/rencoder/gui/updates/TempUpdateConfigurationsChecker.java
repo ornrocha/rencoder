@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.helpers.props.readwrite.PropertiesWorker;
 

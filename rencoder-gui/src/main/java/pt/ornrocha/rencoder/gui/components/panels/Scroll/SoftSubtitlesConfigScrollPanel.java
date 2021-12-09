@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 import javax.swing.JTable;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.gui.components.tables.SubtitleTable;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;

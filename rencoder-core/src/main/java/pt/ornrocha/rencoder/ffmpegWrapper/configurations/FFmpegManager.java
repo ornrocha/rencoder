@@ -1,329 +1,339 @@
 package pt.ornrocha.rencoder.ffmpegWrapper.configurations;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 
 import org.apache.commons.io.FilenameUtils;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import com.neovisionaries.i18n.LanguageAlpha3Code;
 
-import pt.ornrocha.rencoder.ffmpegWrapper.commands.FileInformationChecker;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.audio.AudioCodecs;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.general.EncoderType;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.VideoCodecs;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.VideoContainers;
 import pt.ornrocha.rencoder.ffmpegWrapper.utilities.FFmpegUtils;
-import pt.ornrocha.rencoder.helpers.IndexedHashMap;
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
 import pt.ornrocha.rencoder.helpers.props.fields.StaticFFmpegFields;
 import pt.ornrocha.rencoder.helpers.props.fields.StaticGlobalFields;
 import pt.ornrocha.rencoder.helpers.props.readwrite.PropertiesWorker;
-import pt.ornrocha.rencoder.mediafiles.files.containers.maininfo.MediaInfoContainer;
-import pt.ornrocha.rencoder.mediafiles.files.containers.streams.AudioStreamInfo;
 
 public class FFmpegManager {
 
-	static FFmpegManager instance;
-	private String ffmpegPath = null;
-	private IndexedHashMap<String, String> videoencoders;
-	private IndexedHashMap<String, String> audioencoders;
-	private IndexedHashMap<String, String> codecsmap;
-	private ArrayList<String> allowedcodecs;
-	private ArrayList<String> decodershwaccel;
-	private ArrayList<String> appffmpegversions;
-	private VideoCodecs[] allowedvideocodecs = null;
-	private AudioCodecs[] allowedaudiocodecs = null;
-    protected HashMap<String, String> maplangtocode=null;
-	protected HashMap<String, String> mapcodetolang=null;
+  static FFmpegManager instance;
+  private RencoderFFmpegInfoContainer ffmpegInfoContainer = null;
 
-	public static FFmpegManager getInstance() {
-		if (instance == null)
-			instance = new FFmpegManager();
-		return instance;
-	}
+  private String ffmpegPath = null;
+  protected HashMap<String, String> maplangtocode = null;
+  protected HashMap<String, String> mapcodetolang = null;
+  private ArrayList<String> appffmpegversions;
 
-	private FFmpegManager() {
-		
-		loadLanguageCodes();
-	}
-	
-	private void loadLanguageCodes() {
+  public static FFmpegManager getInstance() {
+    if (instance == null)
+      instance = new FFmpegManager();
+    return instance;
+  }
 
-		maplangtocode=new HashMap<>();
-		mapcodetolang=new HashMap<>();
-		for (LanguageAlpha3Code code : LanguageAlpha3Code.values()) {
-			maplangtocode.put(code.getName(), code.toString());
-			mapcodetolang.put(code.toString(), code.getName());
-		}
-	}
+  private FFmpegManager() {
 
-	public FFmpegManager setFFmpegPath(String ffmpegpath) {
-		this.ffmpegPath = ffmpegpath;
-		PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE, StaticGlobalFields.ENCODERPATH,
-				ffmpegpath);
-		return this;
-	}
+    loadLanguageCodes();
+  }
 
-	public String getFFmpegPath() {
-		return this.ffmpegPath;
-	}
+  private void loadLanguageCodes() {
 
-	public boolean isCuvidSupported() {
-		return decodershwaccel.contains(StaticFFmpegFields.CUVID);
-	}
+    maplangtocode = new HashMap<>();
+    mapcodetolang = new HashMap<>();
+    for (LanguageAlpha3Code code : LanguageAlpha3Code.values()) {
+      maplangtocode.put(code.getName(), code.toString());
+      mapcodetolang.put(code.toString(), code.getName());
+    }
+  }
 
-	public boolean isVaapiSupported() {
-		return decodershwaccel.contains(StaticFFmpegFields.VAAPI);
-	}
+  public FFmpegManager setFFmpegPath(String ffmpegpath) {
+    this.ffmpegPath = ffmpegpath;
+    PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE,
+        StaticGlobalFields.FFMPEGPATH, ffmpegpath);
+    return this;
+  }
 
-	public boolean isQsvSupported() {
-		return decodershwaccel.contains(StaticFFmpegFields.QSV);
-	}
+  public String getFFmpegPath() {
+    return this.ffmpegPath;
+  }
 
-	public boolean isCustomFFmpeg(String path) {
-		if (appffmpegversions.contains(path))
-			return true;
-		return false;
-	}
-	
-	public String getLanguageFromISO3Code(String code) {
-		if(mapcodetolang.containsKey(code))
-			return mapcodetolang.get(code);
-		return code;
-	}
-	
-	public String getISO3CodeFromLanguage(String language) {
-		if(maplangtocode.containsKey(language))
-			return maplangtocode.get(language);
-		return "eng";
-	}
-	
-	public ArrayList<String> getOrderedCountryList(){
-		ArrayList<String> countries=new ArrayList<String>(this.maplangtocode.keySet());
-		Collections.sort(countries);
-		return countries;
-	}
-	
-	
+  public boolean isCuvidSupported() {
+    return ffmpegInfoContainer.getHwaccelDecoders().contains(StaticFFmpegFields.CUVID);
+  }
 
-	public HashMap<String, String> getMaplangtocode() {
-		return maplangtocode;
-	}
+  public boolean isVaapiSupported() {
+    return ffmpegInfoContainer.getHwaccelDecoders().contains(StaticFFmpegFields.VAAPI);
+  }
+
+  public boolean isQsvSupported() {
+    return ffmpegInfoContainer.getHwaccelDecoders().contains(StaticFFmpegFields.QSV);
+  }
+
+  public boolean isCustomFFmpeg(String path) {
+    if (appffmpegversions.contains(path))
+      return true;
+    return false;
+  }
+
+  public String getLanguageFromISO3Code(String code) {
+    if (mapcodetolang.containsKey(code))
+      return mapcodetolang.get(code);
+    return code;
+  }
+
+  public String getISO3CodeFromLanguage(String language) {
+    if (maplangtocode.containsKey(language))
+      return maplangtocode.get(language);
+    return "eng";
+  }
+
+  public ArrayList<String> getOrderedCountryList() {
+    ArrayList<String> countries = new ArrayList<String>(this.maplangtocode.keySet());
+    Collections.sort(countries);
+    return countries;
+  }
 
 
-	public HashMap<String, String> getMapcodetolang() {
-		return mapcodetolang;
-	}
 
-	public boolean LoadFFmpeg() {
+  public HashMap<String, String> getMaplangtocode() {
+    return maplangtocode;
+  }
 
-		if (ffmpegPath == null)
-			ffmpegPath = FFmpegUtils.getFFmpegExePath();
 
-		if (ffmpegPath == null)
-			ffmpegPath = FFmpegUtils.getDefaultFFmpegExe();
+  public HashMap<String, String> getMapcodetolang() {
+    return mapcodetolang;
+  }
 
-		if (ffmpegPath != null && FileInformationChecker.validFFmpegExec(ffmpegPath)) {
-			reset();
-			FFmpegParametersChecker.setFFmpegExecutable(ffmpegPath);
-			Logger.info("FFmpeg Path: " + ffmpegPath);
-			videoencoders = FFmpegParametersChecker.getFFmpegEncoders(EncoderType.VIDEO);
-			audioencoders = FFmpegParametersChecker.getFFmpegEncoders(EncoderType.AUDIO);
+  public boolean LoadFFmpeg() throws InterruptedException, IOException {
 
-			checkSupport();
-			return true;
-		}
+    if (ffmpegPath == null)
+      ffmpegPath = FFmpegUtils.getFFmpegExePath();
 
-		return false;
-	}
+    if (ffmpegPath == null)
+      ffmpegPath = FFmpegUtils.getDefaultFFmpegExe();
 
-	private void reset() {
-		codecsmap = new IndexedHashMap<>();
-		allowedcodecs = new ArrayList<>();
-		decodershwaccel = new ArrayList<>();
-		allowedvideocodecs = null;
-		allowedaudiocodecs = null;
-		//loadRegister();
-	}
+    if (ffmpegPath != null && isFFmpegValidExecutable(ffmpegPath)) {
 
-	private void addEncoderVideoCodec(VideoCodecs codec) {
-		if (!allowedcodecs.contains(codec.getFFmpegID()))
-			allowedcodecs.add(codec.getFFmpegID());
-	}
+      String ffmpegversion = FFmpegParametersChecker.getVersionFFmpeg();
+      ffmpegInfoContainer = RencoderFFmpegInfoContainer.getSavedFFmpegInfo();
 
-	private void addDecoderHWAccel(VideoCodecs codec) {
-		if (!decodershwaccel.contains(codec.getDecodingHWACCType()))
-			decodershwaccel.add(codec.getDecodingHWACCType());
-	}
+      if (ffmpegInfoContainer == null
+          || !ffmpegversion.equals(ffmpegInfoContainer.getFFmpegVersion())) {
+        checkNewFFmpegVersion(ffmpegversion);
+        RencoderFFmpegInfoContainer.writeRencoderFFmpegInfo(ffmpegInfoContainer);
+      }
 
-	private void checkSupport() {
+      return true;
+    }
 
-		Logger.debug("");
-		Logger.debug("########## checking codec support ##########\n");
-		ArrayList<String> failed = new ArrayList<String>();
+    return false;
+  }
 
-		for (VideoCodecs vcodec : VideoCodecs.values()) {
+  private void checkNewFFmpegVersion(String ffmpegversion)
+      throws InterruptedException, IOException {
 
-			if (vcodec.needsSupportVerification()) {
-				if (FFmpegParametersChecker.isSupportedCodec(vcodec, false))
-					allowedcodecs.add(vcodec.getFFmpegID());
-				else
-					failed.add(vcodec.getFFmpegID());
-				if ((!failed.contains(vcodec.getFFmpegID()) || vcodec.needsDecodingFilter())
-						&& vcodec.supportsDecodingHardwareAccel())
-					if (FFmpegParametersChecker.isSupportedCodec(vcodec, true)) {
-						addEncoderVideoCodec(vcodec);
-						addDecoderHWAccel(vcodec);
-					}
+    ffmpegInfoContainer = new RencoderFFmpegInfoContainer();
 
-			}
-		}
-	}
+    ffmpegInfoContainer
+        .setFFmpegVideoEncoders(FFmpegParametersChecker.getFFmpegEncoders(EncoderType.VIDEO));
+    ffmpegInfoContainer
+        .setFFmpegAudioEncoders(FFmpegParametersChecker.getFFmpegEncoders(EncoderType.AUDIO));
 
-	public VideoCodecs[] getAllowedVideoCodecs() {
+    checkSupport();
 
-		Logger.debug("checking allowed codecs.");
+    ffmpegInfoContainer.setFFmpegVersion(ffmpegversion);
 
-		if (allowedvideocodecs == null) {
+  }
 
-			ArrayList<VideoCodecs> allowed = new ArrayList<>();
 
-			for (VideoCodecs codec : VideoCodecs.values()) {
+  private void addSupportedFFmpegVideoCodec(VideoCodecs codec) {
+    if (!ffmpegInfoContainer.getHwaccelSupportedVideoCodecs().contains(codec.getFFmpegID()))
+      ffmpegInfoContainer.addHwaccelSupportedVideoCodec(codec.getFFmpegID());
+  }
 
-				if (isCodecSupported(codec.toString(),codec.getFFmpegID(), codec.needsSupportVerification()))
-					allowed.add(codec);
-			}
+  private void addSupportedHWAccelDecoder(VideoCodecs codec) {
+    if (!ffmpegInfoContainer.getHwaccelDecoders().contains(codec.getDecodingHWACCType()))
+      ffmpegInfoContainer.addSupportedHwaccelDecoder(codec.getDecodingHWACCType());
+  }
 
-			allowed.add(VideoCodecs.COPY);
-			allowedvideocodecs = allowed.toArray(new VideoCodecs[allowed.size()]);
-		}
+  private void checkSupport() throws InterruptedException, IOException {
 
-		return allowedvideocodecs;
+    Logger.debug("");
+    Logger.debug("########## checking video codec support ##########\n");
+    ArrayList<String> failed = new ArrayList<String>();
 
-	}
+    ArrayList<VideoCodecs> supportedvideocodecs = new ArrayList<>();
 
-	public boolean isCodecSupported(String codecname, String ffmpegid, boolean needscheck) {
+    for (VideoCodecs vcodec : VideoCodecs.values()) {
 
-		//Logger.debug("checking if " + codec + " is supported");
-		if (needscheck) {
-			if (allowedcodecs.contains(ffmpegid)) {
-				Logger.debug(codecname + " is supported: true");
-				return true;
-			}
-			else {
-				Logger.debug(codecname + " is supported: false");
-				return false;
-			}
-		} else {
-			if (videoencoders.containsKey(ffmpegid)) {
-				Logger.debug(codecname + " is supported: true");
-				return true;
-			}
-			else if (audioencoders.containsKey(ffmpegid)) {
-				Logger.debug(codecname+ " is supported: true");
-				return true;
-			}
-			else {
-				Logger.debug(codecname + " is supported: false");
-				return false;
-			}
-		}
-	}
+      if (vcodec.needsSupportVerification()) {
+        if (FFmpegParametersChecker.isSupportedCodec(vcodec, false, true))
+          ffmpegInfoContainer.addHwaccelSupportedVideoCodec(vcodec.getFFmpegID());
+        else
+          failed.add(vcodec.getFFmpegID());
+        if ((!failed.contains(vcodec.getFFmpegID()) || vcodec.needsDecodingFilter())
+            && vcodec.supportsDecodingHardwareAccel())
+          if (FFmpegParametersChecker.isSupportedCodec(vcodec, true, true)) {
+            addSupportedFFmpegVideoCodec(vcodec);
+            addSupportedHWAccelDecoder(vcodec);
+          }
+      }
 
-	public String getRegisteredCodec(String keymap) {
-		return codecsmap.get(keymap);
-	}
+      if (isCodecSupported(vcodec.toString(), vcodec.getFFmpegID(),
+          vcodec.needsSupportVerification()))
+        supportedvideocodecs.add(vcodec);
 
-	public ArrayList<String> findSystemFFmpegVersions() {
-		ArrayList<String> found = getSystemInstalledFFmpeg();
-		appffmpegversions = FFmpegUtils.getFFmpegVersionsInternal();
-		if (found == null)
-			found = new ArrayList<>();
-		found.addAll(appffmpegversions);
-		return filterByOS(found);
-	}
+    }
 
-	private ArrayList<String> filterByOS(ArrayList<String> input) {
-		ArrayList<String> filtered = new ArrayList<>();
-		for (String path : input) {
+    supportedvideocodecs.add(VideoCodecs.COPY);
+    ffmpegInfoContainer.setRencoderSupportedVideoCodecs(
+        supportedvideocodecs.toArray(new VideoCodecs[supportedvideocodecs.size()]));
 
-			String ext = FilenameUtils.getExtension(path);
 
-			if (OSystem.isWindows() && ext.toLowerCase().equals("exe"))
-				filtered.add(path);
-			else if (OSystem.isLinux() && ext.isEmpty())
-				filtered.add(path);
-		}
-		return filtered;
-	}
+  }
 
-	public ArrayList<String> getSystemInstalledFFmpeg() {
-		ArrayList<String> res = null;
-		if (OSystem.isLinux() || OSystem.isMacOS()) {
-			res = OSystem.executeSystemCommand("whereis ffmpeg");
-			res = filterLinuxPaths(res);
-		} else if (OSystem.isWindows()) {
-			res = OSystem.executeSystemCommand("where ffmpeg");
 
-		}
 
-		return res;
-	}
+  public VideoCodecs[] getAllowedVideoCodecs() {
+    return ffmpegInfoContainer.getRencoderSupportedVideoCodecs();
+  }
 
-	private ArrayList<String> filterLinuxPaths(ArrayList<String> pathslist) {
-		if (pathslist != null && pathslist.size() > 0) {
-			ArrayList<String> res = new ArrayList<>();
-			for (int i = 0; i < pathslist.size(); i++) {
-				String[] paths = pathslist.get(i).split("\\s+");
-				for (int j = 0; j < paths.length; j++) {
-					String path = paths[j];
-					if (!path.equals("ffmpeg:") && !path.endsWith(".gz") && !path.contains("share")
-							&& !path.contains("X11"))
-						res.add(path);
-				}
-			}
-			return res;
-		}
-		return null;
-	}
 
-	public AudioCodecs[] getSupportAudioCodec(VideoContainers videocontainer, MediaInfoContainer audioInfoContainer) {
+  public boolean isCodecSupported(String codecname, String ffmpegid, boolean needscheck) {
 
-		AudioStreamInfo sourceaudio = null;
+    // Logger.debug("checking if " + codec + " is supported");
+    if (needscheck) {
+      if (ffmpegInfoContainer.getHwaccelSupportedVideoCodecs().contains(ffmpegid)) {
+        Logger.debug(codecname + " is supported: true");
+        return true;
+      } else {
+        Logger.debug(codecname + " is supported: false");
+        return false;
+      }
+    } else {
+      if (ffmpegInfoContainer.getFFmpegVideoEncoders().containsKey(ffmpegid)) {
+        Logger.debug(codecname + " is supported: true");
+        return true;
+      } else if (ffmpegInfoContainer.getFFmpegAudioEncoders().containsKey(ffmpegid)) {
+        Logger.debug(codecname + " is supported: true");
+        return true;
+      } else {
+        Logger.debug(codecname + " is supported: false");
+        return false;
+      }
+    }
+  }
 
-		if (allowedaudiocodecs == null) {
 
-			if (audioInfoContainer != null)
-				sourceaudio = audioInfoContainer.getfirstAudioStream();
+  public ArrayList<String> findSystemFFmpegVersions() {
+    ArrayList<String> found = getSystemInstalledFFmpeg();
+    appffmpegversions = FFmpegUtils.getFFmpegVersionsInternal();
+    if (found == null)
+      found = new ArrayList<>();
+    found.addAll(appffmpegversions);
+    return filterByOS(found);
+  }
 
-			ArrayList<AudioCodecs> filteredcodecs = new ArrayList<AudioCodecs>();
+  private ArrayList<String> filterByOS(ArrayList<String> input) {
+    ArrayList<String> filtered = new ArrayList<>();
+    for (String path : input) {
 
-			ArrayList<AudioCodecs> supportedbycontainer = videocontainer.getAudioFormatsSupported();
+      String ext = FilenameUtils.getExtension(path);
 
-			for (AudioCodecs audioCodec : supportedbycontainer) {
-				if (audioCodec.isCodecSupported())
-					filteredcodecs.add(audioCodec);
-			}
-			filteredcodecs.add(AudioCodecs.COPY);
-			allowedaudiocodecs = filteredcodecs.toArray(new AudioCodecs[filteredcodecs.size()]);
-		}
+      if (OSystem.isWindows() && ext.toLowerCase().equals("exe"))
+        filtered.add(path);
+      else if (OSystem.isLinux() && ext.isEmpty())
+        filtered.add(path);
+    }
+    return filtered;
+  }
 
-		return allowedaudiocodecs;
-	}
-	
-	public String getDefaultSoftSubtitleLanguage() {
-		String sublang = PropertiesWorker.getStringProperty(StaticGlobalFields.RENCODERCONFIGFILE,StaticGlobalFields.DEFAULTSOFTSUBLANG);
-		if(sublang==null)
-			return "eng";
-		else
-			return sublang;
-	}
-	
-	public void setDefaultSoftSubtitleLanguage(String langcode) {
-		PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE, StaticGlobalFields.DEFAULTSOFTSUBLANG,langcode);
-	}
+  public ArrayList<String> getSystemInstalledFFmpeg() {
+    ArrayList<String> res = null;
+    if (OSystem.isLinux() || OSystem.isMacOS()) {
+      res = OSystem.executeSystemCommand("whereis ffmpeg");
+      res = filterLinuxPaths(res);
+    } else if (OSystem.isWindows()) {
+      res = OSystem.executeSystemCommand("where ffmpeg");
+
+    }
+
+    return res;
+  }
+
+  private ArrayList<String> filterLinuxPaths(ArrayList<String> pathslist) {
+    if (pathslist != null && pathslist.size() > 0) {
+      ArrayList<String> res = new ArrayList<>();
+      for (int i = 0; i < pathslist.size(); i++) {
+        String[] paths = pathslist.get(i).split("\\s+");
+        for (int j = 0; j < paths.length; j++) {
+          String path = paths[j];
+          if (!path.equals("ffmpeg:") && !path.endsWith(".gz") && !path.contains("share")
+              && !path.contains("X11"))
+            res.add(path);
+        }
+      }
+      return res;
+    }
+    return null;
+  }
+
+  public AudioCodecs[] getSupportAudioCodec(VideoContainers videocontainer) {
+
+    ArrayList<AudioCodecs> filteredcodecs = new ArrayList<AudioCodecs>();
+
+    ArrayList<AudioCodecs> supportedbycontainer = videocontainer.getAudioFormatsSupported();
+
+    for (AudioCodecs audioCodec : supportedbycontainer) {
+      if (audioCodec.isCodecSupported())
+        filteredcodecs.add(audioCodec);
+    }
+    filteredcodecs.add(AudioCodecs.COPY);
+    return filteredcodecs.toArray(new AudioCodecs[filteredcodecs.size()]);
+  }
+
+
+  public String getDefaultSoftSubtitleLanguage() {
+    String sublang = PropertiesWorker.getStringProperty(StaticGlobalFields.RENCODERCONFIGFILE,
+        StaticGlobalFields.DEFAULTSOFTSUBLANG);
+
+    if (sublang == null)
+      return "eng";
+    else
+      return sublang;
+  }
+
+  public void setDefaultSoftSubtitleLanguage(String langcode) {
+    PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE,
+        StaticGlobalFields.DEFAULTSOFTSUBLANG, langcode);
+  }
+
+  public static boolean isFFmpegValidExecutable(String ffmpegpath) {
+    File ffmpeg = new File(ffmpegpath);
+    if (ffmpeg.exists()) {
+      ffmpeg.setExecutable(true);
+      ffmpeg.setWritable(true);
+      ffmpeg.setReadable(true);
+
+      String ffmpegexepath = ffmpeg.getAbsolutePath();
+      ProcessBuilder pb = new ProcessBuilder(ffmpegexepath, "-i");
+      Process p = null;
+      try {
+        p = pb.start();
+      } catch (IOException e) {
+        Logger.error(e);
+        return false;
+      }
+      return true;
+    } else
+      return false;
+
+  }
 
 }

@@ -5,7 +5,7 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
 

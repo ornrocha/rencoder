@@ -1,19 +1,19 @@
 package pt.ornrocha.rencoder.gui.components.panels.Scroll;
 
-import javax.swing.JPanel;
-
-import pt.ornrocha.rencoder.helpers.lang.LangTools;
-import pt.ornrocha.rencoder.mediafiles.files.containers.streams.AudioStreamInfo;
-
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import javax.swing.JComboBox;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+
+import pt.ornrocha.rencoder.helpers.lang.LangTools;
+import pt.ornrocha.rencoder.mediafiles.files.containers.streams.AudioStreamInfo;
 
 public class AudioInfoPanel extends JPanel implements ActionListener{
 

@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.JTabbedPane;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.gui.components.panels.Scroll.AudioInfoPanel;
 import pt.ornrocha.rencoder.gui.components.panels.Scroll.MediaInfoScrollPanel;
@@ -34,8 +34,6 @@ import pt.ornrocha.rencoder.mediafiles.files.containers.maininfo.MediaInfoContai
 import pt.ornrocha.rencoder.mediafiles.files.containers.streams.AudioStreamInfo;
 import pt.ornrocha.rencoder.mediafiles.files.containers.streams.SubtitleStreamInfo;
 import pt.ornrocha.rencoder.mediafiles.files.containers.streams.VideoStreamInfo;
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
 
 // TODO: Auto-generated Javadoc
 /**

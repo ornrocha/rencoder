@@ -10,7 +10,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.filters.RotateFilter;
 import pt.ornrocha.rencoder.gui.components.panels.auxiliar.CopyPasteJTextField;

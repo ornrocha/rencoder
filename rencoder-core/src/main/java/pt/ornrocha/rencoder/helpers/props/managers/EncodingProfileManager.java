@@ -20,11 +20,12 @@ package pt.ornrocha.rencoder.helpers.props.managers;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.VideoCodecs;
@@ -46,6 +47,8 @@ import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoKvazaarEncod
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoMPEG2EncodingInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoMPEG4EncodingInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoOpenH264EncodingInfoContainer;
+import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoSVTAV1EncodingInfoContainer;
+import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoSVTHEVCEncodingInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoTheoraEncodingInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoVP8EncodingInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoVP9EncodingInfoContainer;
@@ -237,6 +240,7 @@ public class EncodingProfileManager {
 		boolean defaultinfocontainer = false;
 
 		String vcodec = PropertiesWorker.checkProperty(props, StaticVideoEncoderFields.VIDEOCODEC);
+		
 
 		if (vcodec != null) {
 			InfoContainer = initVideoEncodingContainer(vcodec);
@@ -252,6 +256,7 @@ public class EncodingProfileManager {
 		if (!defaultinfocontainer && InfoContainer != null) {
 
 			InfoContainer.setConfigurations(props);
+		
 		}
 
 		Logger.debug("Profile was loaded with a " + InfoContainer.getContainerName() + " container");
@@ -295,15 +300,21 @@ public class EncodingProfileManager {
 		case StaticFFmpegFields.Kvazaar:
 			InfoContainer = new VideoKvazaarEncodingInfoContainer();
 			break;
+		case StaticFFmpegFields.SVTHEVC:
+			InfoContainer = new VideoSVTHEVCEncodingInfoContainer();
+			break;	
 		case StaticFFmpegFields.Vp8:
 			InfoContainer = new VideoVP8EncodingInfoContainer();
 			break;
 		case StaticFFmpegFields.Vp9:
 			InfoContainer = new VideoVP9EncodingInfoContainer();
 			break;
-		case StaticFFmpegFields.AV1:
+		case StaticFFmpegFields.AOMAV1:
 			InfoContainer = new VideoAV1EncodingInfoContainer();
 			break;
+	    case StaticFFmpegFields.SVTAV1:
+           InfoContainer = new VideoSVTAV1EncodingInfoContainer();
+           break;
 		case StaticFFmpegFields.Theora:
 			InfoContainer = new VideoTheoraEncodingInfoContainer();
 			break;

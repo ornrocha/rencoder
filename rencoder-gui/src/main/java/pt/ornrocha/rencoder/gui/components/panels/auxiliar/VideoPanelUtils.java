@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import javax.swing.SwingWorker;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.audio.AudioCBRValues;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.VideoCBRValues;
@@ -172,7 +172,8 @@ public class VideoPanelUtils {
 			if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE))
 				desktop.browse(uri);
 		} catch (Exception e) {
-			Logger.error(e);
+			e.printStackTrace();
+			//Logger.error(e);
 		}
 	}
 

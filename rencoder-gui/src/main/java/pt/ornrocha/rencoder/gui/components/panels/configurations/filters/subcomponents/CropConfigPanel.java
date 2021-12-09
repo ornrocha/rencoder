@@ -20,7 +20,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.filters.CropFilter;
 import pt.ornrocha.rencoder.gui.components.panels.player.RunPlayer;

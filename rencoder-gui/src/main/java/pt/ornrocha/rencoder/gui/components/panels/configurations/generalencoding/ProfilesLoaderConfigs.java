@@ -45,7 +45,7 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.othercomponents.AspectComponent;
 import pt.ornrocha.rencoder.helpers.IndexedHashMap;

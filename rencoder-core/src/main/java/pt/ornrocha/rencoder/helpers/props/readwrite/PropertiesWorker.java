@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 // TODO: Auto-generated Javadoc
 /**

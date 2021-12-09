@@ -8,38 +8,83 @@ import pt.ornrocha.rencoder.helpers.props.fields.StaticFFmpegFields;
 
 public enum HWAccel {
 
-	NONE {
+
+
+
+	NVDEC {
 		@Override
 		public String toString() {
-			return "None";
+			return "Nvdec";
 		}
 
 		@Override
 		public String getFFmpegID() {
-			return null;
-		}
-
-		@Override
-		public ArrayList<String> getFFmpegCMD() {
-			return new ArrayList<>();
-		}
-	},
-	H264CUVID {
-		@Override
-		public String toString() {
-			return "H246 Cuvid";
-		}
-
-		@Override
-		public String getFFmpegID() {
-			return StaticFFmpegFields.H264CUVID;
+			return StaticFFmpegFields.NVDEC;
 		}
 
 		@Override
 		public ArrayList<String> getFFmpegCMD() {
 			return (ArrayList<String>) Stream
-					.of(StaticFFmpegFields.DECODERHWACCEL, StaticFFmpegFields.CUVID,
-							StaticFFmpegFields.encodevideocodec, StaticFFmpegFields.H264CUVID)
+					.of(StaticFFmpegFields.DECODERHWACCEL, StaticFFmpegFields.NVDEC)
+					.collect(Collectors.toList());
+		}
+
+		@Override
+		public String getHardSubsFilter(String asscmd) {
+			return asscmd.replace("'", "");
+		}
+
+		@Override
+		public boolean joinDecodingAndSubtitleFilters() {
+			return true;
+		}
+	},	
+	VSYNC {
+		@Override
+		public String toString() {
+			return "Vsync";
+		}
+
+		@Override
+		public String getFFmpegID() {
+			return StaticFFmpegFields.VSYNC;
+		}
+
+		@Override
+		public ArrayList<String> getFFmpegCMD() {
+			return (ArrayList<String>) Stream
+					.of("-"+StaticFFmpegFields.VSYNC, "0")
+					.collect(Collectors.toList());
+		}
+
+		@Override
+		public String getHardSubsFilter(String asscmd) {
+			return asscmd.replace("'", "");
+		}
+
+		@Override
+		public boolean joinDecodingAndSubtitleFilters() {
+			return true;
+		}
+	},	
+	
+	CUDA {
+		@Override
+		public String toString() {
+			return "CUDA";
+		}
+
+		@Override
+		public String getFFmpegID() {
+			return StaticFFmpegFields.CUDA;
+		}
+
+		@Override
+		public ArrayList<String> getFFmpegCMD() {
+			return (ArrayList<String>) Stream
+					.of(    "-"+StaticFFmpegFields.VSYNC, "0",
+							StaticFFmpegFields.DECODERHWACCEL, StaticFFmpegFields.CUDA,
+							StaticFFmpegFields.DECODERHWACCELOUTFORMAT, StaticFFmpegFields.CUDA)
 					.collect(Collectors.toList());
 		}
 
@@ -82,6 +127,35 @@ public enum HWAccel {
 			return true;
 		}
 	},
+//	HEVCCUVID {
+//		@Override
+//		public String toString() {
+//			return "HEVC Cuvid";
+//		}
+//
+//		@Override
+//		public String getFFmpegID() {
+//			return StaticFFmpegFields.HEVCCUVID;
+//		}
+//
+//		@Override
+//		public ArrayList<String> getFFmpegCMD() {
+//			return (ArrayList<String>) Stream
+//					.of(StaticFFmpegFields.DECODERHWACCEL, StaticFFmpegFields.CUVID,
+//							StaticFFmpegFields.encodevideocodec, StaticFFmpegFields.HEVCCUVID)
+//					.collect(Collectors.toList());
+//		}
+//
+//		@Override
+//		public String getHardSubsFilter(String asscmd) {
+//			return "hwdownload,format=nv12" + "," + asscmd.replace("'", "");
+//		}
+//
+//		@Override
+//		public boolean joinDecodingAndSubtitleFilters() {
+//			return true;
+//		}
+//	},
 	MPEG2CUVID {
 		@Override
 		public String toString() {
@@ -112,35 +186,6 @@ public enum HWAccel {
 		}
 	},
 
-	HEVCCUVID {
-		@Override
-		public String toString() {
-			return "HEVC Cuvid";
-		}
-
-		@Override
-		public String getFFmpegID() {
-			return StaticFFmpegFields.HEVCCUVID;
-		}
-
-		@Override
-		public ArrayList<String> getFFmpegCMD() {
-			return (ArrayList<String>) Stream
-					.of(StaticFFmpegFields.DECODERHWACCEL, StaticFFmpegFields.CUVID,
-							StaticFFmpegFields.encodevideocodec, StaticFFmpegFields.HEVCCUVID)
-					.collect(Collectors.toList());
-		}
-
-		@Override
-		public String getHardSubsFilter(String asscmd) {
-			return "hwdownload,format=nv12" + "," + asscmd.replace("'", "");
-		}
-
-		@Override
-		public boolean joinDecodingAndSubtitleFilters() {
-			return true;
-		}
-	},
 
 	VP8CUVID {
 		@Override
@@ -220,12 +265,13 @@ public enum HWAccel {
 
 		@Override
 		public String getHardSubsFilter(String asscmd) {
-			return "scale_vaapi,hwmap=mode=read+write+direct,format=nv12" + "," + asscmd.replace("'", "") + ",hwmap";
+			return "scale_vaapi,hwmap=mode=read+write+direct,format=nv12" + "," + asscmd.replace("'", "")
+			+ ",hwmap";
 		}
 
 		@Override
 		public boolean joinDecodingAndSubtitleFilters() {
-			return false;
+			return true;
 		}
 
 	},
@@ -255,6 +301,22 @@ public enum HWAccel {
 		public boolean joinDecodingAndSubtitleFilters() {
 			return false;
 		}
+	},
+	NONE {
+		@Override
+		public String toString() {
+			return "None";
+		}
+
+		@Override
+		public String getFFmpegID() {
+			return null;
+		}
+
+		@Override
+		public ArrayList<String> getFFmpegCMD() {
+			return new ArrayList<>();
+		}
 	};
 
 	public String getFFmpegID() {
@@ -273,9 +335,21 @@ public enum HWAccel {
 		return joinDecodingAndSubtitleFilters();
 	}
 
-	public static HWAccel[] getH264HWAccel() {
-		HWAccel[] res = { HWAccel.NONE, HWAccel.H264CUVID, HWAccel.MPEG4CUVID, HWAccel.MPEG2CUVID };
+	public static HWAccel[] getNvidiaHWAccel() {
+		HWAccel[] res = {HWAccel.NVDEC,HWAccel.VSYNC, HWAccel.CUDA,
+				HWAccel.MPEG4CUVID, HWAccel.MPEG2CUVID, HWAccel.NONE};
 		return res;
 	}
+	
+	
+	  public static HWAccel getHWAccelFromString(String hwaccel) {
+		    if (hwaccel != null) {
+		      for (HWAccel accel : HWAccel.values()) {
+		        if (accel.name().toLowerCase().equals(hwaccel.toLowerCase()))
+		          return accel;
+		      }
+		    }
+		    return HWAccel.NONE;
+		  }
 
 }

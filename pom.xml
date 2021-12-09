@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pt.ornrocha</groupId>
 	<artifactId>rencoder</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -15,7 +15,6 @@
 
 
 	<modules>
-		<module>rencoder-exec</module>
 		<module>rencoder-core</module>
 		<module>rencoder-gui</module>
 	</modules>

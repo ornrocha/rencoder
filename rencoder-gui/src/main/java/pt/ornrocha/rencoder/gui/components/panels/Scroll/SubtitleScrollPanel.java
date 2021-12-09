@@ -44,7 +44,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.gui.Maingui;
 import pt.ornrocha.rencoder.gui.components.panels.VideoMainPanel;

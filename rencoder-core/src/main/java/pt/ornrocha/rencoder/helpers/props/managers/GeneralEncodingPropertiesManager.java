@@ -44,11 +44,11 @@ public class GeneralEncodingPropertiesManager {
 	 * Instantiates a new general encoding properties manager.
 	 */
 	public GeneralEncodingPropertiesManager(){
-		
+
 		this.configs=PropertiesWorker.loadPropertiesRelativePath(StaticVideoEncoderFields.GENERALSETTINGSFILEPATH);
-		this.infocontainer=EncodingProfileManager.extractVideoEncInformation(configs,true);
+		this.infocontainer=EncodingProfileManager.extractVideoEncInformation(this.configs,true);
 		this.infocontainer.setOutputFolder(ProcessFilesAux.getOutputFilesFolderPath());
-		
+
 	}
 	
 	

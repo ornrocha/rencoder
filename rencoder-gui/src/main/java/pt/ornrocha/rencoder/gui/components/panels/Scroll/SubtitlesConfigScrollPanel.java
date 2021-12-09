@@ -45,7 +45,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
+
+import com.jidesoft.swing.ComboBoxSearchable;
 
 import eu.hansolo.custom.SteelCheckBox;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
@@ -254,7 +256,7 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 		
 		DefaultComboBoxModel<SubEncodings> encoding = new DefaultComboBoxModel<>(SubEncodings.values());
 		jComboBoxencoding.setModel(encoding);
-		jComboBoxencoding.setSelectedIndex(11);;
+		jComboBoxencoding.setSelectedIndex(0);
 		
 		DefaultComboBoxModel<SubtitlesBorderStyle> borderstyle = new DefaultComboBoxModel<>(SubtitlesBorderStyle.values());
 		jComboBoxBorderStyle.setModel(borderstyle);
@@ -514,6 +516,7 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 					}
 					{
 						jComboBoxsubsoftlanguage= new JComboBox<>();
+						ComboBoxSearchable searchable = new ComboBoxSearchable(jComboBoxsubsoftlanguage);
 						jPanelmain.add(jComboBoxsubsoftlanguage, new GridBagConstraints(8, 1, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 						jComboBoxsubsoftlanguage.setToolTipText("Default language of the subtitle");
 						jComboBoxsubsoftlanguage.setEnabled(false);
@@ -812,6 +815,7 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 				 subinfocont.setUseMp4SubtitleEncCodec(false);
 			 subinfocont.setUseSoftSubs(true);
 			 String currentlang=FFmpegManager.getInstance().getISO3CodeFromLanguage((String) jComboBoxsubsoftlanguage.getSelectedItem());
+
 			 if(!currentlang.equals(langinuse)) {
 				 FFmpegManager.getInstance().setDefaultSoftSubtitleLanguage(currentlang);
 			 }
@@ -848,7 +852,7 @@ public class SubtitlesConfigScrollPanel extends JScrollPane implements ActionLis
 			  }
              //this.infocont.setSubsAlternativeEncoding(subsAlternativeEncoding);
 			  if(this.alternativefontenc==null){
-				  subinfocont.setSubsEncoding((SubEncodings) jComboBoxencoding.getSelectedItem());
+				  subinfocont.setSubsEncoding(((SubEncodings) jComboBoxencoding.getSelectedItem()).toString());
 				  subinfocont.setSubsAlternativeEncoding(null);
 			  }
 			  else if(this.alternativefontenc!=null){

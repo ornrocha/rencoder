@@ -22,7 +22,7 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;

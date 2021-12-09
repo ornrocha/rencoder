@@ -29,7 +29,7 @@ import java.util.prefs.Preferences;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.helpers.props.fields.StaticGlobalFields;
 

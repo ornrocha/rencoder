@@ -1,18 +1,16 @@
 /*
  * Copyright 2014
  *
- * This is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Public License as published by 
- * the Free Software Foundation, either version 3 of the License, or 
- * (at your option) any later version. 
+ * This is free software: you can redistribute it and/or modify it under the terms of the GNU Public
+ * License as published by the Free Software Foundation, either version 3 of the License, or (at
+ * your option) any later version.
  * 
- * This code is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU Public License for more details. 
+ * This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Public License for more details.
  * 
- * You should have received a copy of the GNU Public License 
- * along with this code. If not, see http://www.gnu.org/licenses/ 
+ * You should have received a copy of the GNU Public License along with this code. If not, see
+ * http://www.gnu.org/licenses/
  * 
  * Created by Orlando Rocha
  */
@@ -28,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.helpers.IndexedHashMap;
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
@@ -40,264 +38,272 @@ import pt.ornrocha.rencoder.helpers.props.fields.StaticGlobalFields;
  */
 public class ConfigureFFmpegExecutablePath {
 
-	/** The ffmpegpath. */
-	private String ffmpegpath = null;
+  /** The ffmpegpath. */
+  private String ffmpegpath = null;
 
-	/** The importinside. */
-	private boolean importinside = false;
-	private boolean issystemversion = false;
+  /** The importinside. */
+  private boolean importinside = false;
+  private boolean issystemversion = false;
 
-	private ArrayList<String> mandatoryffmpegFeatures = new ArrayList(Arrays.asList("libx264", "ass"));
-	/** The errors. */
-	private ArrayList<String> errors = null;
+  private ArrayList<String> mandatoryffmpegFeatures =
+      new ArrayList(Arrays.asList("libx264", "ass"));
+  /** The errors. */
+  private ArrayList<String> errors = null;
 
-	/** The checkedffmpegfeatures. */
-	private IndexedHashMap<String, Boolean> checkedffmpegfeatures = null;
+  /** The checkedffmpegfeatures. */
+  private IndexedHashMap<String, Boolean> checkedffmpegfeatures = null;
 
-	/**
-	 * Instantiates a new configure ffmpeg executable path.
-	 *
-	 * @param filepath       the filepath
-	 * @param importinternal the importinternal
-	 */
-	public ConfigureFFmpegExecutablePath(String filepath, boolean importinternal, boolean issystemversion) {
-		this.ffmpegpath = filepath;
-		this.importinside = importinternal;
-		this.issystemversion = issystemversion;
-		try {
-			validateAndSetFFmpegExecutable();
-		} catch (IOException e) {
-			Logger.error(e);
-		}
-	}
+  /**
+   * Instantiates a new configure ffmpeg executable path.
+   *
+   * @param filepath the filepath
+   * @param importinternal the importinternal
+   * @throws InterruptedException
+   * @throws IOException
+   */
+  public ConfigureFFmpegExecutablePath(String filepath, boolean importinternal,
+      boolean issystemversion) throws InterruptedException, IOException {
+    this.ffmpegpath = filepath;
+    this.importinside = importinternal;
+    this.issystemversion = issystemversion;
 
-	/**
-	 * Gets the errors.
-	 *
-	 * @return the errors
-	 */
-	public ArrayList<String> getErrors() {
-		return this.errors;
-	}
+    validateAndSetFFmpegExecutable();
 
-	/**
-	 * Validate and set ffmpeg executable.
-	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private void validateAndSetFFmpegExecutable() throws IOException {
+  }
 
-		if (!isvalidOSystemExecutable()) {
-			errors = new ArrayList<>();
-			errors.add("Invalid FFmpeg Executable for this Operating System" + "\n");
-			errors.addAll(getURLFFMPEG());
-			Logger.error("Invalid FFmpeg Executable for this Operating System");
-		} else if (!validFFmpegExecutable()) {
-			errors = new ArrayList<>();
-			errors.addAll(declareErrors());
-			errors.addAll(getURLFFMPEG());
-		} else {
-			if (importinside)
-				copyFFmpegToInternalDirectory();
+  /**
+   * Gets the errors.
+   *
+   * @return the errors
+   */
+  public ArrayList<String> getErrors() {
+    return this.errors;
+  }
 
-			String fontspath = new File(this.ffmpegpath).getAbsolutePath();
+  /**
+   * Validate and set ffmpeg executable.
+   *
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws InterruptedException
+   */
+  private void validateAndSetFFmpegExecutable() throws IOException, InterruptedException {
 
-			checkifexistFontsConf(fontspath, issystemversion);
+    if (!isvalidOSystemExecutable()) {
+      errors = new ArrayList<>();
+      errors.add("Invalid FFmpeg Executable for this Operating System" + "\n");
+      errors.addAll(getURLFFMPEG());
+      Logger.error("Invalid FFmpeg Executable for this Operating System");
+    } else if (!validFFmpegExecutable()) {
+      errors = new ArrayList<>();
+      errors.addAll(declareErrors());
+      errors.addAll(getURLFFMPEG());
+    } else {
+      if (importinside)
+        copyFFmpegToInternalDirectory();
 
-			FFmpegManager.getInstance().setFFmpegPath(ffmpegpath);
-		}
+      String fontspath = new File(this.ffmpegpath).getAbsolutePath();
 
-	}
+      checkifexistFontsConf(fontspath, issystemversion);
 
-	/**
-	 * Copy ffmpeg to internal directory.
-	 */
-	private void copyFFmpegToInternalDirectory() {
-		try {
-			Path filepath = Paths.get(ffmpegpath);
-			String name = filepath.getFileName().toString();
-			String newdest = null;
+      FFmpegManager.getInstance().setFFmpegPath(ffmpegpath);
+    }
 
-			String internencoderfolder = new File(StaticGlobalFields.ENCODERFOLDERPATH).getAbsolutePath();
-			File ffmpegfuturefolder = new File(internencoderfolder);
-			ffmpegfuturefolder.setWritable(true);
+  }
 
-			newdest = internencoderfolder + OSystem.getSystemSeparator() + name;
+  /**
+   * Copy ffmpeg to internal directory.
+   */
+  private void copyFFmpegToInternalDirectory() {
+    try {
+      Path filepath = Paths.get(ffmpegpath);
+      String name = filepath.getFileName().toString();
+      String newdest = null;
 
-			File orig = new File(ffmpegpath);
-			File dest = new File(newdest);
+      String internencoderfolder = new File(StaticGlobalFields.FFMPEGFOLDERPATH).getAbsolutePath();
+      File ffmpegfuturefolder = new File(internencoderfolder);
+      ffmpegfuturefolder.setWritable(true);
 
-			if (dest.exists())
-				dest.delete();
+      newdest = internencoderfolder + OSystem.getSystemSeparator() + name;
 
-			Files.copy(orig.toPath(), dest.toPath());
-			this.ffmpegpath = newdest;
-			Logger.info("FFmpeg binary was copied from " + orig.getAbsolutePath() + " to " + dest.getAbsolutePath());
-		} catch (IOException e) {
-			Logger.error(e);
-		}
+      File orig = new File(ffmpegpath);
+      File dest = new File(newdest);
 
-	}
+      if (dest.exists())
+        dest.delete();
 
-	/**
-	 * Check if exist the fonts configuration file (only in windows)
-	 *
-	 * @param ffmpegfilepath the ffmpegpath
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public static void checkifexistFontsConf(String ffmpegfilepath, boolean issystemversion) throws IOException {
+      Files.copy(orig.toPath(), dest.toPath());
+      this.ffmpegpath = newdest;
+      Logger.info("FFmpeg binary was copied from " + orig.getAbsolutePath() + " to "
+          + dest.getAbsolutePath());
+    } catch (IOException e) {
+      Logger.error(e);
+    }
 
-		Path filepath = Paths.get(ffmpegfilepath);
+  }
 
-		String dir = filepath.getParent().toString();
-		String fontdir = null;
-		if (OSystem.isWindows())
-			fontdir = dir + OSystem.getSystemSeparator() + "fonts";
-		else
-			fontdir = dir + OSystem.getSystemSeparator() + "fontconfig";
+  /**
+   * Check if exist the fonts configuration file (only in windows)
+   *
+   * @param ffmpegfilepath the ffmpegpath
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static void checkifexistFontsConf(String ffmpegfilepath, boolean issystemversion)
+      throws IOException {
 
-		String fontfilepath = fontdir + OSystem.getSystemSeparator() + "fonts.conf";
+    Path filepath = Paths.get(ffmpegfilepath);
 
-		File fontsdir = new File(fontdir);
-		File fontfile = new File(fontfilepath);
-		String fontstocopypath = null;
+    String dir = filepath.getParent().toString();
+    String fontdir = null;
+    if (OSystem.isWindows())
+      fontdir = dir + OSystem.getSystemSeparator() + "fonts";
+    else
+      fontdir = dir + OSystem.getSystemSeparator() + "fontconfig";
 
-		fontstocopypath = new File(getFontsConfigFile()).getAbsolutePath();
+    String fontfilepath = fontdir + OSystem.getSystemSeparator() + "fonts.conf";
 
-		if (!fontfile.exists() && !issystemversion) {
-			fontsdir.mkdir();
-			Files.copy(new File(fontstocopypath).toPath(), fontfile.toPath());
-		}
-	}
+    File fontsdir = new File(fontdir);
+    File fontfile = new File(fontfilepath);
+    String fontstocopypath = null;
 
-	private static String getFontsConfigFile() {
-		String respath = "";
-		if (OSystem.isLinux())
-			respath = StaticGlobalFields.FONTSCONFIGPATH + OSystem.getSystemSeparator()
-					+ StaticGlobalFields.LINUXFONTSFILE;
-		else if (OSystem.isWindows())
-			respath = StaticGlobalFields.FONTSCONFIGPATH + OSystem.getSystemSeparator()
-					+ StaticGlobalFields.WINDOWSFONTSFILE;
-		else if (OSystem.isMacOS())
-			respath = StaticGlobalFields.FONTSCONFIGPATH + OSystem.getSystemSeparator()
-					+ StaticGlobalFields.MACOSFONTSFILE;
-		return respath;
-	}
+    fontstocopypath = new File(getFontsConfigFile()).getAbsolutePath();
 
-	/**
-	 * Declare errors.
-	 *
-	 * @return the array list
-	 */
-	private ArrayList<String> declareErrors() {
-		ArrayList<String> errors = new ArrayList<>();
-		if (checkedffmpegfeatures.containsValue(false))
-			errors.add("The following necessary features are missing:" + "\n");
+    if (!fontfile.exists() && !issystemversion) {
+      fontsdir.mkdir();
+      Files.copy(new File(fontstocopypath).toPath(), fontfile.toPath());
+    }
+  }
 
-		for (Map.Entry<String, Boolean> param : checkedffmpegfeatures.entrySet()) {
-			if (!param.getValue()) {
-				if (param.getKey().equals("libx264"))
-					errors.add("libx264" + "\n");
-				else if (param.getKey().equals("ass"))
-					errors.add("ass" + "\n");
-			}
+  private static String getFontsConfigFile() {
+    String respath = "";
+    if (OSystem.isLinux())
+      respath = StaticGlobalFields.FONTSCONFIGPATH + OSystem.getSystemSeparator()
+          + StaticGlobalFields.LINUXFONTSFILE;
+    else if (OSystem.isWindows())
+      respath = StaticGlobalFields.FONTSCONFIGPATH + OSystem.getSystemSeparator()
+          + StaticGlobalFields.WINDOWSFONTSFILE;
+    else if (OSystem.isMacOS())
+      respath = StaticGlobalFields.FONTSCONFIGPATH + OSystem.getSystemSeparator()
+          + StaticGlobalFields.MACOSFONTSFILE;
+    return respath;
+  }
 
-		}
+  /**
+   * Declare errors.
+   *
+   * @return the array list
+   */
+  private ArrayList<String> declareErrors() {
+    ArrayList<String> errors = new ArrayList<>();
+    if (checkedffmpegfeatures.containsValue(false))
+      errors.add("The following necessary features are missing:" + "\n");
 
-		return errors;
+    for (Map.Entry<String, Boolean> param : checkedffmpegfeatures.entrySet()) {
+      if (!param.getValue()) {
+        if (param.getKey().equals("libx264"))
+          errors.add("libx264" + "\n");
+        else if (param.getKey().equals("ass"))
+          errors.add("ass" + "\n");
+      }
 
-	}
+    }
 
-	/**
-	 * Gets the urlffmpeg.
-	 *
-	 * @return the urlffmpeg
-	 */
-	// https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip
-	// https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
-	private ArrayList<String> getURLFFMPEG() {
-		ArrayList<String> errors = new ArrayList<>();
-		if (OSystem.isLinux()) {
-			errors.add("\n");
-			errors.add("Get Static Version On: https://johnvansickle.com/ffmpeg/");
-		}
-		if (OSystem.isWindows()) {
-			errors.add("\n");
-			errors.add("Get Static Version On: http://ffmpeg.zeranoe.com/builds/");
-		}
-		if (OSystem.isMacOS()) {
-			errors.add("\n");
-			errors.add("Get Static Version On: https://www.evermeet.cx/ffmpeg/");
-		}
+    return errors;
 
-		return errors;
+  }
 
-	}
+  /**
+   * Gets the urlffmpeg.
+   *
+   * @return the urlffmpeg
+   */
+  // https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip
+  // https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+  private ArrayList<String> getURLFFMPEG() {
+    ArrayList<String> errors = new ArrayList<>();
+    if (OSystem.isLinux()) {
+      errors.add("\n");
+      errors.add("Get Static Version On: https://johnvansickle.com/ffmpeg/");
+    }
+    if (OSystem.isWindows()) {
+      errors.add("\n");
+      errors.add("Get Static Version On: http://ffmpeg.zeranoe.com/builds/");
+    }
+    if (OSystem.isMacOS()) {
+      errors.add("\n");
+      errors.add("Get Static Version On: https://www.evermeet.cx/ffmpeg/");
+    }
 
-	/**
-	 * Valid f fmpeg executable.
-	 *
-	 * @return true, if successful
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private boolean validFFmpegExecutable() throws IOException {
-		boolean valid = true;
+    return errors;
 
-		FFmpegParametersChecker.setFFmpegExecutable(ffmpegpath);
-		checkedffmpegfeatures=FFmpegParametersChecker.checkMandatoryCodecs(ffmpegpath, mandatoryffmpegFeatures);
-		
-		if (!checkifallParamTrue(checkedffmpegfeatures))
-			valid = false;
+  }
 
-		return valid;
-	}
+  /**
+   * Valid f fmpeg executable.
+   *
+   * @return true, if successful
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws InterruptedException
+   */
+  private boolean validFFmpegExecutable() throws IOException, InterruptedException {
+    boolean valid = true;
 
-	/**
-	 * Checks if is valid o system executable.
-	 *
-	 * @return true, if is valid o system executable
-	 */
-	private boolean isvalidOSystemExecutable() {
-		boolean valid = true;
+    FFmpegParametersChecker.setFFmpegExecutable(ffmpegpath);
 
-		try {
+    checkedffmpegfeatures =
+        FFmpegParametersChecker.checkMandatoryCodecs(ffmpegpath, mandatoryffmpegFeatures);
+    if (!checkifallParamTrue(checkedffmpegfeatures))
+      valid = false;
 
-			FFmpegParametersChecker.setFFmpegExecutable(ffmpegpath);
+    return valid;
+  }
 
-			Process proc = Runtime.getRuntime().exec(ffmpegpath);
-			InputStream inStream = proc.getErrorStream();
-			ArrayList<String> check = new ArrayList<>();
-			check.add("cannot");
-			FFmpegInputErrorChecker errorchecker = new FFmpegInputErrorChecker(inStream, check, false);
-			Thread t = new Thread(errorchecker);
+  /**
+   * Checks if is valid o system executable.
+   *
+   * @return true, if is valid o system executable
+   */
+  private boolean isvalidOSystemExecutable() {
+    boolean valid = true;
 
-			t.run();
+    try {
 
-			boolean existerrors = errorchecker.existerrors();
-			if (existerrors)
-				valid = false;
+      FFmpegParametersChecker.setFFmpegExecutable(ffmpegpath);
 
-		} catch (IOException e) {
-			Logger.error(e);
-			valid = false;
-		}
-		return valid;
-	}
+      Process proc = Runtime.getRuntime().exec(ffmpegpath);
+      InputStream inStream = proc.getErrorStream();
+      ArrayList<String> check = new ArrayList<>();
+      check.add("cannot");
+      FFmpegInputErrorChecker errorchecker = new FFmpegInputErrorChecker(inStream, check, false);
+      Thread t = new Thread(errorchecker);
 
-	/**
-	 * Checkifall param true.
-	 *
-	 * @param parameters the parameters
-	 * @return true, if successful
-	 */
-	private boolean checkifallParamTrue(IndexedHashMap<String, Boolean> parameters) {
+      t.run();
 
-		for (Map.Entry<String, Boolean> param : parameters.entrySet()) {
-			if (!param.getValue())
-				return false;
-		}
+      boolean existerrors = errorchecker.existerrors();
+      if (existerrors)
+        valid = false;
 
-		return true;
-	}
+    } catch (IOException e) {
+      Logger.error(e);
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  /**
+   * Checkifall param true.
+   *
+   * @param parameters the parameters
+   * @return true, if successful
+   */
+  private boolean checkifallParamTrue(IndexedHashMap<String, Boolean> parameters) {
+
+    for (Map.Entry<String, Boolean> param : parameters.entrySet()) {
+      if (!param.getValue())
+        return false;
+    }
+
+    return true;
+  }
 
 }

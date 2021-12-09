@@ -25,10 +25,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -39,7 +37,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
 import pt.ornrocha.rencoder.gui.components.panels.Scroll.SoftSubtitlesConfigScrollPanel;

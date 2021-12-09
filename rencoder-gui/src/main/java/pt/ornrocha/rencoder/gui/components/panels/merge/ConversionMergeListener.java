@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.swing.SwingWorker;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 public class ConversionMergeListener extends SwingWorker<Void, Void>{
 

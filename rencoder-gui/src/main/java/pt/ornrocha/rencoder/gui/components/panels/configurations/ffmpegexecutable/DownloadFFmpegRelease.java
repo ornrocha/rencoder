@@ -31,15 +31,15 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.kamranzafar.jddl.DirectDownloader;
 import org.kamranzafar.jddl.DownloadTask;
-import org.pmw.tinylog.Logger;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 import org.rauschig.jarchivelib.CompressionType;
+import org.tinylog.Logger;
 
-import pt.ornrocha.rencoder.gui.components.panels.configurations.ffmpegexecutable.panels.FFmpegLinuxRelease;
+import pt.ornrocha.rencoder.ffmpegWrapper.releases.containers.FFmpegReleaseOsType;
 import pt.ornrocha.rencoder.gui.components.panels.configurations.ffmpegexecutable.panels.FFmpegRelease;
-import pt.ornrocha.rencoder.gui.components.panels.configurations.ffmpegexecutable.panels.FFmpegWindowsRelease;
+import pt.ornrocha.rencoder.gui.components.panels.configurations.ffmpegexecutable.panels.FFmpegReleaseCollector;
 import pt.ornrocha.rencoder.gui.components.panels.configurations.ffmpegexecutable.panels.ProgressBarUpdater;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
@@ -93,10 +93,11 @@ public class DownloadFFmpegRelease extends JDialog implements ActionListener {
 		contentPanel.setLayout(gbl_contentPanel);
 		{
 			if (OSystem.isWindows())
-				ffmpegpanel = new FFmpegWindowsRelease();
+				ffmpegpanel = new FFmpegReleaseCollector(FFmpegReleaseOsType.Windows);
 			else
-				ffmpegpanel = new FFmpegLinuxRelease();
-
+				ffmpegpanel = new FFmpegReleaseCollector(FFmpegReleaseOsType.Linux);
+			
+            ffmpegpanel.setSize(600, 500);
 			GridBagConstraints gbc_panel = new GridBagConstraints();
 			gbc_panel.gridheight = 3;
 			gbc_panel.gridwidth = 3;
@@ -135,7 +136,7 @@ public class DownloadFFmpegRelease extends JDialog implements ActionListener {
 			gbl_panel.rowWeights = new double[] { 1.0 };
 			panel.setLayout(gbl_panel);
 			{
-				lblMessages = new JLabel("Waiting");
+				lblMessages = new JLabel(LangTools.getResourceBundleWordLanguage(rb, "Waiting...", "ffmpegconfgui.release.wait"));
 				GridBagConstraints gbc_lblWaiting = new GridBagConstraints();
 				gbc_lblWaiting.gridx = 0;
 				gbc_lblWaiting.gridy = 0;
@@ -169,6 +170,8 @@ public class DownloadFFmpegRelease extends JDialog implements ActionListener {
 				// buttonPane.add(cancelButton);
 			}
 		}
+		
+		this.setSize(500, 400);
 	}
 
 	@Override
@@ -177,11 +180,19 @@ public class DownloadFFmpegRelease extends JDialog implements ActionListener {
 
 		if (cmd.equals(DOWNLOAD)) {
 			try {
-				downloadFFmpegRelease(ffmpegpanel.getURLSelectedRelease());
+				String url=ffmpegpanel.getURLSelectedRelease();
+				if(url!=null) {
+					if(url.toLowerCase().equals("selectrow"))
+						throw new FileNotFoundException(LangTools.getResourceBundleWordLanguage(rb, "Select a release", "ffmpegconfgui.selectrow.error"));
+					else
+						downloadFFmpegRelease(url);
+				}
+				else
+					throw new FileNotFoundException(LangTools.getResourceBundleWordLanguage(rb, "Could not get information about ffmpeg versions", "ffmpegconfgui.release.error"));
+				
 			} catch (InterruptedException | MalformedURLException | FileNotFoundException e1) {
 				JOptionPane.showMessageDialog(this, e1.getMessage(),
 						LangTools.getResourceBundleWordLanguage(rb, "Warning", "warngui.tag"),
-						// "ERROR",
 						JOptionPane.INFORMATION_MESSAGE,
 						new ImageIcon(ListFiles.getIconAbsolutePath("icons/warning64x64.png")));
 			}
@@ -213,7 +224,7 @@ public class DownloadFFmpegRelease extends JDialog implements ActionListener {
 			@Override
 			protected Boolean doInBackground() throws Exception {
 				int count = 0;
-				lblMessages.setText("Downloading...");
+				lblMessages.setText(LangTools.getResourceBundleWordLanguage(rb, "Downloading...", "ffmpegconfgui.release.download"));
 				while (progressBar.getValue() != progressBar.getMaximum()) {
 					Thread.sleep(1000);
 					if (progressBar.getValue() == 0)
@@ -222,7 +233,7 @@ public class DownloadFFmpegRelease extends JDialog implements ActionListener {
 						break;
 				}
 
-				lblMessages.setText("Processing...");
+				lblMessages.setText(LangTools.getResourceBundleWordLanguage(rb, "Configuring...", "ffmpegconfgui.release.configure"));
 				lblMessages.repaint();
 
 				return true;
@@ -236,7 +247,7 @@ public class DownloadFFmpegRelease extends JDialog implements ActionListener {
 					searchdir = decompressFile(fname);
 				} catch (Exception e) {
 					Logger.error(e);
-					lblMessages.setText("Install failed");
+					lblMessages.setText(LangTools.getResourceBundleWordLanguage(rb, "Installation failed", "ffmpegconfgui.release.error.install"));
 					JOptionPane.showMessageDialog(null, "Could not download file from: \n" + url,
 							// LangTools.getResourceBundleWordLanguage(rb,"Warning","warngui.tag"),
 							"ERROR", JOptionPane.INFORMATION_MESSAGE,
@@ -247,7 +258,7 @@ public class DownloadFFmpegRelease extends JDialog implements ActionListener {
 					String ffmpegpath = findFFmpegBin(searchdir);
 					if (ffmpegpath != null) {
 						String parentpath = FilenameUtils.concat(OSystem.getCurrentDir(),
-								StaticGlobalFields.ENCODERFOLDERPATH);
+								StaticGlobalFields.FFMPEGFOLDERPATH);
 						String destpath = FilenameUtils.concat(parentpath, FilenameUtils.getName(ffmpegpath));
 						boolean success = true;
 						try {
@@ -259,7 +270,7 @@ public class DownloadFFmpegRelease extends JDialog implements ActionListener {
 						}
 
 						if (success) {
-							lblMessages.setText("Successfully installed");
+							lblMessages.setText(LangTools.getResourceBundleWordLanguage(rb, "Successfully installed", "ffmpegconfgui.release.success.install"));
 							ffmpegbinpath = destpath;
 						}
 					}

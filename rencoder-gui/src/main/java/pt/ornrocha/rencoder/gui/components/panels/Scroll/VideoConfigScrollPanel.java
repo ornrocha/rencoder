@@ -47,7 +47,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeListener;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import eu.hansolo.custom.SteelCheckBox;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
@@ -76,6 +76,8 @@ import pt.ornrocha.rencoder.gui.components.panels.configurations.HEVCVaapiConfig
 import pt.ornrocha.rencoder.gui.components.panels.configurations.KvazaarConfigurationsPanel;
 import pt.ornrocha.rencoder.gui.components.panels.configurations.MPEG2ConfigurationsPanel;
 import pt.ornrocha.rencoder.gui.components.panels.configurations.OpenH264ConfigurationsPanel;
+import pt.ornrocha.rencoder.gui.components.panels.configurations.SVTAV1ConfigurationsPanel;
+import pt.ornrocha.rencoder.gui.components.panels.configurations.SVTHEVCConfigurationsPanel;
 import pt.ornrocha.rencoder.gui.components.panels.configurations.VPxConfigurationsPanel;
 import pt.ornrocha.rencoder.gui.components.panels.configurations.XvidConfigurationsPanel;
 import pt.ornrocha.rencoder.helpers.IndexedHashMap;
@@ -91,6 +93,8 @@ import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoHEVCQsvEncod
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoHEVCVaapiEncodingInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoKvazaarEncodingInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoOpenH264EncodingInfoContainer;
+import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoSVTAV1EncodingInfoContainer;
+import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoSVTHEVCEncodingInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoXvidEncodingInfoContainer;
 import pt.ornrocha.rencoder.mediafiles.files.containers.maininfo.IGeneralVideoEncInfoContainer;
 
@@ -932,11 +936,11 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 
 			if (codec.equals(VideoCodecs.H264NVENC) || codec.equals(VideoCodecs.HEVCNVENC)) {
 				if (FFmpegManager.getInstance().isCuvidSupported()) {
-					addHWACCELPAnel(new DefaultComboBoxModel<>(HWAccel.getH264HWAccel()));
+					addHWACCELPAnel(new DefaultComboBoxModel<>(HWAccel.getNvidiaHWAccel()));
 					if (this.infocont != null && infocont.getHardwareAccelerationDecoder() != null)
 						comboBoxHWAccel.setSelectedItem(infocont.getHardwareAccelerationDecoder());
 					else
-						comboBoxHWAccel.setSelectedItem(HWAccel.NONE);
+						comboBoxHWAccel.setSelectedItem(HWAccel.NVDEC);
 					updateUI();
 				}
 			}
@@ -960,13 +964,25 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 			jButtoncodecsettings.setEnabled(true);
 			if (allowSlider && steelCheckBoxquality.isSelected())
 				setJSliderSettings(28, 0, 0, 51, 1, 10);
-		} else if (codec.equals(VideoCodecs.AV1)) {
+		} else if (codec.equals(VideoCodecs.AOMAV1)) {
 			deactivateCopySelected();
 			jButtoncodecsettings.setEnabled(true);
 			if (allowSlider && steelCheckBoxquality.isSelected())
 				setJSliderSettings(30, 0, 0, 63, 1, 10);
 
-		} else if (codec.equals(VideoCodecs.XVID)) {
+		} else if (codec.equals(VideoCodecs.SVTAV1)) {
+          deactivateCopySelected();
+          jButtoncodecsettings.setEnabled(true);
+          if (allowSlider && steelCheckBoxquality.isSelected())
+              setJSliderSettings(50, 0, 0, 63, 1, 10);
+
+      }else if (codec.equals(VideoCodecs.SVTHEVC)) {
+          deactivateCopySelected();
+          jButtoncodecsettings.setEnabled(true);
+          if (allowSlider && steelCheckBoxquality.isSelected())
+              setJSliderSettings(32, 0, 0, 51, 1, 10);
+
+      }else if (codec.equals(VideoCodecs.XVID)) {
 			deactivateCopySelected();
 			if (allowSlider && steelCheckBoxquality.isSelected())
 				setJSliderSettings(4, 0, 1, 15, 1, 5);
@@ -1024,8 +1040,12 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 			launchHevcVaapiSettingsPanel();
 		else if (codec.equals(VideoCodecs.HEVCQSV))
 			launchHEVCQsvSettingsPanel();
-		else if (codec.equals(VideoCodecs.AV1))
+		else if (codec.equals(VideoCodecs.AOMAV1))
 			launchAV1SettingsPanel();
+		else if (codec.equals(VideoCodecs.SVTAV1))
+		  launchSVTAV1SettingsPanel();
+		else if (codec.equals(VideoCodecs.SVTHEVC))
+			launchSVTHEVCSettingsPanel();
 		else if (codec.equals(VideoCodecs.VP8) || codec.equals(VideoCodecs.VP9))
 			launchVPxSettingsPanel();
 		else if (codec.equals(VideoCodecs.MPEG2))
@@ -1183,6 +1203,33 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 		    Logger.error(e);
 		}
 	}
+	
+	   protected void launchSVTAV1SettingsPanel() {
+
+	        try {
+	          SVTAV1ConfigurationsPanel confpanel = new SVTAV1ConfigurationsPanel(
+	                    (VideoSVTAV1EncodingInfoContainer) this.infocont);
+	            confpanel.setLocationRelativeTo(this);
+	            confpanel.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	            confpanel.setVisible(true);
+	        } catch (Exception e) {
+	            Logger.error(e);
+	        }
+	    }
+	   
+	   protected void launchSVTHEVCSettingsPanel() {
+
+	        try {
+	        	SVTHEVCConfigurationsPanel confpanel = new SVTHEVCConfigurationsPanel(
+	                    (VideoSVTHEVCEncodingInfoContainer) this.infocont);
+	            confpanel.setLocationRelativeTo(this);
+	            confpanel.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	            confpanel.setVisible(true);
+	        } catch (Exception e) {
+	            Logger.error(e);
+	        }
+	    }
+	
 
 	protected void launchXvidSettingsPanel() {
 
@@ -1321,6 +1368,7 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 
 		checkEncodingPriority();
 		choosecodecaction();
+		
 
 		if (infocont.isUseVideoEncodingCBR()) {
 			bitrateselected();

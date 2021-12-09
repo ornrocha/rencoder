@@ -42,7 +42,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeListener;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import eu.hansolo.custom.SteelCheckBox;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
@@ -428,7 +428,7 @@ public class AudioConfigSrollPanel extends JScrollPane implements ActionListener
 	 * @return the validated allowed audio codecs
 	 */
 	private AudioCodecs[] getvalidatedAllowedAudioCodecs(){
-		return FFmpegManager.getInstance().getSupportAudioCodec(videoContainer, audioInfoContainer);
+		return FFmpegManager.getInstance().getSupportAudioCodec(videoContainer);
 	}
 	
 	
