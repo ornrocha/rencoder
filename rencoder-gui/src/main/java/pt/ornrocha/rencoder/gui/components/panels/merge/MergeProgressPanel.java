@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.execution.FFmpegMergeProcess;
 import pt.ornrocha.rencoder.ffmpegWrapper.execution.progress.MergeProgressBarUpdater;

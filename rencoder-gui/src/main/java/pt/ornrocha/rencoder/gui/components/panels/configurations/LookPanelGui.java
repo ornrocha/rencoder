@@ -34,17 +34,12 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.gui.components.panels.auxiliar.Looktypes;
 import pt.ornrocha.rencoder.gui.components.panels.auxiliar.StaticGuiFieldNames;
-import pt.ornrocha.rencoder.gui.components.panels.auxiliar.StyleUtilities;
 import pt.ornrocha.rencoder.gui.components.panels.info.RestartWarnPanel;
 import pt.ornrocha.rencoder.gui.execute.RestartRencoder;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
@@ -223,7 +218,7 @@ public class LookPanelGui extends JDialog {
 
 		PropertiesConfiguration prop = PropertiesWorker.loadPropertiesRelativePath(StaticGlobalFields.RENCODERCONFIGFILE);
 		String look = (String) prop.getProperty(StaticGuiFieldNames.fileLookandFeelPropkey);
-		Looktypes definedlook = StyleUtilities.getLookAndFeel(look);
+		Looktypes definedlook = Looktypes.getLookAndFeel(look);   //StyleUtilities.getLookAndFeel(look);
 		jComboBoxlook.setSelectedItem(definedlook);
 	}
 
@@ -254,31 +249,50 @@ public class LookPanelGui extends JDialog {
 	 *
 	 * @param mainframe the new look
 	 */
-	public void setLook(JFrame mainframe) {
+//	public void setLook(JFrame mainframe) {
+//
+//		try {
+//			PropertiesConfiguration prop = PropertiesWorker
+//					.loadPropertiesRelativePath(StaticGlobalFields.RENCODERCONFIGFILE);
+//			String currentlook = (String) prop.getProperty(StaticGuiFieldNames.fileLookandFeelPropkey);
+//
+//			String selectedlook = ((Looktypes) jComboBoxlook.getSelectedItem()).getNamespace();
+//
+//			if (!currentlook.equals(selectedlook)) {
+//				//UIManager.setLookAndFeel(value);
+//				Looktypes looktype = Looktypes.getLookAndFeel(selectedlook);
+//				PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE,
+//						StaticGuiFieldNames.fileLookandFeelPropkey, looktype.name());
+//				//SwingUtilities.updateComponentTreeUI(mainframe);
+//				//mainframe.pack();
+//				lookchanged = true;
+//			} else
+//				lookchanged = false;
+//		} catch (Exception e) {
+//		    Logger.error(e);
+//		}
+//		this.dispose();
+//
+//	}
+	
+	public void setLook() {
 
-		try {
-			PropertiesConfiguration prop = PropertiesWorker
-					.loadPropertiesRelativePath(StaticGlobalFields.RENCODERCONFIGFILE);
-			String look = (String) prop.getProperty(StaticGuiFieldNames.fileLookandFeelPropkey);
+		PropertiesConfiguration prop = PropertiesWorker
+				.loadPropertiesRelativePath(StaticGlobalFields.RENCODERCONFIGFILE);
+		String currentlook = (String) prop.getProperty(StaticGuiFieldNames.fileLookandFeelPropkey);
 
-			String value = ((Looktypes) jComboBoxlook.getSelectedItem()).getType();
+		String selectedlook = ((Looktypes) jComboBoxlook.getSelectedItem()).name();
 
-			if (!look.equals(value)) {
-				UIManager.setLookAndFeel(value);
-				Looktypes looktype = StyleUtilities.getLookAndFeel(value);
-				if (looktype.haveSkinTag())
-					looktype.setSkin();
-				PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE,
-						StaticGuiFieldNames.fileLookandFeelPropkey, value);
-				SwingUtilities.updateComponentTreeUI(mainframe);
-				mainframe.pack();
-				lookchanged = true;
-			} else
-				lookchanged = false;
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
-		    Logger.error(e);
-		}
+		if (!currentlook.equals(selectedlook)) {
+
+			Looktypes looktype = Looktypes.getLookAndFeel(selectedlook);
+			PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE,
+					StaticGuiFieldNames.fileLookandFeelPropkey, looktype.name());
+			
+			lookchanged = true;
+		} else
+			lookchanged = false;
+
 		this.dispose();
 
 	}
@@ -308,8 +322,7 @@ public class LookPanelGui extends JDialog {
 		String state = String.valueOf(jCheckBoxtooltipson.isSelected());
 		PropertiesWorker.ChangePropertiesParam(StaticGlobalFields.RENCODERCONFIGFILE, StaticGuiFieldNames.GuiToolTips,
 				state);
-		ToolTipManager.sharedInstance().setEnabled(jCheckBoxtooltipson.isSelected());
-
+		//ToolTipManager.sharedInstance().setEnabled(jCheckBoxtooltipson.isSelected());
 	}
 
 	/**

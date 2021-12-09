@@ -9,7 +9,7 @@ import java.util.Scanner;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.FFmpegInfoPatterns;
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.ReusableInputStream;

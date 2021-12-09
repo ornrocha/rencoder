@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.SwingWorker;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.utilities.FFmpegUtils;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
@@ -40,6 +40,7 @@ public class ProgressBarUpdate extends SwingWorker<Integer, String> {
 
 	public static String PROGRESSDOUBLE = "progressdouble";
 	public static String PROGRESSMSG = "progresserrormsg";
+	private static String builtfontfolder = OSystem.getCurrentDir() + OSystem.getSystemSeparator() + "ffmpegfolder";
 	private static String builtfontstag = OSystem.getCurrentDir() + OSystem.getSystemSeparator() + "ffmpegfolder"
 			+ OSystem.getSystemSeparator() + ".lockfonts";
 
@@ -136,9 +137,11 @@ public class ProgressBarUpdate extends SwingWorker<Integer, String> {
 		int current = 0;
 
 		if (OSystem.isWindows()) {
-			File check = new File(builtfontstag);
+			File check = new File(FFmpegUtils.getFFmpegFontsConfiguredTagFile());
 			if (!check.exists()) {
 				try {
+					//File fonttagfolder=new File(builtfontfolder);
+					//fonttagfolder.mkdirs();
 					check.createNewFile();
 				} catch (Exception e) {
 					Logger.error(e);

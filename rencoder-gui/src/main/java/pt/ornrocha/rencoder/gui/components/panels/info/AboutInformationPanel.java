@@ -42,7 +42,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.gui.components.panels.auxiliar.StyleUtilities;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;

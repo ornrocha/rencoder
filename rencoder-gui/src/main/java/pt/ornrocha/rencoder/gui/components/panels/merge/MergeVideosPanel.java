@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.EncoderControlCenter;
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.EncoderInfoContainerExtractor;

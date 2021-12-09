@@ -20,7 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.border.TitledBorder;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.filters.CropFilter;
 import pt.ornrocha.rencoder.ffmpegWrapper.filters.RotateFilter;

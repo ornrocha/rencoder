@@ -3,7 +3,7 @@ package pt.ornrocha.rencoder.gui.components.panels.auxiliar;
 import java.io.File;
 import java.io.IOException;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
 import pt.ornrocha.rencoder.helpers.props.fields.StaticGlobalFields;

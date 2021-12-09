@@ -107,30 +107,30 @@ public class StyleUtilities {
 	}
 	
 	
-	public static boolean checkallowedlookandfeelskin(String looktag, String skintag){
-		boolean allowed=false;
-		
-		for (Looktypes looks : Looktypes.values()) {
-			if(looks.getType().equals(looktag)){
-				if(looks.haveSkinTag()){
-						allowed=true;
-				}
-			}
-		}
-		return allowed;
-	}
+//	public static boolean checkallowedlookandfeelskin(String looktag, String skintag){
+//		boolean allowed=false;
+//		
+//		for (Looktypes looks : Looktypes.values()) {
+//			if(looks.getNamespace().equals(looktag)){
+//				if(looks.usesSkin()){
+//						allowed=true;
+//				}
+//			}
+//		}
+//		return allowed;
+//	}
 	
-	public static Looktypes getLookAndFeel(String looktag){
-		Looktypes definedlook =null;
-		for (Looktypes looks : Looktypes.values()) {
-			if(looks.getType().equals(looktag)){
-				definedlook=looks;
-			}
-		}
-		if(definedlook!=null)
-		  return definedlook;
-		else
-		  return Looktypes.NIMBUS;	
-	}
+//	public static Looktypes getLookAndFeel(String looktag){
+//		Looktypes definedlook =null;
+//		for (Looktypes looks : Looktypes.values()) {
+//			if(looks.getNamespace().equals(looktag)){
+//				definedlook=looks;
+//			}
+//		}
+//		if(definedlook!=null)
+//		  return definedlook;
+//		else
+//		  return Looktypes.NIMBUS;	
+//	}
 
 }

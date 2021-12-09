@@ -33,9 +33,9 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
-import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.PixelFormatAV1;
+import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.PixelFormatAOMAV1;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
 import pt.ornrocha.rencoder.mediafiles.files.containers.codecs.VideoAV1EncodingInfoContainer;
 
@@ -70,7 +70,7 @@ public class AV1ConfigurationsPanel extends JDialog implements ActionListener {
 	private JLabel jLabellaginframes;
 
 	/** The j combo boxpreset. */
-	private JComboBox<PixelFormatAV1> jComboBoxpixelformat;
+	private JComboBox<PixelFormatAOMAV1> jComboBoxpixelformat;
 
 	/** The close. */
 	private static String CLOSE = "close";
@@ -115,7 +115,7 @@ public class AV1ConfigurationsPanel extends JDialog implements ActionListener {
 	 * Initialize components.
 	 */
 	private void initializeComponents() {
-		jComboBoxpixelformat.setModel(new DefaultComboBoxModel<>(PixelFormatAV1.values()));
+		jComboBoxpixelformat.setModel(new DefaultComboBoxModel<>(PixelFormatAOMAV1.values()));
 		SpinnerNumberModel modelotilecolumns = new SpinnerNumberModel(-1, -1, 6, 1);
 		spinnertilecolumns.setModel(modelotilecolumns);
 		SpinnerNumberModel modelotilerows = new SpinnerNumberModel(-1, -1, 6, 1);
@@ -154,7 +154,7 @@ public class AV1ConfigurationsPanel extends JDialog implements ActionListener {
 				}
 				{
 
-					jComboBoxpixelformat = new JComboBox<PixelFormatAV1>();
+					jComboBoxpixelformat = new JComboBox<PixelFormatAOMAV1>();
 					getContentPane().add(jComboBoxpixelformat, new GridBagConstraints(2, 1, 8, 1, 0.0, 0.0,
 							GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 5, 5), 0, 0));
 
@@ -350,7 +350,7 @@ public class AV1ConfigurationsPanel extends JDialog implements ActionListener {
 	 * Save choosen options to container.
 	 */
 	private void saveChoosenOptionsToContainer() {
-		infocont.setPixformat((PixelFormatAV1) jComboBoxpixelformat.getSelectedItem());
+		infocont.setPixformat((PixelFormatAOMAV1) jComboBoxpixelformat.getSelectedItem());
 		infocont.setTilecolumns((int) spinnertilecolumns.getValue());
 		infocont.setTilerows((int) spinnertilerows.getValue());
 		infocont.setLaginframes((int) spinnerlaginframes.getValue());

@@ -24,9 +24,14 @@ fi
 if [ ! -d $RENCODER_DATA/profiles ]; then
 	cp -R $RENCODER_CONFIG_DATA/profiles $RENCODER_DATA/profiles
 fi
-if [ ! -f $RENCODER_DATA/rencoder.jar ]; then
-	cp $RENCODER_CONFIG_DATA/rencoder.jar $RENCODER_DATA/rencoder.jar
+
+if [ ! -f $RENCODER_DATA/.appimage ]; then
+	cp $RENCODER_CONFIG_DATA/.appimage $RENCODER_DATA/.appimage
 fi
+
+cp $RENCODER_CONFIG_DATA/settings/Version.txt $RENCODER_DATA/settings/Version.txt
+
+
 
 EXEC=$(grep -e '^Exec=.*' "${HERE}"/*.desktop | head -n 1 | cut -d "=" -f 2 | cut -d " " -f 1)
 exec "${EXEC}" "$@"

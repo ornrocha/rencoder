@@ -6,7 +6,9 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 
 public interface IExtraInfoContainer {
 
-    public void saveConfigurationToFileProperties(PropertiesConfiguration prop);
-    public ArrayList<String> getFFmpegCmds();
-    public IExtraInfoContainer clone();
+  public void saveConfigurationToFileProperties(PropertiesConfiguration prop);
+
+  public ArrayList<String> getFFmpegCmds();
+
+  public IExtraInfoContainer clone();
 }

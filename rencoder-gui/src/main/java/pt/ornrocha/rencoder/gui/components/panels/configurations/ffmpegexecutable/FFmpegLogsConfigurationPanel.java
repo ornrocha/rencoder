@@ -44,7 +44,7 @@ import javax.swing.JScrollPane;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.general.FFmpegLogLevel;
 import pt.ornrocha.rencoder.ffmpegWrapper.utilities.FFmpegUtils;

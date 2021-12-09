@@ -38,7 +38,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.XvidFlags;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.XvidMBD;

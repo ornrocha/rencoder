@@ -35,7 +35,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.VideoLevel;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.X26xPresets;

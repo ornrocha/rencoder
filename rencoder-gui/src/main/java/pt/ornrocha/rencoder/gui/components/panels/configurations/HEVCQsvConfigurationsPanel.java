@@ -22,7 +22,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import eu.hansolo.custom.SteelCheckBox;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.PixelFormatQsv;

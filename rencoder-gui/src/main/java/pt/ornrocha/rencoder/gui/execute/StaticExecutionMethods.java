@@ -9,47 +9,50 @@ import pt.ornrocha.rencoder.helpers.props.fields.StaticGlobalFields;
 public final class StaticExecutionMethods {
 
 
-	public static String getUserDirMacOS(){
-		String currentpath = OSystem.getCurrentDir();
-		String usrpath = currentpath.replace("Java", "Resources");
-		return usrpath;
-	}
+  public static String getUserDirMacOS() {
+    String currentpath = OSystem.getCurrentDir();
+    String usrpath = currentpath.replace("Java", "Resources");
+    return usrpath;
+  }
 
 
-	public static boolean existRestartTag(){
-		boolean exist=false;
+  public static boolean existRestartTag() {
+    boolean exist = false;
 
-		String tagpath = OSystem.getCurrentDir()+OSystem.getSystemSeparator()+StaticGlobalFields.RESTARTTAG;
-		File f = new File(tagpath);
-		if(f.exists())
-			exist=true;
+    String tagpath =
+        OSystem.getCurrentDir() + OSystem.getSystemSeparator() + StaticGlobalFields.RESTARTTAG;
+    File f = new File(tagpath);
+    if (f.exists())
+      exist = true;
 
-		return exist;
-	}
+    return exist;
+  }
 
 
-	public static void setRestartTag() throws IOException{
-		String tagpath = OSystem.getCurrentDir()+OSystem.getSystemSeparator()+StaticGlobalFields.RESTARTTAG;
-		File f = new File(tagpath);
-		f.createNewFile();
-	}
+  public static void setRestartTag() throws IOException {
+    String tagpath =
+        OSystem.getCurrentDir() + OSystem.getSystemSeparator() + StaticGlobalFields.RESTARTTAG;
+    File f = new File(tagpath);
+    f.createNewFile();
+  }
 
-	public static void removeRestartTag(){
-		if(existRestartTag()){
-			String tagpath = OSystem.getCurrentDir()+OSystem.getSystemSeparator()+StaticGlobalFields.RESTARTTAG;
-			File f = new File(tagpath);
-			f.delete();
-		}
+  public static void removeRestartTag() {
+    if (existRestartTag()) {
+      String tagpath =
+          OSystem.getCurrentDir() + OSystem.getSystemSeparator() + StaticGlobalFields.RESTARTTAG;
+      File f = new File(tagpath);
+      f.delete();
+    }
 
-	}
+  }
 
-	public static int checkRestartTag(){
-		boolean restart = existRestartTag();
-		if(restart)
-			return 1;
-		else
-			return 0;
-	}
+  public static int checkRestartTag() {
+    boolean restart = existRestartTag();
+    if (restart)
+      return 1;
+    else
+      return 0;
+  }
 
 
 }

@@ -1,6 +1,6 @@
 name: rencoder 
 base: core18 
-version: '1.1.0' 
+version: '1.2.0' 
 summary: Rencoder is a friendly front-end for FFmpeg
 description: |
   Rencoder is a software package developed in Java language to be a front-end for FFmpeg. 

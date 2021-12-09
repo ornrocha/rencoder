@@ -1,18 +1,20 @@
-<installation version="5.0"
-	xmlns:izpack="http://izpack.org/schema/installation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+<izpack:installation version="5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
 
 	<info>
 		<appname>Rencoder</appname>
-		<appversion>1.1.0</appversion>
+		<appversion>@{rencoder.version}</appversion>
 		<javaversion>1.8</javaversion>
+		<pack-compression-format>xz</pack-compression-format>
 	</info>
 
 	<guiprefs width="800" height="600" resizable="no">
 		<splash>images/rencoderbluesc.png</splash>
-		<laf name="substance">
+		<laf name="looks">
 			<os family="unix" />
-			<param name="variant" value="mist-silver" />
+			<param name="variant" value="plastic" />
 		</laf>
 	</guiprefs>
 
@@ -61,8 +63,8 @@
 			override="true"></fileset>	
 		<file src="@{linux.build.dir}/rencoder.jar" targetdir="${INSTALL_PATH}"
 			override="true"></file>
-		<file src="@{linux.build.dir}/rencoderexec.jar" targetdir="${INSTALL_PATH}"
-			override="true"></file>
+<!-- 		<file src="@{linux.build.dir}/rencoderexec.jar" targetdir="${INSTALL_PATH}" -->
+<!-- 			override="true"></file> -->
 		<file src="@{linux.build.dir}/ffmpeg/default_ffmpeg" targetdir="${INSTALL_PATH}/ffmpeg"
 			override="true">
 			<os family="unix" />
@@ -87,9 +89,7 @@
 
 </packs>
 
-<info>
-    <pack-compression-format>xz</pack-compression-format>
-</info>
 
 
-</installation>
+
+</izpack:installation>

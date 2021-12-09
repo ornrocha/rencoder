@@ -161,15 +161,20 @@ public class StaticFFmpegFields {
 	public static final String DECODERHWACCELDEVICE = "-hwaccel_device";
 	public static final String HWACCELAUTO = "auto";
 	public static final String DECODERHWACCELOUTFORMAT = "-hwaccel_output_format";
-
+    
+	public static final String CUDADEFAULTDECODEFILTER = "hwdownload,format=nv12";
 	public static final String VAAPIDEFAULTDECODEFILTER = "format=nv12|vaapi,hwupload";
 	//public static final String VAAPIDEFAULTDECODEFILTER ="scale_vaapi,hwmap=mode=read+write+direct,format=nv12,hwmap";
 
 	public static final String CUVID = "cuvid";
-	public static final String H264CUVID = "h264_cuvid";
+	
 	public static final String MPEG4CUVID = "mpeg4_cuvid";
 	public static final String MPEG2CUVID = "mpeg2_cuvid";
 	public static final String HEVCCUVID = "hevc_cuvid";
+	
+	public static final String CUDA = "cuda";
+	public static final String NVDEC = "nvdec";
+	public static final String VSYNC = "vsync";
 	public static final String VP8CUVID = "vp8_cuvid";
 	public static final String VP9CUVID = "vp9_cuvid";
 
@@ -301,7 +306,11 @@ public class StaticFFmpegFields {
 	public static final String x265 = "libx265";
 	public static final String H265 = x265;
 
-	public static final String AV1 = "libaom-av1";
+	public static final String AOMAV1 = "libaom-av1";
+	
+	public static final String SVTAV1 = "libsvtav1";
+	
+	public static final String SVTHEVC = "libsvt_hevc";
 
 	public static final String H264vaapi = "h264_vaapi";
 	public static final String H264qsv = "h264_qsv";
@@ -409,7 +418,49 @@ public class StaticFFmpegFields {
 	public static final String AV1TILECOLUMNS = "-tile-columns";
 	public static final String AV1TILEROWS = "-tile-rows";
 	
+     ///////////////////////////// STV-AV1 ///////////////////////////////
+	public static final String STVAV1HIELEVEL = "-hielevel";
+	public static final String STVAV1LADEPTH = "-la_depth";
+	public static final String STVAV1TIER = "-tier";
+	public static final String STVAV1RC = "-rc";
+	public static final String STVAV1QP = "-qp";
+	public static final String STVAV1SCDETECT = "-sc_detection";
+	public static final String STVAV1TCOLUMNS = "-tile_columns";
+	public static final String STVAV1TROWS = "-tile_rows";
+	
+    ///////////////////////////// STV-HEVC ///////////////////////////////
+	
+	public static final String STVHEVCASMTYPE = "-asm_type";
+	public static final String STVHEVCAUD = "-aud";
+	public static final String STVHEVCBLMODE = "-bl_mode";
+	public static final String STVHEVCFORCEDIDR = "-forced-idr";
+	public static final String STVHEVCHIELEVEL = "-hielevel";
+	public static final String STVHEVCLADEPTH = "-la_depth";
+	public static final String STVHEVCLEVEL = "-level";
+	public static final String STVHEVCPRESET = "-preset";
+	public static final String STVHEVCPROFILE = "-profile";
+	public static final String STVHEVCQP = "-qp";
+	public static final String STVHEVCRC = "-rc";
+	public static final String STVHEVCSCDETECT = "-sc_detection";
+	public static final String STVHEVCSOCKET = "-socket";
+	public static final String STVHEVCTHREAD = "-thread_count";
+	public static final String STVHEVCTIER = "-tier";
+	public static final String STVHEVCTUNE = "-tune";
+	public static final String STVHEVCHDR = "-hdr";
+	public static final String STVHEVCUMV = "-umv";
+	public static final String STVHEVCTROWS = "-tile_row_cnt";
+	public static final String STVHEVCTCOLUMNS = "-tile_col_cnt";
+	public static final String STVHEVCTSLICEMODE = "-tile_slice_mode";
+	public static final String STVHEVCPREDSTRUCT = "-pred_struct";
+	public static final String STVHEVCVIDINFO = "-vid_info";
+	
+ 
+	
+	
 	///////////////////////////// QSV ///////////////////////////////
 	
 	public static final String QSV = "qsv";
+	
+	
+	
 }

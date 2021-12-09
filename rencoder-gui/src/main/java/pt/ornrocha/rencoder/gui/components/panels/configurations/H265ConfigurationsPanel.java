@@ -32,7 +32,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.H265Tune;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.PixelFormatH265;

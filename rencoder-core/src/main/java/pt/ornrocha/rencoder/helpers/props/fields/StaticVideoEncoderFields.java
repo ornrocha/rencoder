@@ -142,6 +142,8 @@ public class StaticVideoEncoderFields {
 	public static final String H264CUSTOMCMD = "h264.video.ffmpeg.custom.cmd";
 
 	public static final String NVENCRATECONTROL = "nvenc.rate.control";
+	
+	public static final String HWACCELENGINE = "video.hwaccel.decoder";
 
 	// public static final String H264VAAPIPROFILE="h264.vaapi.profile";
 
@@ -285,5 +287,45 @@ public class StaticVideoEncoderFields {
 	public static final String AV1TILES= "av1.tiles";
 	public static final String AV1TILECOLUMNS= "av1.tile.columns";
 	public static final String AV1TILEROWS= "av1.tile.rows";
+	
+	
+	/* ######################## SVT AV1 ###########################*/
+	
+	public static final String SVTAV1HIELEVEL= "svt.av1.hielevel";
+	public static final String SVTAV1LADEPTH= "svt.av1.la_depth";
+	public static final String SVTAV1TIER= "svt.av1.tier";
+	public static final String SVTAV1RC= "svt.av1.rc";
+	public static final String SVTAV1QP= "svt.av1.qp";
+	public static final String SVTAV1SCDECT= "svt.av1.sc_detection";
+	public static final String SVTAV1TILECOLUMN= "svt.av1.tile_columns";
+	public static final String SVTAV1TILEROW= "svt.av1.tile_rows";
+	
+	/* ######################## SVT HEVC ###########################*/
+	
+	public static final String SVTHEVCASMTYPE= "svt.hevc.asm_type";
+	public static final String SVTHEVCAUD= "svt.hevc.aud";
+	public static final String SVTHEVCBLMODE= "svt.hevc.bl_mode";
+	public static final String SVTHEVCFORCEIDR= "svt.hevc.forced-idr";
+	public static final String SVTHEVCHIELEVEL= "svt.hevc.hielevel";
+	public static final String SVTHEVCLADEPTH= "svt.hevc.la_depth";
+	public static final String SVTHEVCLEVEL= "svt.hevc.level";
+	public static final String SVTHEVCPRESET= "svt.hevc.preset";
+	public static final String SVTHEVCPROFILE= "svt.hevc.profile";
+	public static final String SVTHEVCQP= "svt.hevc.qp";
+	public static final String SVTHEVCRC= "svt.hevc.rc";
+	public static final String SVTHEVCSCDECT= "svt.hevc.sc_detection";
+	public static final String SVTHEVCSOCKET= "svt.hevc.socket";
+	public static final String SVTHEVCTHREADCOUNT= "svt.hevc.thread_count";
+	public static final String SVTHEVCTIER= "svt.hevc.tier";
+	public static final String SVTHEVCTUNE= "svt.hevc.tune";
+	public static final String SVTHEVCHDR= "svt.hevc.hdr";
+	public static final String SVTHEVCUMV= "svt.hevc.umv";
+	public static final String SVTHEVCTILEROW= "svt.hevc.tile_row_cnt";
+    public static final String SVTHEVCTILECOLUMN= "svt.hevc.tile_col_cnt";
+    public static final String SVTHEVCSLICEMODE= "svt.hevc.tile_slice_mode";
+    public static final String SVTHEVCPREDSTRUCT= "svt.hevc.pred_struct";
+    public static final String SVTHEVCVIDINFO= "svt.hevc.vid_info";
+	
+	
 
 }

@@ -149,8 +149,23 @@ public class EncodingPropsAuxiliar {
 		Pattern qualpat = null;
 
 		if (s != null) {
-			if (codectype.equals(VideoCodecs.H264) || codectype.equals(VideoCodecs.H265))
+			if (codectype.equals(VideoCodecs.H264) || 
+				codectype.equals(VideoCodecs.H265) || 
+				codectype.equals(VideoCodecs.KVAZAAR) || 
+				codectype.equals(VideoCodecs.SVTHEVC)  || 
+				codectype.equals(VideoCodecs.H264NVENC) ||
+				codectype.equals(VideoCodecs.HEVCNVENC) 
+				)
+				
 				qualpat = Pattern.compile("(^[0-9]$|^[1-4][0-9]$|^5[01]$)");
+			else if (codectype.equals(VideoCodecs.SVTAV1) || codectype.equals(VideoCodecs.AOMAV1))
+				qualpat = Pattern.compile("(^[0-9]$|^[1-5][0-9]$|^6[0-3]$)");
+			else if (codectype.equals(VideoCodecs.H264QSV) || 
+					codectype.equals(VideoCodecs.HEVCQSV) ||
+					codectype.equals(VideoCodecs.H264VAAPI) ||
+					codectype.equals(VideoCodecs.HEVCVAAPI) 
+					)
+				qualpat = Pattern.compile("(^[0-9]$|^[1-4][0-9]$|^5[02]$)");
 			else if (codectype.equals(VideoCodecs.VP8) || codectype.equals(VideoCodecs.VP9))
 				qualpat = Pattern.compile("(^[4-9]$|^[1-5][0-9]$|^6[0-3]$)");
 			else
@@ -176,8 +191,14 @@ public class EncodingPropsAuxiliar {
 
 		if (codec.equals(VideoCodecs.H264))
 			return 23;
-		else if (codec.equals(VideoCodecs.H265))
+		else if (codec.equals(VideoCodecs.H265) || codec.equals(VideoCodecs.KVAZAAR))
 			return 28;
+		else if (codec.equals(VideoCodecs.SVTHEVC))
+			return 32;
+		else if (codec.equals(VideoCodecs.SVTAV1))
+			return 50;
+		else if (codec.equals(VideoCodecs.AOMAV1))
+			return 30;
 		else if (codec.equals(VideoCodecs.VP8) || codec.equals(VideoCodecs.VP9))
 			return 20;
 		else
@@ -441,7 +462,7 @@ public class EncodingPropsAuxiliar {
 	 * @param s the s
 	 * @return the sub encoding by name
 	 */
-	public static SubEncodings getSubEncodingByName(String s) {
+	public static String getSubEncodingByName(String s) {
 
 		SubEncodings subenc = SubEncodings.ISO88591;
 
@@ -449,7 +470,7 @@ public class EncodingPropsAuxiliar {
 			if (sec.toString().toLowerCase().equals(s.toLowerCase()))
 				subenc = sec;
 		}
-		return subenc;
+		return subenc.toString();
 	}
 
 	/**

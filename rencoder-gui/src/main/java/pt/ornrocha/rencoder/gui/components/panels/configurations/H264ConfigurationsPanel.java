@@ -20,7 +20,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import eu.hansolo.custom.SteelCheckBox;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.video.PixelFormat;

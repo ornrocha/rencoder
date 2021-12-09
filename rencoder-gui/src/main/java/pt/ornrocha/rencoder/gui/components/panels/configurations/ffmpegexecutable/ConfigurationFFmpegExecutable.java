@@ -35,17 +35,18 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.io.FilenameUtils;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
-import pt.ornrocha.rencoder.ffmpegWrapper.commands.FileInformationChecker;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.ConfigureFFmpegExecutablePath;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegParametersChecker;
@@ -120,6 +121,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 	private JTable tableffmpeg;
 
 	private JFrame mainframe;
+	private JLabel configffmpegLabel;
 
 	// private ArrayList<String> internalversion;
 
@@ -153,6 +155,16 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				this.setTitle(LangTools.getResourceBundleWordLanguage(rb, "FFmpeg executable configuration","ffmpegconfgui.configuration"));
 				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
 				{
+					configffmpegLabel = new JLabel("<html><center><font color='red'>Checking FFmpeg</font><center/><html/>");
+					configffmpegLabel.setVisible(false);
+					GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+					gbc_lblNewLabel.gridwidth = 3;
+					gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+					gbc_lblNewLabel.gridx = 8;
+					gbc_lblNewLabel.gridy = 7;
+					getContentPane().add(configffmpegLabel, gbc_lblNewLabel);
+				}
+				{
 					jButtonok = new JButton();
 					getContentPane().add(jButtonok, new GridBagConstraints(8, 8, 3, 1, 0.0, 0.0,
 							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
@@ -164,7 +176,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				{
 					jButtoncancel = new JButton();
 					getContentPane().add(jButtoncancel, new GridBagConstraints(4, 8, 3, 1, 0.0, 0.0,
-							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 5), 0, 0));
 					jButtoncancel.setText(LangTools.getResourceBundleWordLanguage(rb, "Cancel", "general.cancel"));
 					jButtoncancel.setActionCommand(CANCELFFMPEGEXECUTABLEOPERATION);
 					jButtoncancel.addActionListener(this);
@@ -172,7 +184,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				{
 					jButtonopen = new JButton();
 					getContentPane().add(jButtonopen, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0,
-							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 5, 5), 0, 0));
 					jButtonopen.setText(LangTools.getResourceBundleWordLanguage(rb, "Load", "general.load"));
 					jButtonopen.setActionCommand(OPENFFMPEGEXECUTABLE);
 					jButtonopen.addActionListener(this);
@@ -180,13 +192,13 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				{
 					jTextFieldpath = new JTextField();
 					getContentPane().add(jTextFieldpath, new GridBagConstraints(3, 6, 7, 1, 0.0, 0.0,
-							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 5, 5), 0, 0));
 					jTextFieldpath.setText("");
 				}
 				{
 					jCheckBoximport = new JCheckBox();
 					getContentPane().add(jCheckBoximport, new GridBagConstraints(1, 7, 7, 1, 0.0, 0.0,
-							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 5, 5), 0, 0));
 					jCheckBoximport.setText(LangTools.getResourceBundleWordLanguage(rb,
 							"Import executable into internal folder", "ffmpegconfgui.importinternal"));
 					jCheckBoximport.setSelected(true);
@@ -195,7 +207,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 					jPanelcurrentversion = new JPanel();
 					GridBagLayout jPanelcurrentversionLayout = new GridBagLayout();
 					getContentPane().add(jPanelcurrentversion, new GridBagConstraints(0, 0, 10, 1, 0.0, 0.0,
-							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 5, 5), 0, 0));
 					jPanelcurrentversion.setBorder(BorderFactory.createTitledBorder(LangTools
 							.getResourceBundleWordLanguage(rb, "Current Version", "ffmpegconfgui.currentversion") + ": "
 							+ LangTools.getResourceBundleWordLanguage(rb, "Not defined", "ffmpegconfgui.notdefined")));
@@ -216,7 +228,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				{
 					jButtongetffmpeg = new JButton();
 					getContentPane().add(jButtongetffmpeg, new GridBagConstraints(0, 8, 2, 1, 0.0, 0.0,
-							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 5), 0, 0));
 					jButtongetffmpeg.setText(
 							LangTools.getResourceBundleWordLanguage(rb, "Get ffmpeg", "ffmpegconfgui.getffmpeg"));
 					jButtongetffmpeg.setActionCommand(GETFFMPEG);
@@ -225,7 +237,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				{
 					jScrollPanefindfmmpeg = new JScrollPane();
 					getContentPane().add(jScrollPanefindfmmpeg, new GridBagConstraints(0, 1, 10, 5, 0.0, 0.0,
-							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+							GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 5, 5), 0, 0));
 					jScrollPanefindfmmpeg
 					.setBorder(BorderFactory.createTitledBorder(LangTools.getResourceBundleWordLanguage(rb,
 							"Path of installed FFmpeg versions", "ffmpegconfgui.pathoffmpeg")));
@@ -245,7 +257,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 	private void setCurrentFFmpegPath() {
 		String currentpath = FFmpegManager.getInstance().getFFmpegPath();
 		if (currentpath != null) {
-			if (FileInformationChecker.validFFmpegExec(currentpath)) {
+			if (FFmpegManager.isFFmpegValidExecutable(currentpath)) {
 				jTextFieldcurrent.setText(currentpath);
 				setCurrentFFmpegVersion();
 				Logger.info("Current FFmpeg folder: " + currentpath);
@@ -322,7 +334,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 
 				try {
 					tip = getValueAt(rowIndex, 0).toString();
-					tip="<html><font size=\"4\", color=\"blue\"><b>"+tip+"</b></font></html>";
+					tip="<html><font size=\"4\", color=\"white\"><b>"+tip+"</b></font></html>";
 				} catch (RuntimeException e1) {
 					Logger.error(e1);
 				}
@@ -330,7 +342,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				return tip;
 			}
 		};
-		jScrollPanefindfmmpeg.getViewport().add(tableffmpeg);
+		jScrollPanefindfmmpeg.setViewportView(tableffmpeg);
 		tableffmpeg.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(final MouseEvent e) {
@@ -362,8 +374,9 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 
 		if (action.equals(CANCELFFMPEGEXECUTABLEOPERATION))
 			this.dispose();
-		else if (action.equals(VALIDATEANDSETFFMPEGEXECUTABLE))
-			validateandsetffmpegexecutable();
+		else if (action.equals(VALIDATEANDSETFFMPEGEXECUTABLE)) {
+			validateandsetffmpegexecutable(this);
+		}  
 		// this.dispose();
 		else if (action.equals(OPENFFMPEGEXECUTABLE))
 			openExecutableFFmpeg();
@@ -412,46 +425,106 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 	/**
 	 * Validate and set ffmpeg executable.
 	 */
-	private void validateandsetffmpegexecutable() {
-		boolean valid = true;
-		boolean systemversion = false;
-		if (tableffmpeg.getRowCount() > 0) {
-			if (validChoosenffmpegpath()) {
-				int rows = tableffmpeg.getRowCount();
-				for (int i = 0; i < rows; i++) {
-					boolean val = (boolean) tableffmpeg.getValueAt(i, 1);
-					if (val) {
-						FFmpegExePath = (String) tableffmpeg.getValueAt(i, 0);
-						if (FFmpegManager.getInstance().isCustomFFmpeg(FFmpegExePath))
-							systemversion = false;
-						else
-							systemversion = true;
-						jCheckBoximport.setSelected(false);
-					}
+	
+	private void validateandsetffmpegexecutable(final ConfigurationFFmpegExecutable dialog) {
+		
+		new SwingWorker<Boolean, Object>() {
+
+			@Override
+			protected Boolean doInBackground() throws Exception {
+				
+				boolean valid = true;
+				boolean systemversion = false;
+
+				if (tableffmpeg.getRowCount() > 0) {
+					if (validChoosenffmpegpath()) {
+						int rows = tableffmpeg.getRowCount();
+						for (int i = 0; i < rows; i++) {
+							boolean val = (boolean) tableffmpeg.getValueAt(i, 1);
+							if (val) {
+								FFmpegExePath = (String) tableffmpeg.getValueAt(i, 0);
+								if (FFmpegManager.getInstance().isCustomFFmpeg(FFmpegExePath))
+									systemversion = false;
+								else
+									systemversion = true;
+								jCheckBoximport.setSelected(false);
+							}
+						}
+					} else
+						valid = false;
 				}
-			} else
-				valid = false;
-		}
 
-		if (valid) {
-			ConfigureFFmpegExecutablePath configure = new ConfigureFFmpegExecutablePath(FFmpegExePath,
-					jCheckBoximport.isSelected(), systemversion);
-			ArrayList<String> errors = configure.getErrors();
-			if (errors != null) {
-				errorpanel = new ConfigurationFFmpegErrorsPanel(errors);
-				errorpanel.addCloseButtonActionListener(this);
-				errorpanel.setLocationRelativeTo(this);
-				errorpanel.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				errorpanel.setVisible(true);
-			} else {
-				FFmpegManager.getInstance().LoadFFmpeg();
-				Maingui.getInstance().resetGeneralEncodingPropertiesToDefault();
-				Maingui.getInstance().reloadProfiles();
-				this.dispose();
+				if (valid) {
+					configffmpegLabel.setVisible(true);
+					ConfigureFFmpegExecutablePath configure = new ConfigureFFmpegExecutablePath(FFmpegExePath,
+							jCheckBoximport.isSelected(), systemversion);
+					ArrayList<String> errors = configure.getErrors();
+					if (errors != null) {
+						errorpanel = new ConfigurationFFmpegErrorsPanel(errors);
+						errorpanel.addCloseButtonActionListener(dialog);
+						errorpanel.setLocationRelativeTo(dialog);
+						errorpanel.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						errorpanel.setVisible(true);
+					} else {
+						FFmpegManager.getInstance().LoadFFmpeg();
+						Maingui.getInstance().resetGeneralEncodingPropertiesToDefault();
+						Maingui.getInstance().reloadProfiles();
+						dialog.dispose();
+					}
+					configffmpegLabel.setVisible(false);
+				}
+				return true;
 			}
-		}
-
+			
+//			@Override
+//			protected void done() {
+//				dialog.dispose();
+//			}
+//			
+			
+		}.execute();
+		
 	}
+		
+//		boolean valid = true;
+//		boolean systemversion = false;
+//		if (tableffmpeg.getRowCount() > 0) {
+//			if (validChoosenffmpegpath()) {
+//				int rows = tableffmpeg.getRowCount();
+//				for (int i = 0; i < rows; i++) {
+//					boolean val = (boolean) tableffmpeg.getValueAt(i, 1);
+//					if (val) {
+//						FFmpegExePath = (String) tableffmpeg.getValueAt(i, 0);
+//						if (FFmpegManager.getInstance().isCustomFFmpeg(FFmpegExePath))
+//							systemversion = false;
+//						else
+//							systemversion = true;
+//						jCheckBoximport.setSelected(false);
+//					}
+//				}
+//			} else
+//				valid = false;
+//		}
+//
+//		if (valid) {
+//			ConfigureFFmpegExecutablePath configure = new ConfigureFFmpegExecutablePath(FFmpegExePath,
+//					jCheckBoximport.isSelected(), systemversion);
+//			ArrayList<String> errors = configure.getErrors();
+//			if (errors != null) {
+//				errorpanel = new ConfigurationFFmpegErrorsPanel(errors);
+//				errorpanel.addCloseButtonActionListener(this);
+//				errorpanel.setLocationRelativeTo(this);
+//				errorpanel.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//				errorpanel.setVisible(true);
+//			} else {
+//				FFmpegManager.getInstance().LoadFFmpeg();
+//				Maingui.getInstance().resetGeneralEncodingPropertiesToDefault();
+//				Maingui.getInstance().reloadProfiles();
+//				this.dispose();
+//			}
+//		}
+//
+//	}
 
 	private boolean validChoosenffmpegpath() {
 

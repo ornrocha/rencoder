@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 
 /**

@@ -31,7 +31,7 @@ import javax.swing.JDialog;
 import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
 

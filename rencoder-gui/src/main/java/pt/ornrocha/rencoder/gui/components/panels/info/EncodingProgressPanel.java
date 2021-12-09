@@ -49,7 +49,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegLogInfoContainer;
 import pt.ornrocha.rencoder.ffmpegWrapper.execution.ExecFilesInfoContainer;

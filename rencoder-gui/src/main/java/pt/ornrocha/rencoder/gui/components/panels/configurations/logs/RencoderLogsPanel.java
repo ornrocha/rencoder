@@ -30,8 +30,8 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
-import org.pmw.tinylog.Level;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Level;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.general.FFmpegLogLevel;
 import pt.ornrocha.rencoder.ffmpegWrapper.utilities.FFmpegUtils;

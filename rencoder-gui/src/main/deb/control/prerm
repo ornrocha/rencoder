@@ -1,2 +1,15 @@
-rm -R /opt/rencoder/ffmpeg
-rm -R /opt/rencoder/profiles
+if [ -d /opt/rencoder/ffmpeg ]; then
+	rm -R /opt/rencoder/ffmpeg
+fi
+
+if [ -d /opt/rencoder/profiles ]; then
+	rm -R /opt/rencoder/profiles
+fi
+
+if [ -d /opt/rencoder/Logs ]; then
+	rm -R /opt/rencoder/Logs
+fi
+
+if [ -f /opt/rencoder/rencoder.log ]; then
+	rm /opt/rencoder/rencoder.log
+fi

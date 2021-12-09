@@ -1,18 +1,21 @@
-<installation version="5.0"
-	xmlns:izpack="http://izpack.org/schema/installation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<izpack:installation version="5.0"
+	xmlns:izpack="http://izpack.org/schema/installation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
 
 	<info>
 		<appname>Rencoder</appname>
-		<appversion>1.1.0</appversion>
+		<appversion>@{rencoder.version}</appversion>
 		<javaversion>1.8</javaversion>
+		<pack-compression-format>xz</pack-compression-format>
 	</info>
 
 	<guiprefs width="800" height="600" resizable="no">
 		<splash>images/rencoderbluesc.png</splash>
-		<laf name="substance">
+		<laf name="looks">
 			<os family="windows" />
-			<param name="variant" value="mist-silver" />
+			<param name="variant" value="windows" />
 		</laf>
 	</guiprefs>
 
@@ -25,11 +28,13 @@
 	</locale>
 
 	<resources>
-		<res id="LicencePanel.licence" parse="yes" src="settings/license.txt" />
-		<res id="shortcutSpec.xml" src="default_shortcut_specification.xml"/>
-<!-- 		<res id="jbiclustge" src="images/rencoderbluesc.png"/> -->
-		<res id="installer.langsel.img" src="icons/rencoderbluesc.png"/>
-		<res id="Installer.image" src="icons/rencoderbluesc.png"/>
+		<res id="LicencePanel.licence" parse="yes"
+			src="settings/license.txt" />
+		<res id="shortcutSpec.xml"
+			src="default_shortcut_specification.xml" />
+		<!-- <res id="jbiclustge" src="images/rencoderbluesc.png"/> -->
+		<res id="installer.langsel.img" src="icons/rencoderbluesc.png" />
+		<res id="Installer.image" src="icons/rencoderbluesc.png" />
 	</resources>
 
 	<panels>
@@ -37,62 +42,69 @@
 		<panel classname="LicencePanel" />
 		<panel classname="TargetPanel" />
 		<panel classname="InstallPanel" />
-		<panel classname="ShortcutPanel"/>
+		<panel classname="ShortcutPanel" />
 		<panel classname="FinishPanel" />
 	</panels>
 
 	<variables>
 		<variable name="DesktopShortcutCheckboxEnabled" value="true" />
-		<variable name="TargetPanel.dir.windows" value="$USER_HOME/Rencoder" />
+		<variable name="TargetPanel.dir.windows"
+			value="$USER_HOME/Rencoder" />
 	</variables>
 
 	<packs>
-	<pack name="Rencoder_Core" required="yes" id="pack.core" preselected="yes">
-		<description>Core files</description>
-		<fileset dir="@{windows.build.dir}/profiles" targetdir="${INSTALL_PATH}/profiles"
-			override="true"></fileset>
-		<fileset dir="@{windows.build.dir}/settings" targetdir="${INSTALL_PATH}/settings"
-			override="true"></fileset>
-		<fileset dir="@{windows.build.dir}/languages" targetdir="${INSTALL_PATH}/languages"
-			override="true"></fileset>	
-		<fileset dir="@{windows.build.dir}/icons" targetdir="${INSTALL_PATH}/icons"
-			override="true"></fileset>	
-		<file src="@{windows.build.dir}/rencoder.jar" targetdir="${INSTALL_PATH}"
-			override="true"></file>
-		<file src="@{windows.build.dir}/rencoderexec.jar" targetdir="${INSTALL_PATH}"
-			override="true"></file>
-		<file src="@{windows.build.dir}/ffmpeg/default_ffmpeg.exe" targetdir="${INSTALL_PATH}/ffmpeg"
-			override="true">
-			<os family="windows"/>
-		</file>	
-		<file src="@{windows.build.dir}/jre" targetdir="${INSTALL_PATH}"
-			override="true">
-			<os family="windows"/>
-		</file>	
-		<file src="@{windows.build.dir}/run.bat" targetdir="${INSTALL_PATH}"
-			override="true">
-			<os family="windows"/>
-		</file>
-		<executable targetfile="$INSTALL_PATH/run.bat"
-			type="bin" stage="never" failure="warn" keep="true">
-			<os family="windows"/>
-		</executable>
-		<executable targetfile="$INSTALL_PATH//jre/bin/java.exe"
-			type="bin" stage="never" failure="warn" keep="true">
-			<os family="windows"/>
-		</executable>
-	</pack>
-    <natives>
-    	<native type="izpack" name="ShellLink_x64.dll">
-     		<os family="windows" />
-   		 </native>
+		<pack name="Rencoder_Core" required="yes" id="pack.core"
+			preselected="yes">
+			<description>Core files</description>
+			<fileset dir="@{windows.build.dir}/profiles"
+				targetdir="${INSTALL_PATH}/profiles" override="true"></fileset>
+			<fileset dir="@{windows.build.dir}/settings"
+				targetdir="${INSTALL_PATH}/settings" override="true"></fileset>
+			<fileset dir="@{windows.build.dir}/languages"
+				targetdir="${INSTALL_PATH}/languages" override="true"></fileset>
+			<fileset dir="@{windows.build.dir}/icons"
+				targetdir="${INSTALL_PATH}/icons" override="true"></fileset>
+			<file src="@{windows.build.dir}/rencoder.jar"
+				targetdir="${INSTALL_PATH}" override="true"></file>
+<!-- 			<file src="@{windows.build.dir}/rencoderexec.jar" -->
+<!-- 				targetdir="${INSTALL_PATH}" override="true"></file> -->
+			<file src="@{windows.build.dir}/ffmpeg/default_ffmpeg.exe"
+				targetdir="${INSTALL_PATH}/ffmpeg" override="true">
+				<os family="windows" />
+			</file>
+			<file src="@{windows.build.dir}/jre" targetdir="${INSTALL_PATH}"
+				override="true">
+				<os family="windows" />
+			</file>
+			<file src="@{windows.build.dir}/run.bat"
+				targetdir="${INSTALL_PATH}" override="true">
+				<os family="windows" />
+			</file>
+			<executable targetfile="$INSTALL_PATH/run.bat" type="bin"
+				stage="never" failure="warn" keep="true">
+				<os family="windows" />
+			</executable>
+			<executable targetfile="$INSTALL_PATH//jre/bin/java.exe"
+				type="bin" stage="never" failure="warn" keep="true">
+				<os family="windows" />
+			</executable>
+		</pack>
+	</packs>
+
+	<natives>
+		<native type="izpack" name="ShellLink.dll" />
+		<native type="izpack" name="ShellLink_x64.dll" />
+		<native type="izpack" name="WinSetupAPI.dll" />
+		<native type="izpack" name="WinSetupAPI_x64.dll" />
+		<native type="3rdparty" name="COIOSHelper.dll"
+			uninstaller="true">
+			<os family="windows" />
+		</native>
+		<native type="3rdparty" name="COIOSHelper_x64.dll"
+			uninstaller="true">
+			<os family="windows" />
+		</native>
 	</natives>
 
-</packs>
 
-<info>
-    <pack-compression-format>xz</pack-compression-format>
-</info>
-
-
-</installation>
+</izpack:installation>

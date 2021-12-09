@@ -24,6 +24,7 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -36,10 +37,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 
-import org.pmw.tinylog.Logger;
+import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegParametersChecker;
 import pt.ornrocha.rencoder.ffmpegWrapper.enumerators.general.EncoderType;
+import pt.ornrocha.rencoder.gui.Maingui;
 import pt.ornrocha.rencoder.gui.components.tables.GenericTableViewerModel;
 import pt.ornrocha.rencoder.helpers.IndexedHashMap;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
@@ -103,14 +105,21 @@ public class InformationEncodersPanel extends JDialog implements ActionListener 
 
 	/**
 	 * Instantiates a new information encoders panel.
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
 	public InformationEncodersPanel() {
 		rb = ResourceBundle.getBundle("lang", LangTools.getDefinedLanguage(), LangTools.loadLanguagesPath());
 		initGUI();
 		this.setModal(true);
-		videoencoders = FFmpegParametersChecker.getFFmpegEncoders(EncoderType.VIDEO);
-		audioencoders = FFmpegParametersChecker.getFFmpegEncoders(EncoderType.AUDIO);
-		subsencoders = FFmpegParametersChecker.getFFmpegEncoders(EncoderType.SUBTITLES);
+		try {
+			videoencoders = FFmpegParametersChecker.getFFmpegEncoders(EncoderType.VIDEO);
+		    audioencoders = FFmpegParametersChecker.getFFmpegEncoders(EncoderType.AUDIO);
+		    subsencoders = FFmpegParametersChecker.getFFmpegEncoders(EncoderType.SUBTITLES);
+		} catch (Exception e) {
+			Maingui.getInstance().showErrorMessage(e.getMessage(), null);
+		}
+		
 		fillvideoencoderstable();
 		fillaudioencoderstable();
 		fillsubsencoderstable();

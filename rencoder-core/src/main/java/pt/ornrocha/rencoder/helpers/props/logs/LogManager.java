@@ -1,10 +1,8 @@
 package pt.ornrocha.rencoder.helpers.props.logs;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.pmw.tinylog.Configurator;
-import org.pmw.tinylog.Level;
-import org.pmw.tinylog.writers.ConsoleWriter;
-import org.pmw.tinylog.writers.FileWriter;
+import org.tinylog.Level;
+import org.tinylog.provider.ProviderRegistry;
 
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
 import pt.ornrocha.rencoder.helpers.props.fields.StaticGlobalFields;
@@ -13,8 +11,10 @@ import pt.ornrocha.rencoder.helpers.props.readwrite.PropertiesWorker;
 public class LogManager {
 
 	public static void initialiseLogger() {
-		Configurator.currentConfig().writer(new ConsoleWriter(), getRencoderLogLevel(), "{level}: {message}")
-				.addWriter(new FileWriter(getlogPath()), getRencoderLogLevel(), "{level}: {message}").activate();
+		
+		RencoderLoggingProvider logger = (RencoderLoggingProvider) ProviderRegistry.getLoggingProvider();
+		logger.setLevel(getRencoderLogLevel());
+	
 	}
 
 	public static String getlogPath() {
@@ -43,15 +43,14 @@ public class LogManager {
 		switch (loglevel) {
 		case "error":
 			return Level.ERROR;
-		case "warning":
-			return Level.WARNING;
 		case "info":
 			return Level.INFO;
 		case "trace":
 			return Level.TRACE;
 		case "debug":
 			return Level.DEBUG;
-
+				case "off":
+			return Level.OFF;	
 		default:
 			return Level.INFO;
 		}

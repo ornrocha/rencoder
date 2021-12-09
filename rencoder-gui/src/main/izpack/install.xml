@@ -62,8 +62,8 @@
 			override="true"></fileset>	
 		<file src="@{builddir}/rencoder.jar" targetdir="${INSTALL_PATH}"
 			override="true"></file>
-		<file src="@{builddir}/rencoderexec.jar" targetdir="${INSTALL_PATH}"
-			override="true"></file>
+<!-- 		<file src="@{builddir}/rencoderexec.jar" targetdir="${INSTALL_PATH}" -->
+<!-- 			override="true"></file> -->
 		<file src="@{builddir}/ffmpeg/default_ffmpeg" targetdir="${INSTALL_PATH}/ffmpeg"
 			override="true">
 			<os family="unix" />

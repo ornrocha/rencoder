@@ -13,6 +13,7 @@ public final class StaticGuiFieldNames {
 	/** The Constant nimbuslook. */
 	public static final String nimbuslook = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
 
+
 	/** The Constant seaglass. */
 	public static final String seaglass = "com.seaglasslookandfeel.SeaGlassLookAndFeel";
 
