@@ -286,6 +286,12 @@ public enum VideoCodecs {
     public boolean supportsDecodingHardwareAccel() {
       return true;
     }
+    
+    @Override
+    public HWAccel[] getSupportedHWAccelDecoders() {
+    	return new HWAccel[] {HWAccel.NVDEC,HWAccel.VSYNC, HWAccel.CUDA,
+			HWAccel.MPEG4CUVID, HWAccel.MPEG2CUVID};
+    }
 
     @Override
     public ArrayList<String> getCmdDecodingFilter(HWAccel hwaccel) {
@@ -302,14 +308,13 @@ public enum VideoCodecs {
     @Override
     public ArrayList<String> getDecodingHWAcceleration() {
       return (ArrayList<String>) Stream
-          .of(StaticFFmpegFields.DECODERHWACCEL, StaticFFmpegFields.CUVID,
-              StaticFFmpegFields.encodevideocodec, StaticFFmpegFields.CUDA)
+          .of(StaticFFmpegFields.DECODERHWACCEL, StaticFFmpegFields.NVDEC)
           .collect(Collectors.toList());
     }
 
     @Override
     public String getDecodingHWACCType() {
-      return StaticFFmpegFields.CUVID;
+      return StaticFFmpegFields.NVDEC;
     }
 
     @Override
@@ -362,6 +367,11 @@ public enum VideoCodecs {
     @Override
     public boolean supportsDecodingHardwareAccel() {
       return true;
+    }
+    
+    @Override
+    public HWAccel[] getSupportedHWAccelDecoders() {
+    	return new HWAccel[] {HWAccel.VAAPI};
     }
 
     @Override
@@ -436,13 +446,15 @@ public enum VideoCodecs {
     public boolean supportsDecodingHardwareAccel() {
       return true;
     }
+    
+    @Override
+    public HWAccel[] getSupportedHWAccelDecoders() {
+    	return new HWAccel[] {HWAccel.QSV};
+    }
 
     @Override
     public ArrayList<String> getCmdDecodingFilter(HWAccel hwaccel) {
-      return null;
-      // return (ArrayList<String>) Stream
-      // .of(StaticFFmpegFields.FILTERFFMPEGCMD, StaticFFmpegFields.VAAPIDEFAULTDECODEFILTER)
-      // .collect(Collectors.toList());
+      return new ArrayList<String>();
     }
 
     @Override
@@ -556,17 +568,34 @@ public enum VideoCodecs {
 
     @Override
     public boolean needsDecodingFilter() {
-      return false;
+      return true;
     }
 
     @Override
     public boolean supportsDecodingHardwareAccel() {
-      return false;
+      return true;
+    }
+    
+    @Override
+    public HWAccel[] getSupportedHWAccelDecoders() {
+    	return new HWAccel[] {HWAccel.NVDEC,HWAccel.VSYNC, HWAccel.CUDA,
+			HWAccel.MPEG4CUVID, HWAccel.MPEG2CUVID};
+    }
+    
+    @Override
+    public ArrayList<String> getCmdDecodingFilter(HWAccel hwaccel) {
+
+    	if (hwaccel!=null && hwaccel.equals(HWAccel.CUDA))
+    		return (ArrayList<String>) Stream
+    	          .of(StaticFFmpegFields.FILTERFFMPEGCMD, StaticFFmpegFields.CUDADEFAULTDECODEFILTER)
+    	          .collect(Collectors.toList());
+    	else
+    		return new ArrayList<String>();
     }
 
     @Override
     public ArrayList<String> getDecodingHWAcceleration() {
-      return (ArrayList<String>) Stream.of(StaticFFmpegFields.DECODERHWACCEL, "nvdec")
+      return (ArrayList<String>) Stream.of(StaticFFmpegFields.DECODERHWACCEL, StaticFFmpegFields.NVDEC)
           .collect(Collectors.toList());
     }
 
@@ -618,6 +647,11 @@ public enum VideoCodecs {
     @Override
     public boolean supportsDecodingHardwareAccel() {
       return true;
+    }
+    
+    @Override
+    public HWAccel[] getSupportedHWAccelDecoders() {
+    	return new HWAccel[] {HWAccel.VAAPI};
     }
 
     @Override
@@ -687,6 +721,11 @@ public enum VideoCodecs {
     @Override
     public boolean supportsDecodingHardwareAccel() {
       return true;
+    }
+    
+    @Override
+    public HWAccel[] getSupportedHWAccelDecoders() {
+    	return new HWAccel[] {HWAccel.QSV};
     }
 
     @Override
@@ -915,6 +954,11 @@ public enum VideoCodecs {
     public boolean supportsDecodingHardwareAccel() {
       return true;
     }
+    
+    @Override
+    public HWAccel[] getSupportedHWAccelDecoders() {
+    	return new HWAccel[] {HWAccel.VAAPI};
+    }
 
     @Override
     public ArrayList<String> getCmdDecodingFilter(HWAccel hwaccel) {
@@ -1034,6 +1078,11 @@ public enum VideoCodecs {
     @Override
     public boolean supportsDecodingHardwareAccel() {
       return true;
+    }
+    
+    @Override
+    public HWAccel[] getSupportedHWAccelDecoders() {
+    	return new HWAccel[] {HWAccel.VAAPI};
     }
 
     @Override
@@ -1391,6 +1440,10 @@ public enum VideoCodecs {
 
   public String getDecodingHWACCType() {
     return getDecodingHWACCType();
+  }
+  
+  public HWAccel[] getSupportedHWAccelDecoders() {
+	  return getSupportedHWAccelDecoders();
   }
 
   public static void main(String[] args) {

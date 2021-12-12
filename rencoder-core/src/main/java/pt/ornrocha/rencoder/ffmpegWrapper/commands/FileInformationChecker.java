@@ -16,7 +16,6 @@
  */
 package pt.ornrocha.rencoder.ffmpegWrapper.commands;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -70,7 +69,7 @@ public class FileInformationChecker {
   public void getFileInformation(String filepath) throws IOException {
 
     String ffmpegexepath = FFmpegUtils.getFFmpegExePath();
-
+    Logger.debug("Checking file information with cmd = " + String.join(" ", ffmpegexepath, "-i", filepath));
     ProcessBuilder pb = new ProcessBuilder(ffmpegexepath, "-i", filepath);
     Process p = null;
 
@@ -107,6 +106,10 @@ public class FileInformationChecker {
     String stream;
 
     Logger.debug("Stream information: " + FilenameUtils.getName(filepath) + "\n");
+    
+    try {
+		
+	
     while (null != (stream = sc.findWithinHorizon(streamPattern, 0))) {
       Logger.debug(stream);
 
@@ -119,7 +122,12 @@ public class FileInformationChecker {
       if (stream.contains("Subtitle:"))
         getSubtitleFields(stream);
     }
-    Logger.debug("\n");
+    } catch (Exception e) {
+		Logger.error(e);
+		Logger.debug(e);
+	}
+
+    Logger.debug("Information checked\n");
 
 
   }

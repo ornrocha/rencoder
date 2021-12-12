@@ -26,13 +26,11 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.tinylog.Level;
 import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.ReusableInputStream;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegLogInfoContainer;
 import pt.ornrocha.rencoder.ffmpegWrapper.execution.progress.ProgressBarUpdate;
-import pt.ornrocha.rencoder.ffmpegWrapper.execution.progress.ProgressLogRegister;
 import pt.ornrocha.rencoder.ffmpegWrapper.subtitles.SubtitleConverter;
 import pt.ornrocha.rencoder.ffmpegWrapper.utilities.FFmpegUtils;
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
@@ -274,9 +272,12 @@ public class FFmpegProcess implements Runnable {
         });
 
         exitValue = process.waitFor();
-
+       
         if (exitValue == 1) {
-          this.progbarupdater1pass.setErrorFlagInProcess();
+        	if(killer.isIscanceloperation())
+        		this.progbarupdater1pass.setCancelFlagInProcess();
+        	else
+        		this.progbarupdater1pass.setErrorFlagInProcess();
           deleteOutputMovieFile();
           // deleteTempFiles();
 

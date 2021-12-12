@@ -463,7 +463,7 @@
 	 	<antcall target="prepare-linux-release-files"/>
 	 	<antcall target="setup-izpack-linux"/>	
 	 	<antcall target="create-appimage"/>	
-	 	<antcall target="create-snap"/>	
+	 	<!--<antcall target="create-snap"/>	--> 
 	 	<antcall target="setup-makeself-build"/>	
 	 </target>
 	

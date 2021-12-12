@@ -26,6 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -38,6 +40,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -50,6 +53,7 @@ import org.tinylog.Logger;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.ConfigureFFmpegExecutablePath;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegParametersChecker;
+import pt.ornrocha.rencoder.ffmpegWrapper.execution.progress.FFmpegCodecInfoAnalyser;
 import pt.ornrocha.rencoder.gui.Maingui;
 import pt.ornrocha.rencoder.gui.components.tables.GenericTableViewerModel;
 import pt.ornrocha.rencoder.helpers.lang.LangTools;
@@ -66,7 +70,7 @@ import pt.ornrocha.rencoder.mediafiles.setfiles.foldersandfiles.ListFiles;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ConfigurationFFmpegExecutable extends JDialog implements ActionListener {
+public class ConfigurationFFmpegExecutable extends JDialog implements ActionListener, PropertyChangeListener{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -121,7 +125,10 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 	private JTable tableffmpeg;
 
 	private JFrame mainframe;
-	private JLabel configffmpegLabel;
+	private JPanel panelprogress;
+	private JProgressBar checkprogressBar;
+	private JLabel lblCodec;
+	
 
 	// private ArrayList<String> internalversion;
 
@@ -146,23 +153,46 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 			{
 
 				GridBagLayout thisLayout = new GridBagLayout();
-				thisLayout.rowWeights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
+				thisLayout.rowWeights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.0, 0.1 };
 				thisLayout.rowHeights = new int[] { 7, 7, 7, 7, 7, 7, 7, 7, 7 };
-				thisLayout.columnWeights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.0, 0.1, 0.1 };
+				thisLayout.columnWeights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.0, 1.0, 0.1 };
 
 				thisLayout.columnWidths = new int[] { 7, 7, 7, 7, 7, 7, 7, -1, 7, 7 };
 				getContentPane().setLayout(thisLayout);
 				this.setTitle(LangTools.getResourceBundleWordLanguage(rb, "FFmpeg executable configuration","ffmpegconfgui.configuration"));
 				this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/rencoderbig.png")));
 				{
-					configffmpegLabel = new JLabel("<html><center><font color='red'>Checking FFmpeg</font><center/><html/>");
-					configffmpegLabel.setVisible(false);
-					GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-					gbc_lblNewLabel.gridwidth = 3;
-					gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-					gbc_lblNewLabel.gridx = 8;
-					gbc_lblNewLabel.gridy = 7;
-					getContentPane().add(configffmpegLabel, gbc_lblNewLabel);
+				  panelprogress = new JPanel();
+				  GridBagConstraints gbc_panel = new GridBagConstraints();
+				  gbc_panel.gridwidth = 3;
+				  gbc_panel.insets = new Insets(0, 0, 5, 5);
+				  gbc_panel.fill = GridBagConstraints.BOTH;
+				  gbc_panel.gridx = 8;
+				  gbc_panel.gridy = 7;
+				  getContentPane().add(panelprogress, gbc_panel);
+				  GridBagLayout gbl_panel = new GridBagLayout();
+				  gbl_panel.columnWidths = new int[]{1};
+				  gbl_panel.rowHeights = new int[]{1,1};
+				  gbl_panel.columnWeights = new double[]{1.0};
+				  gbl_panel.rowWeights = new double[]{1.0,1.0};
+				  panelprogress.setLayout(gbl_panel);
+				  panelprogress.setVisible(false);
+				  {
+				    lblCodec = new JLabel("codec");
+				    GridBagConstraints gbc_lblCodec = new GridBagConstraints();
+				    gbc_lblCodec.insets = new Insets(0, 0, 5, 0);
+				    gbc_lblCodec.gridx = 0;
+				    gbc_lblCodec.gridy = 0;
+				    panelprogress.add(lblCodec, gbc_lblCodec);
+				  }
+				  {
+				    checkprogressBar = new JProgressBar();
+				    GridBagConstraints gbc_progressBar = new GridBagConstraints();
+				    gbc_progressBar.fill = GridBagConstraints.BOTH;
+				    gbc_progressBar.gridx = 0;
+				    gbc_progressBar.gridy = 1;
+				    panelprogress.add(checkprogressBar, gbc_progressBar);
+				  }
 				}
 				{
 					jButtonok = new JButton();
@@ -435,6 +465,8 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				
 				boolean valid = true;
 				boolean systemversion = false;
+				panelprogress.setVisible(true);
+				lblCodec.setText("Checking encoders");
 
 				if (tableffmpeg.getRowCount() > 0) {
 					if (validChoosenffmpegpath()) {
@@ -455,7 +487,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				}
 
 				if (valid) {
-					configffmpegLabel.setVisible(true);
+		
 					ConfigureFFmpegExecutablePath configure = new ConfigureFFmpegExecutablePath(FFmpegExePath,
 							jCheckBoximport.isSelected(), systemversion);
 					ArrayList<String> errors = configure.getErrors();
@@ -466,65 +498,20 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 						errorpanel.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						errorpanel.setVisible(true);
 					} else {
-						FFmpegManager.getInstance().LoadFFmpeg();
+						FFmpegManager.getInstance().setListener(dialog).LoadFFmpeg();
 						Maingui.getInstance().resetGeneralEncodingPropertiesToDefault();
 						Maingui.getInstance().reloadProfiles();
 						dialog.dispose();
 					}
-					configffmpegLabel.setVisible(false);
+
 				}
 				return true;
 			}
 			
-//			@Override
-//			protected void done() {
-//				dialog.dispose();
-//			}
-//			
-			
 		}.execute();
 		
 	}
-		
-//		boolean valid = true;
-//		boolean systemversion = false;
-//		if (tableffmpeg.getRowCount() > 0) {
-//			if (validChoosenffmpegpath()) {
-//				int rows = tableffmpeg.getRowCount();
-//				for (int i = 0; i < rows; i++) {
-//					boolean val = (boolean) tableffmpeg.getValueAt(i, 1);
-//					if (val) {
-//						FFmpegExePath = (String) tableffmpeg.getValueAt(i, 0);
-//						if (FFmpegManager.getInstance().isCustomFFmpeg(FFmpegExePath))
-//							systemversion = false;
-//						else
-//							systemversion = true;
-//						jCheckBoximport.setSelected(false);
-//					}
-//				}
-//			} else
-//				valid = false;
-//		}
-//
-//		if (valid) {
-//			ConfigureFFmpegExecutablePath configure = new ConfigureFFmpegExecutablePath(FFmpegExePath,
-//					jCheckBoximport.isSelected(), systemversion);
-//			ArrayList<String> errors = configure.getErrors();
-//			if (errors != null) {
-//				errorpanel = new ConfigurationFFmpegErrorsPanel(errors);
-//				errorpanel.addCloseButtonActionListener(this);
-//				errorpanel.setLocationRelativeTo(this);
-//				errorpanel.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//				errorpanel.setVisible(true);
-//			} else {
-//				FFmpegManager.getInstance().LoadFFmpeg();
-//				Maingui.getInstance().resetGeneralEncodingPropertiesToDefault();
-//				Maingui.getInstance().reloadProfiles();
-//				this.dispose();
-//			}
-//		}
-//
-//	}
+
 
 	private boolean validChoosenffmpegpath() {
 
@@ -580,5 +567,18 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 			}
 		}
 	}
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+     
+    String cmd = evt.getPropertyName();
+    
+    if(cmd.equals(FFmpegCodecInfoAnalyser.PROGRESSDOUBLE)){
+      checkprogressBar.setValue(((Double)evt.getNewValue()).intValue());
+    }
+    else if(cmd.equals(FFmpegCodecInfoAnalyser.PROGRESSMSG)) {
+        lblCodec.setText((String) evt.getNewValue());
+    }
+  }
 
 }

@@ -523,6 +523,8 @@ public class EncodingProgressPanel extends JFrame implements ListSelectionListen
 	 */
 	public void cancelAllFFmpegProcesses(){
 		for (int i = 0; i < processmapcontroller.size(); i++) {
+			if(OSystem.isWindows())
+				processmapcontroller.get(i).getKiller().setIscanceloperation(true);
 			processmapcontroller.get(i).stopProcess();
 		}
 		

@@ -25,18 +25,22 @@ public class MainGUIExec implements Runnable {
 
     inst.setLocationRelativeTo(null);
     inst.setVisible(true);
-
-    inst.addWarnFlag(
-        new JLabel("<html><center><font color='red'>Loading<br>FFmpeg</font><center/><html/>"));
-    SwingUtilities.invokeLater(new SwingWorker<Void, Void>() {
-
-      @Override
-      protected Void doInBackground() throws Exception {
-        inst.loadRequirements();
-        return null;
-      }
-
-    });
+    inst.addWarnFlag();
+    inst.loadRequirements();
+    
+//    inst.addWarnFlag(
+//        new JLabel("<html><center><font color='red'>Loading<br>FFmpeg</font><center/><html/>"));
+    
+    
+//    SwingUtilities.invokeLater(new SwingWorker<Void, Void>() {
+//
+//      @Override
+//      protected Void doInBackground() throws Exception {
+//        inst.loadRequirements();
+//        return null;
+//      }
+//
+//    });
 
   }
 
