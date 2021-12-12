@@ -24,6 +24,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.ResourceBundle;
 
@@ -935,12 +936,13 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 				setJSliderSettings(23, 0, 0, 51, 1, 10);
 
 			if (codec.equals(VideoCodecs.H264NVENC) || codec.equals(VideoCodecs.HEVCNVENC)) {
-				if (FFmpegManager.getInstance().isCuvidSupported()) {
-					addHWACCELPAnel(new DefaultComboBoxModel<>(HWAccel.getNvidiaHWAccel()));
+				ArrayList<HWAccel> hwaccels=FFmpegManager.getInstance().getSupportedHwaccelDecoders(codec);
+				if (hwaccels.size()>0) {
+					addHWACCELPAnel(new DefaultComboBoxModel<>(hwaccels.toArray(new HWAccel[hwaccels.size()])));
 					if (this.infocont != null && infocont.getHardwareAccelerationDecoder() != null)
 						comboBoxHWAccel.setSelectedItem(infocont.getHardwareAccelerationDecoder());
 					else
-						comboBoxHWAccel.setSelectedItem(HWAccel.NVDEC);
+						comboBoxHWAccel.setSelectedItem(HWAccel.NONE);
 					updateUI();
 				}
 			}

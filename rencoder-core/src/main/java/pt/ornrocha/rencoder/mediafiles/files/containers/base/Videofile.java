@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.tinylog.Logger;
+
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.FileInformationIOException;
 import pt.ornrocha.rencoder.helpers.props.managers.auxiliar.EncodingPropsAuxiliar;
 import pt.ornrocha.rencoder.mediafiles.files.auxiliar.ProcessFilesAux;

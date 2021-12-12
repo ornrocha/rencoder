@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.tinylog.Logger;
+
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.FileInformationChecker;
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.FileInformationIOException;
 import pt.ornrocha.rencoder.ffmpegWrapper.configurations.FFmpegManager;
@@ -72,6 +74,7 @@ public class MediaInfoContainer {
     this.audiostreamsinfo = infochecker.getAudioStreamsInfo();
     this.substreamsinfo = infochecker.getSubtitlestreams();
     checkDefaultAudioStream();
+
   }
 
   private void checkDefaultAudioStream() {

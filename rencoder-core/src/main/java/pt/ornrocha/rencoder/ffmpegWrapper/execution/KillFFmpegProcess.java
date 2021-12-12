@@ -27,6 +27,8 @@ public class KillFFmpegProcess extends Thread {
 
   /** The ffmpegproc2pass. */
   private Process ffmpegproc2pass = null;
+  
+  private boolean iscanceloperation=false;
 
   /**
    * Instantiates a new kill f fmpeg process.
@@ -83,17 +85,29 @@ public class KillFFmpegProcess extends Thread {
     this.ffmpegproc1pass = proc1pass;
     this.ffmpegproc2pass = proc2pass;
   }
+  
+  
+  
 
-  /*
+  public boolean isIscanceloperation() {
+	return iscanceloperation;
+}
+
+public void setIscanceloperation(boolean iscanceloperation) {
+	this.iscanceloperation = iscanceloperation;
+}
+
+/*
    * (non-Javadoc)
    * 
    * @see java.lang.Thread#run()
    */
   @Override
   public void run() {
-    this.ffmpegproc1pass.destroy();
-    if (this.ffmpegproc2pass != null)
-      this.ffmpegproc2pass.destroy();
+
+	  this.ffmpegproc1pass.destroy();
+	  if (this.ffmpegproc2pass != null)
+		  this.ffmpegproc2pass.destroy();
   }
 
 }

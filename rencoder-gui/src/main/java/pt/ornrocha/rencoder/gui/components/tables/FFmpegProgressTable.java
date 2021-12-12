@@ -21,7 +21,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import pt.ornrocha.rencoder.ffmpegWrapper.execution.progress.ProgressBarUpdate;
 
 // TODO: Auto-generated Javadoc
@@ -30,6 +29,11 @@ import pt.ornrocha.rencoder.ffmpegWrapper.execution.progress.ProgressBarUpdate;
  */
 public class FFmpegProgressTable extends GenericTableViewerModel implements PropertyChangeListener {
 
+
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
   /** The swmap. */
   private final ConcurrentMap<Integer, Integer> swmap = new ConcurrentHashMap<>();
