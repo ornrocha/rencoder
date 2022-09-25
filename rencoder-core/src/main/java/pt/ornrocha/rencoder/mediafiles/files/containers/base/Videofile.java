@@ -16,11 +16,10 @@
  */
 package pt.ornrocha.rencoder.mediafiles.files.containers.base;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.FileInformationIOException;
 import pt.ornrocha.rencoder.helpers.props.managers.auxiliar.EncodingPropsAuxiliar;
@@ -48,6 +47,9 @@ public class Videofile extends BaseFile {
 
   /** The movie encoding info container. */
   protected IGeneralVideoEncInfoContainer movieEncodingInfoContainer = null;
+  
+  
+  protected long filesize=0;
 
   /**
    * Instantiates a new videofile.
@@ -79,6 +81,9 @@ public class Videofile extends BaseFile {
           EncodingPropsAuxiliar.setMaxAllowedAudioSettings(genInfoCont, this.movieinfocontainer);
 
     processBuiltinSubtitles();
+    
+    File vfile=new File(path);
+    filesize=vfile.length();
 
   }
 
@@ -344,6 +349,14 @@ public class Videofile extends BaseFile {
 
   public String getNameWithoutExtensionAndFFmpegInvChars() {
     return ProcessFilesAux.replaceInvalidFFmpegChars(this.BaseName);
+  }
+  
+  public int getSizeMB() {
+	  return (int) (filesize/(1024*1024));
+  }
+  
+  public long getSize() {
+	  return filesize;
   }
 
 }

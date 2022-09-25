@@ -34,7 +34,7 @@ public class BtbnReleasesCollector implements IReleasesCollector {
   public void collect() throws Exception {
     listreleases = new ListOfFFmpegReleases();
     GitHub gitHub = GitHub.connectAnonymously();
-    this.repository = gitHub.getRepository("BtbN/FFmpeg-Builds/releases");
+    this.repository = gitHub.getRepository("BtbN/FFmpeg-Builds");
     processReleasesByOS();
   }
 

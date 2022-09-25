@@ -18,6 +18,12 @@
  */
 package pt.ornrocha.rencoder.helpers.props.fields;
 
+import java.io.File;
+
+import org.apache.commons.io.FilenameUtils;
+
+import pt.ornrocha.rencoder.helpers.osystem.OSystem;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ConstantsProperties.
@@ -165,5 +171,17 @@ public class StaticGlobalFields {
 	
 	
 	public static final String APPIMAGEINSTALL =".appimage";
+	
+	
+	
+	
+	public static boolean isAppImageInstallation() {
+		String appimageflag =
+				FilenameUtils.concat(OSystem.getCurrentDir(), StaticGlobalFields.APPIMAGEINSTALL);
+
+		if (new File(appimageflag).exists())
+			return true;
+		return false;
+	}
 
 }

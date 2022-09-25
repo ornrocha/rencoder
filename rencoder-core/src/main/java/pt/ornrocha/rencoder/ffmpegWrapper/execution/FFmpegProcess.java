@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.apache.commons.io.FileUtils;
 import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.ffmpegWrapper.commands.ReusableInputStream;
@@ -34,6 +35,7 @@ import pt.ornrocha.rencoder.ffmpegWrapper.execution.progress.ProgressBarUpdate;
 import pt.ornrocha.rencoder.ffmpegWrapper.subtitles.SubtitleConverter;
 import pt.ornrocha.rencoder.ffmpegWrapper.utilities.FFmpegUtils;
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
+import pt.ornrocha.rencoder.helpers.props.fields.StaticGlobalFields;
 import pt.ornrocha.rencoder.helpers.props.logs.LogManager;
 
 // TODO: Auto-generated Javadoc
@@ -222,16 +224,17 @@ public class FFmpegProcess implements Runnable {
       running = true;
 
       if (!cancelprocess) {
+    	  
         String lcmds = String.join(" ", cmd1pass);
-        Logger.debug("FFmpeg 1st pass encoding cmd: " + lcmds);
-        pbuilder = new ProcessBuilder(this.cmd1pass);
+        Logger.info("FFmpeg 1st pass encoding cmd: " + cmd1pass);
+        
+        pbuilder = new ProcessBuilder(cmd1pass);
         pbuilder.redirectErrorStream(true);
-        if (this.cmd2pass == null) {
+        if (this.cmd2pass == null && !StaticGlobalFields.isAppImageInstallation()) {
           setFFREPORT(pbuilder);
 
           if (OSystem.isMacOS())
             setMacFontconfigPath(pbuilder, cmd1pass);
-
         }
 
         process = pbuilder.start();
@@ -241,6 +244,7 @@ public class FFmpegProcess implements Runnable {
 
         ostream = process.getOutputStream();
         inputstr = new ReusableInputStream(process.getInputStream());
+        
 
 
         this.progbarupdater1pass.setInputStream(inputstr);
@@ -272,27 +276,29 @@ public class FFmpegProcess implements Runnable {
         });
 
         exitValue = process.waitFor();
-       
+        
+        if(this.cmd2pass == null && StaticGlobalFields.isAppImageInstallation())
+        	saveLog(inputstr);
+        
         if (exitValue == 1) {
         	if(killer.isIscanceloperation())
         		this.progbarupdater1pass.setCancelFlagInProcess();
         	else
         		this.progbarupdater1pass.setErrorFlagInProcess();
           deleteOutputMovieFile();
-          // deleteTempFiles();
 
         } else if (exitValue == 141) {
           this.progbarupdater1pass.setCancelFlagInProcess();
           deleteOutputMovieFile();
-          // deleteTempFiles();
+
         }
 
         if (cmd2pass != null && exitValue == 0) {
           Logger.debug("FFmpeg 2sd pass encoding cmd: " + lcmds);
           pbuilder = new ProcessBuilder(this.cmd2pass);
           pbuilder.redirectErrorStream(true);
-          if (this.cmd2pass != null) {
-            setFFREPORT(pbuilder);
+          if (this.cmd2pass != null && !StaticGlobalFields.isAppImageInstallation()) {
+             setFFREPORT(pbuilder);
 
             if (OSystem.isMacOS())
               setMacFontconfigPath(pbuilder, cmd2pass);
@@ -324,15 +330,17 @@ public class FFmpegProcess implements Runnable {
           });
 
           exitValue = process2pass.waitFor();
+          
+          if(StaticGlobalFields.isAppImageInstallation())
+          	 saveLog(inputstr);
 
           if (exitValue == 1) {
             this.progbarupdater2pass.setErrorFlagInProcess();
             deleteOutputMovieFile();
-            // deleteTempFiles();
+
           } else if (exitValue == 141) {
             this.progbarupdater2pass.setCancelFlagInProcess();
             deleteOutputMovieFile();
-            // deleteTempFiles();
           }
 
         }
@@ -346,10 +354,7 @@ public class FFmpegProcess implements Runnable {
       }
 
       deleteTempFiles();
-
-      // deleteTempSubFile();
-      // deleteTempLogFile();
-
+      
     } catch (IOException | InterruptedException e) {
       Logger.error(e);
     }
@@ -370,11 +375,23 @@ public class FFmpegProcess implements Runnable {
       else
         msg = logsave.getLoglevel().getLogLevelString() + ":" + "file=" + logsave.getLogfilepath()
             + OSystem.getSystemSeparator() + logsave.getLogfilename();
+      
       env.put("FFREPORT", msg);
-      // env.put("FFREPORT",
-      // "level=-8:file=/home/orocha/ffmpeg_teste/ffmpeg_movie.log");
     }
   }
+  
+  private void saveLog(InputStream ffmpegout) throws IOException {
+	  if(logsave.isActive()) {
+		  File newlog=new File(logsave.getLogfilepath()+ OSystem.getSystemSeparator() + logsave.getLogfilename());
+		  FileUtils.copyInputStreamToFile(ffmpegout, newlog);
+//		  
+//		  StringWriter writer = new StringWriter();
+//		    IOUtils.copy(ffmpegout, writer, StandardCharsets.UTF_8);
+//		    //Logger.debug("Checking file: " + filepath);
+//		  System.out.println("out log: "+writer.toString());
+	  }
+  }
+  
 
   private void setMacFontconfigPath(ProcessBuilder pb, ArrayList<String> cmds) {
     if (SubtitleConverter.containsAssParameter(cmds)) {

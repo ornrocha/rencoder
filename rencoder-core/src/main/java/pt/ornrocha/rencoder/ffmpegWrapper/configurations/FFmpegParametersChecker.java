@@ -189,82 +189,98 @@ public class FFmpegParametersChecker {
   
   
   public static boolean isSupportedCodec(VideoCodecs codec, HWAccel hwaccel,
-	      boolean isfirstcheck) throws InterruptedException, IOException {
-	    ArrayList<String> checkcmd = new ArrayList<>();
-	    
-	    if (hwaccel!=null)
-	      checkcmd.addAll(codec.getDecodingHWAcceleration());
+		  boolean isfirstcheck) throws InterruptedException, IOException {
+	  ArrayList<String> checkcmd = new ArrayList<>();
 
-	    checkcmd.add(StaticFFmpegFields.input);
-	    checkcmd.add(FFmpegUtils.getVideoSampleFilepath());
+	  if (hwaccel!=null)
+		  checkcmd.addAll(codec.getDecodingHWAcceleration());
 
-	    if (codec.needsDecodingFilter())
-	      checkcmd.addAll(codec.getCmdDecodingFilter(null));
-	    checkcmd.add(StaticFFmpegFields.encodevideocodec);
-	    checkcmd.add(codec.getFFmpegID());
-	    checkcmd.add(StaticFFmpegFields.encodeaudiocodec);
-	    checkcmd.add(AudioCodecs.COPY.getFFmpegID());
-	    checkcmd.add("-ss");
-	    checkcmd.add("00:00:00");
-	    checkcmd.add("-t");
-	    checkcmd.add("00:00:05");
-	    checkcmd.add("-y");
-	    checkcmd.add(getTMPDemoTestFilePath());
-	    
+	  checkcmd.add(StaticFFmpegFields.input);
+	  checkcmd.add(FFmpegUtils.getVideoSampleFilepath());
 
-	    Scanner sc = getFFmpegInfoScannerFromCommand(checkcmd, FFmpegInfoPatterns.GETERRORSTREAM);
+	  if (codec.needsDecodingFilter())
+		  checkcmd.addAll(codec.getCmdDecodingFilter(null));
+	  checkcmd.add(StaticFFmpegFields.encodevideocodec);
+	  checkcmd.add(codec.getFFmpegID());
+	  checkcmd.add(StaticFFmpegFields.encodeaudiocodec);
+	  checkcmd.add(AudioCodecs.COPY.getFFmpegID());
+	  checkcmd.add("-ss");
+	  checkcmd.add("00:00:00");
+	  checkcmd.add("-t");
+	  checkcmd.add("00:00:05");
+	  checkcmd.add("-y");
+	  checkcmd.add(getTMPDemoTestFilePath());
 
 
-
-	    Pattern pat1 = Pattern.compile(".*:\\s+Permission denied");
-
-	    Pattern pat2 = Pattern.compile("Conversion failed!| " + "*Unknown decoder* | "
-	        + "*Unknown encoder* | " + "*No NVENC capable devices found* | "
-	        + "*No NVENC capable devices* | " + "*Unrecognized option* | "
-	        + "Cannot load cuvidGetDecodeStatus| " + "Failed to initialise VAAPI connection:* | "
-	        + "*Cannot load nvcuda.dll*| " + "*No VA display found for device:* | " 
-	        + "*No device available for decoder* | "
-	        + "*Function not implemented* | *Cannot init CUDA|" + "Failed setup for format cuda:* | "
-	        + "*Error reinitializing* | No such file or directory"+" | *Device setup failed for decoder on input stream");
-	    
+	  Scanner sc = getFFmpegInfoScannerFromCommand(checkcmd, FFmpegInfoPatterns.GETERRORSTREAM);
 
 
-	    Logger.info("Analysing codec: " + codec.toString());
 
-	    while (sc.hasNextLine()) {
-	      String currentline = sc.nextLine();
+	  Pattern pat1 = Pattern.compile(".*:\\s+Permission denied");
 
-	      Matcher m1 = pat1.matcher(currentline);
-	      if (m1.find() && isfirstcheck) {
-	        try {
-	          FFmpegUtils.configVideoDemoAlternativeFolder();
-	        } catch (IOException e) {
-	          Logger.error(e);
-	          return false;
-	        }
-	        return isSupportedCodec(codec, hwaccel, false);
-	      } else {
+	  Pattern pat2 = Pattern.compile(".*:\\s+No such file or directory");
 
-	        Matcher m2 = pat2.matcher(currentline);
-	        Logger.debug(currentline);
+	  Pattern pat3 = Pattern.compile("Conversion failed!| " + "*Unknown decoder* | "
+			  + "*Unknown encoder* | " + "*No NVENC capable devices found* | "
+			  + "*No NVENC capable devices* | " + "*Unrecognized option* | "
+			  + "Cannot load cuvidGetDecodeStatus| " + "Failed to initialise VAAPI connection:* | "
+			  + "*Cannot load nvcuda.dll*| " + "*No VA display found for device:* | " 
+			  + "*No device available for decoder* | "
+			  + "*Function not implemented* | *Cannot init CUDA|" + "Failed setup for format cuda:* | "
+			  + "*Error reinitializing* | No such file or directory"+" | *Device setup failed for decoder on input stream");
 
-	        if (m2.find()) {
-	        	//stem.out.println("Found: "+m2.group());
-	          if (hwaccel!=null)
-	            Logger.info(codec.toString() + " with " + hwaccel.toString()
-	                + " HWAcceleration is not supported -> will be deactivated");
-	          else
-	            Logger.info(codec.toString() + " is not supported and it will be deactivated");
-	          Logger.debug("FFmpeg error: "+m2.group()+"\n");
-	          Logger.info("\n");
-	          return false;
-	        }
-	      }
-	    }
-	    //
-	    Logger.info(codec.toString() + " is supported and it will be active\n");
-	    return true;
+
+
+	  Logger.info("Analysing codec: " + codec.toString());
+
+	  while (sc.hasNextLine()) {
+		  String currentline = sc.nextLine();
+
+		  Matcher m1 = pat1.matcher(currentline);
+		  Matcher m2 = pat2.matcher(currentline);
+		  if (m1.find() && isfirstcheck) {
+			  try {
+				  FFmpegUtils.configVideoDemoAlternativeFolder();
+			  } catch (IOException e) {
+				  Logger.error(e);
+				  return false;
+			  }
+			  return isSupportedCodec(codec, hwaccel, false);
+		  }
+		  else if (m2.find() && isfirstcheck) {
+			  if(new File(FFmpegUtils.getMovieDemo()).exists()) {
+				  try {
+					  FFmpegUtils.configVideoDemoAlternativeFolder();
+				  } catch (IOException e) {
+					  Logger.error(e);
+					  return false;
+				  }
+				  return isSupportedCodec(codec, hwaccel, false);
+				  }
+			  else
+				  return false;
+		  }else {
+
+			  Matcher m3 = pat3.matcher(currentline);
+			  Logger.debug(currentline);
+
+			  if (m3.find()) {
+				  //stem.out.println("Found: "+m2.group());
+				  if (hwaccel!=null)
+					  Logger.info(codec.toString() + " with " + hwaccel.toString()
+					  + " HWAcceleration is not supported -> will be deactivated");
+				  else
+					  Logger.info(codec.toString() + " is not supported and it will be deactivated");
+				  Logger.debug("FFmpeg error: "+m3.group()+"\n");
+				  Logger.info("\n");
+				  return false;
+			  }
+		  }
 	  }
+	  //
+	  Logger.info(codec.toString() + " is supported and it will be active\n");
+	  return true;
+  }
 
 //  public static boolean isSupportedCodec(VideoCodecs codec, boolean checkhwaccel,
 //      boolean isfirstcheck) throws InterruptedException, IOException {

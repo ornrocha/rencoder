@@ -217,8 +217,6 @@ public class OSystem {
 			}
 	}
 
-	// RandomAccessFile raf=new RandomAccessFile(f1,"rw");
-	// raf.close();
 
 	/**
 	 * Gets the system separator.

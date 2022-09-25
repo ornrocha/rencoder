@@ -121,6 +121,7 @@
 						APP_HOME=`dirname $0`
 						XMX=-Xmx512m
 						XMS=-Xms256M
+				        RENCODER_DATA="$HOME/.config/rencoder"
 
 						$APPDIR/usr/bin/jre/bin/java $XMX $XMS -Duser.dir=$RENCODER_DATA -jar $APP_HOME/$JAR_NAME "$@"</echo>
 				

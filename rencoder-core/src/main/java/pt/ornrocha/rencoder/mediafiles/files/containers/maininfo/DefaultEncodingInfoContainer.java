@@ -93,7 +93,8 @@ public abstract class DefaultEncodingInfoContainer implements IGeneralVideoEncIn
 
   /** The use video encoding file size. */
   protected boolean useVideoEncodingFileSize = false;
-
+  
+  protected boolean useVideoFileSizeAsReference=false;
   /** The video encoding file size. */
   protected int videoEncodingFileSize = 150;
 
@@ -470,8 +471,19 @@ public abstract class DefaultEncodingInfoContainer implements IGeneralVideoEncIn
       this.useVideoEncodingVBR = false;
     }
   }
+  
+  
+  
 
-  /*
+  public boolean isUseVideoFileSizeAsReference() {
+	return useVideoFileSizeAsReference;
+}
+
+public void setUseVideoFileSizeAsReference(boolean useVideoFileSizeAsReference) {
+	this.useVideoFileSizeAsReference = useVideoFileSizeAsReference;
+}
+
+/*
    * (non-Javadoc)
    * 
    * @see filetreatment.files.containers.interfaces.IGeneralVideoEncInfoContainer#
@@ -930,8 +942,12 @@ public abstract class DefaultEncodingInfoContainer implements IGeneralVideoEncIn
       setUseVideoEncodingFileSize(true);
       setUseVideoEncodingCBR(false);
       setUseVideoEncodingVBR(false);
-
-      setVideoEncodingFileSize(PropertiesWorker.checkProperty(props,
+      
+      boolean useorigfilesizereference=PropertiesWorker.checkProperty(props, StaticVideoEncoderFields.VIDEOFILESIZEREFERENCE, false);
+      if(useorigfilesizereference)
+    	  setUseVideoFileSizeAsReference(true);
+      else
+    	  setVideoEncodingFileSize(PropertiesWorker.checkProperty(props,
           StaticVideoEncoderFields.VIDEOFILESIZE, 10, Integer.MAX_VALUE, 350));
 
     } else if (PropertiesWorker.checkProperty(props, StaticVideoEncoderFields.VIDEOUSEVBR, false)) {
@@ -1218,8 +1234,13 @@ public abstract class DefaultEncodingInfoContainer implements IGeneralVideoEncIn
           String.valueOf(getVideoVBRQualityValue()));
     } else if (isUseVideoEncodingFileSize()) {
       prop.setProperty(StaticVideoEncoderFields.VIDEOUSEFILESIZE, "true");
-      prop.setProperty(StaticVideoEncoderFields.VIDEOFILESIZE,
-          String.valueOf(getVideoEncodingFileSize()));
+      
+      if(isUseVideoFileSizeAsReference())
+          prop.setProperty(StaticVideoEncoderFields.VIDEOFILESIZEREFERENCE,
+                  String.valueOf(isUseVideoFileSizeAsReference()));
+      else
+    	  prop.setProperty(StaticVideoEncoderFields.VIDEOFILESIZE,
+    			  String.valueOf(getVideoEncodingFileSize()));
     }
   }
 
@@ -1327,6 +1348,8 @@ public abstract class DefaultEncodingInfoContainer implements IGeneralVideoEncIn
     newcont.setUseVideoEncodingFileSize(this.isUseVideoEncodingFileSize());
 
     newcont.setVideoEncodingFileSize(this.getVideoEncodingFileSize());
+    
+    newcont.setUseVideoFileSizeAsReference(isUseVideoFileSizeAsReference());
 
     // newcont.setExtravideoffmpegcmd(this.getExtravideoffmpegcmd());
     //

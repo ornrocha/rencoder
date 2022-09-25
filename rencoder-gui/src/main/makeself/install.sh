@@ -28,7 +28,7 @@ chmod +x $HOME/Rencoder/run.sh
 
 echo "
 [Desktop Entry]
-Version=1.2.0
+Version=1.3.0
 Name=Rencoder
 Type=Application
 Exec=$HOME/Rencoder/run.sh

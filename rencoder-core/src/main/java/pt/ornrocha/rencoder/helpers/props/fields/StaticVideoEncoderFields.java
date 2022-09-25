@@ -67,6 +67,8 @@ public class StaticVideoEncoderFields {
 
 	/** The Constant VIDEOFILESIZE. */
 	public static final String VIDEOFILESIZE = "video.filesize.valueMB";
+	
+	public static final String VIDEOFILESIZEREFERENCE = "video.filesize.as.reference";
 
 	/** The Constant TWOPASSENCODING. */
 	public static final String TWOPASSENCODING = "video.two.pass.encoding";

@@ -252,6 +252,8 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 
 	/** The choosefilesize. */
 	protected static String CHOOSEFILESIZE = "choosefilesize";
+	
+	protected static String ORIGINALFILESIZEREF = "originalfilesizereference";
 
 	/** The extravideoffmpegcmd. */
 	protected static String EXTRAVIDEOFFMPEGCMD = "extravideoffmpegcmd";
@@ -274,6 +276,7 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 	private JFrame mainframe;
 	private JPanel panel;
 	private JComboBox<HWAccel> comboBoxHWAccel;
+	private SteelCheckBox stlchckbxFileSizeReference;
 
 	/**
 	 * Instantiates a new video config scroll panel.
@@ -335,6 +338,7 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 		steelCheckBoxquality.setColored(true);
 		steelCheckBoxvideosize.setColored(true);
 		steelCheckBoxbitrate.setColored(true);
+		stlchckbxFileSizeReference.setColored(true);
 
 	}
 
@@ -494,6 +498,19 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 
 					}
 					{
+						stlchckbxFileSizeReference = new SteelCheckBox();
+						stlchckbxFileSizeReference.setText(LangTools.getResourceBundleWordLanguage(rb, "Original size reference",
+								"general.originalsizeref"));
+						stlchckbxFileSizeReference.setActionCommand(ORIGINALFILESIZEREF);
+						GridBagConstraints gbc_stlchckbxfileReference = new GridBagConstraints();
+						gbc_stlchckbxfileReference.fill = GridBagConstraints.HORIZONTAL;
+						gbc_stlchckbxfileReference.gridwidth = 3;
+						gbc_stlchckbxfileReference.insets = new Insets(0, 5, 5, 5);
+						gbc_stlchckbxfileReference.gridx = 5;
+						gbc_stlchckbxfileReference.gridy = 6;
+						jPanelmain.add(stlchckbxFileSizeReference, gbc_stlchckbxfileReference);
+					}
+					{
 						jRadioButton1pass = new JRadioButton();
 						jPanelmain.add(jRadioButton1pass,
 								new GridBagConstraints(0, 8, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER,
@@ -543,7 +560,7 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 
 						jComboBoxfilesize = new JComboBox<String>();
 						jPanelmain.add(jComboBoxfilesize,
-								new GridBagConstraints(2, 6, 6, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+								new GridBagConstraints(2, 6, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 										GridBagConstraints.HORIZONTAL, new Insets(0, 0, 5, 5), 0, 0));
 						jComboBoxfilesize.setActionCommand(CHOOSEFILESIZE);
 					}
@@ -643,6 +660,7 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 	 */
 	protected void setActionsListeners() {
 		steelCheckBoxvideosize.addActionListener(this);
+		stlchckbxFileSizeReference.addActionListener(this);
 		steelCheckBoxquality.addActionListener(this);
 		steelCheckBoxbitrate.addActionListener(this);
 		jRadioButton1pass.addActionListener(this);
@@ -677,6 +695,8 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 			checkChangesjComboBoxbitrate();
 		else if (command.equals(CHOOSEFILESIZE))
 			checkChangesjComboBoxfilesize();
+		else if(command.equals(ORIGINALFILESIZEREF))
+			checkIfFileSizeAsReference();
 		else if (command.equals(OVERWRITE))
 			setOverWriteAction();
 
@@ -689,6 +709,8 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 		infocont.setUseVideoEncodingCBR(true);
 		steelCheckBoxbitrate.setSelected(true);
 		steelCheckBoxvideosize.setSelected(false);
+		stlchckbxFileSizeReference.setSelected(false);
+		stlchckbxFileSizeReference.setEnabled(false);
 		steelCheckBoxquality.setSelected(false);
 		jSliderquality.setEnabled(false);
 		jLabelquality.setEnabled(false);
@@ -707,6 +729,7 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 	protected void sizeselected() {
 		infocont.setUseVideoEncodingFileSize(true);
 		steelCheckBoxvideosize.setSelected(true);
+		stlchckbxFileSizeReference.setEnabled(true);
 		steelCheckBoxbitrate.setSelected(false);
 		steelCheckBoxquality.setSelected(false);
 		jSliderquality.setEnabled(false);
@@ -719,6 +742,13 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 		}
 
 	}
+	
+	protected void checkIfFileSizeAsReference() {
+		if(stlchckbxFileSizeReference.isSelected())
+			jComboBoxfilesize.setEnabled(false);
+		else
+			jComboBoxfilesize.setEnabled(true);
+	}
 
 	/**
 	 * Qualityselected.
@@ -727,6 +757,8 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 		infocont.setUseVideoEncodingVBR(true);
 		steelCheckBoxquality.setSelected(true);
 		steelCheckBoxvideosize.setSelected(false);
+		stlchckbxFileSizeReference.setSelected(false);
+		stlchckbxFileSizeReference.setEnabled(false);
 		steelCheckBoxbitrate.setSelected(false);
 		jComboBoxfilesize.setEnabled(false);
 		jComboBoxbitrate.setEnabled(false);
@@ -1381,7 +1413,15 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 
 		} else if (infocont.isUseVideoEncodingFileSize()) {
 			sizeselected();
-			setFileSizeValueInCombobox(String.valueOf(infocont.getVideoEncodingFileSize()));
+			if(infocont.isUseVideoFileSizeAsReference()) {
+				stlchckbxFileSizeReference.setSelected(true);
+				checkIfFileSizeAsReference();
+			}
+			else {
+				stlchckbxFileSizeReference.setSelected(false);
+				checkIfFileSizeAsReference();
+				setFileSizeValueInCombobox(String.valueOf(infocont.getVideoEncodingFileSize()));
+			}
 		}
 
 		if (infocont.isUseVideoEncodingVBR() && infocont.isTwopassEncoding()) {
@@ -1523,7 +1563,9 @@ public class VideoConfigScrollPanel extends JScrollPane implements ActionListene
 			this.infocont.setUseVideoEncodingFileSize(false);
 			this.infocont.setUseVideoEncodingVBR(false);
 		} else if (steelCheckBoxvideosize.isSelected()) {
-			this.infocont.setVideoEncodingFileSize(Integer.parseInt((String) jComboBoxfilesize.getSelectedItem()));
+			this.infocont.setUseVideoFileSizeAsReference(stlchckbxFileSizeReference.isSelected());
+			if(!stlchckbxFileSizeReference.isSelected())
+				this.infocont.setVideoEncodingFileSize(Integer.parseInt((String) jComboBoxfilesize.getSelectedItem()));
 			this.infocont.setUseVideoEncodingCBR(false);
 			this.infocont.setUseVideoEncodingFileSize(true);
 			this.infocont.setUseVideoEncodingVBR(false);

@@ -139,7 +139,6 @@ public class FileInformationChecker {
    * @return the video fields
    */
   private void getVideoFields(String stream) {
-
     this.videostream.setCodectype(FFmpegInfoPatterns.getVideoCodecInfo(stream));
     this.videostream.setVideoaspectsize(FFmpegInfoPatterns.getAspect(stream));
     String videobit = FFmpegInfoPatterns.getBitrateStream(stream);

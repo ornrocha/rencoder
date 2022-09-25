@@ -364,8 +364,7 @@ public class EncoderControlCenter {
     try {
 
       init.add(getEncoderExePath());
-
-      if (saveffmpeglogs && !firstpassconfigurationstep)
+      if (saveffmpeglogs && (!firstpassconfigurationstep && !StaticGlobalFields.isAppImageInstallation()))
         init.add("-report");
 
       HWAccel decodercodec =
@@ -378,9 +377,6 @@ public class EncoderControlCenter {
         init.add(StaticGlobalFields.QUOTE + currentvideo.getFilePath() + StaticGlobalFields.QUOTE);
       else
         init.add(currentvideo.getFilePath());
-
-//      if (currentvideo.getEncodingInfoContainer().getVideocodec().needsDecodingFilter())
-//        init.addAll(currentvideo.getEncodingInfoContainer().getVideocodec().getCmdDecodingFilter());
 
       if (!firstpassconfigurationstep) {
         int threads = currentvideo.getEncodingInfoContainer().getNumberThreads();
@@ -622,7 +618,10 @@ public class EncoderControlCenter {
       String videotime = file.getMovieinfocontainer().getVideoinfo().getVideototalduration();
       double videotimeseconds = FFmpegUtils.convertTimetoseconds(videotime);
 
-      int videobitrate = (encoinfo.getVideoEncodingFileSize() * 8192) / (int) videotimeseconds;
+      int videofilesize=encoinfo.getVideoEncodingFileSize();
+      if(encoinfo.isUseVideoFileSizeAsReference())
+    	  videofilesize=file.getSizeMB();
+      int videobitrate = (videofilesize * 8192) / (int) videotimeseconds;
 
       String audiobitrate = encoinfo.getAudioConstantBitrateValue();
       String audiobitratenumber = null;

@@ -221,6 +221,11 @@ public interface IGeneralVideoEncInfoContainer {
    * @param useVideoEncodingFileSize the new use video encoding file size
    */
   void setUseVideoEncodingFileSize(boolean useVideoEncodingFileSize);
+  
+  
+  boolean isUseVideoFileSizeAsReference();
+  
+  void setUseVideoFileSizeAsReference(boolean useVideoFileSizeAsReference);
 
   /**
    * Gets the video encoding file size.

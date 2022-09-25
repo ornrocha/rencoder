@@ -347,6 +347,7 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 	private Maingui() {
 		super();
 		Logger.info("Starting Rencoder");
+		Logger.info("User dir: "+System.getProperty("user.dir"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/icons/rencoderbig.png")).getImage());
 		this.setTitle(TITLEAPP);
 		setLookandFeel();
@@ -935,7 +936,7 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 					exit.setActionCommand(QUIT);
 					exit.addActionListener(this);
 
-					if (!isAppImageInstallation()) {
+					if (!StaticGlobalFields.isAppImageInstallation()) {
 						JMenuItem restart = new JMenuItem(
 								LangTools.getResourceBundleWordLanguage(rb, "Restart", "general.restart"));
 						restart.setIcon(new ImageIcon(getClass().getResource("/icons/restart24x24.png")));
@@ -1314,7 +1315,7 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 		if (OSystem.isLinux())
 			checkIfAppImageInstallationOnRestart();
 
-		if (!isAppImageInstallation()) {
+		if (!StaticGlobalFields.isAppImageInstallation()) {
 			Thread t = new Thread(this.restart);
 			t.run();
 		}
@@ -1930,17 +1931,17 @@ public class Maingui extends javax.swing.JFrame implements ActionListener, Prope
 						new ImageIcon(getClass().getResource("/icons/warning64x64.png")));
 	}
 
-	private boolean isAppImageInstallation() {
-		String appimageflag =
-				FilenameUtils.concat(OSystem.getCurrentDir(), StaticGlobalFields.APPIMAGEINSTALL);
-
-		if (new File(appimageflag).exists())
-			return true;
-		return false;
-	}
+//	public boolean isAppImageInstallation() {
+//		String appimageflag =
+//				FilenameUtils.concat(OSystem.getCurrentDir(), StaticGlobalFields.APPIMAGEINSTALL);
+//
+//		if (new File(appimageflag).exists())
+//			return true;
+//		return false;
+//	}
 
 	private void checkIfAppImageInstallationOnRestart() {
-		if (isAppImageInstallation())
+		if (StaticGlobalFields.isAppImageInstallation())
 			showWarningMessage(
 					LangTools.getResourceBundleWordLanguage(rb,
 							"rencoder needs to restart, please open the application again after it closes.",
