@@ -45,8 +45,7 @@ public class ConfigureFFmpegExecutablePath {
   private boolean importinside = false;
   private boolean issystemversion = false;
 
-  private ArrayList<String> mandatoryffmpegFeatures =
-      new ArrayList(Arrays.asList("libx264", "ass"));
+  private ArrayList<String> mandatoryffmpegFeatures = new ArrayList(Arrays.asList("ass"));
   /** The errors. */
   private ArrayList<String> errors = null;
 
