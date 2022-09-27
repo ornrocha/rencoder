@@ -86,27 +86,32 @@ public class FFmpegInputErrorChecker implements Runnable {
   @Override
   public void run() {
 
-    InputStreamReader reader = new InputStreamReader(instream);
+	  InputStreamReader reader = new InputStreamReader(instream);
 
-    Scanner scan = new Scanner(reader);
-    while (scan.hasNextLine()) {
-      String line = scan.nextLine();
-      Logger.debug(line);
-      ffmpegoutput.add(line);
-      for (String word : listwords) {
-        if (validateParam) {
-          if (line.contains(word)) {
-            int index = validParameters.getIndexOf(word);
-            validParameters.putAt(index, word, true);
-          }
+	  Scanner scan = new Scanner(reader);
+	  while (scan.hasNextLine()) {
+		  String line = scan.nextLine();
 
-        } else {
-          if (line.toLowerCase().contains(word.toLowerCase()))
-            founderrors = true;
-        }
-      }
+		  Logger.debug(line);
+		  ffmpegoutput.add(line);
+		  for (String word : listwords) {
+			  if(line.contains(word)) {
+				  Logger.error(line);
+			  }
+			  if (validateParam) {
+				  if (line.contains(word)) {
 
-    }
+					  int index = validParameters.getIndexOf(word);
+					  validParameters.putAt(index, word, true);
+				  }
+
+			  } else {
+				  if (line.toLowerCase().contains(word.toLowerCase()))
+					  founderrors = true;
+			  }
+		  }
+
+	  }
   }
 
   /**

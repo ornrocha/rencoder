@@ -457,7 +457,7 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 	 */
 	
 	private void validateandsetffmpegexecutable(final ConfigurationFFmpegExecutable dialog) {
-		
+
 		new SwingWorker<Boolean, Object>() {
 
 			@Override
@@ -487,9 +487,9 @@ public class ConfigurationFFmpegExecutable extends JDialog implements ActionList
 				}
 
 				if (valid) {
-		
+
 					ConfigureFFmpegExecutablePath configure = new ConfigureFFmpegExecutablePath(FFmpegExePath,
-							jCheckBoximport.isSelected(), systemversion);
+							jCheckBoximport.isSelected(), systemversion, rb);
 					ArrayList<String> errors = configure.getErrors();
 					if (errors != null) {
 						errorpanel = new ConfigurationFFmpegErrorsPanel(errors);

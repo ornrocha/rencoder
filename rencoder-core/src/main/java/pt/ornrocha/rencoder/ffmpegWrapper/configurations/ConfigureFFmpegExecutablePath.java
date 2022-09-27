@@ -25,10 +25,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.tinylog.Logger;
 
 import pt.ornrocha.rencoder.helpers.IndexedHashMap;
+import pt.ornrocha.rencoder.helpers.lang.LangTools;
 import pt.ornrocha.rencoder.helpers.osystem.OSystem;
 import pt.ornrocha.rencoder.helpers.props.fields.StaticGlobalFields;
 
@@ -51,6 +53,8 @@ public class ConfigureFFmpegExecutablePath {
 
   /** The checkedffmpegfeatures. */
   private IndexedHashMap<String, Boolean> checkedffmpegfeatures = null;
+  
+  private ResourceBundle rb;
 
   /**
    * Instantiates a new configure ffmpeg executable path.
@@ -61,12 +65,13 @@ public class ConfigureFFmpegExecutablePath {
    * @throws IOException
    */
   public ConfigureFFmpegExecutablePath(String filepath, boolean importinternal,
-      boolean issystemversion) throws InterruptedException, IOException {
-    this.ffmpegpath = filepath;
-    this.importinside = importinternal;
-    this.issystemversion = issystemversion;
+		  boolean issystemversion, ResourceBundle rb) throws InterruptedException, IOException {
+	  this.ffmpegpath = filepath;
+	  this.importinside = importinternal;
+	  this.issystemversion = issystemversion;
+	  this.rb=rb;
 
-    validateAndSetFFmpegExecutable();
+	  validateAndSetFFmpegExecutable();
 
   }
 
@@ -89,7 +94,13 @@ public class ConfigureFFmpegExecutablePath {
 
     if (!isvalidOSystemExecutable()) {
       errors = new ArrayList<>();
-      errors.add("Invalid FFmpeg Executable for this Operating System" + "\n");
+      System.out.println(rb);
+      if (rb != null) {
+    	  errors.add(LangTools.getResourceBundleWordLanguage(rb,"Close","general.close"));
+      }
+      else {
+    	 errors.add("Invalid FFmpeg Executable for this Operating System" + "\n"); 
+      }
       errors.addAll(getURLFFMPEG());
       Logger.error("Invalid FFmpeg Executable for this Operating System");
     } else if (!validFFmpegExecutable()) {
@@ -262,31 +273,31 @@ public class ConfigureFFmpegExecutablePath {
    * @return true, if is valid o system executable
    */
   private boolean isvalidOSystemExecutable() {
-    boolean valid = true;
+	  boolean valid = true;
 
-    try {
+	  try {
 
-      FFmpegParametersChecker.setFFmpegExecutable(ffmpegpath);
+		  FFmpegParametersChecker.setFFmpegExecutable(ffmpegpath);
 
-      Process proc = Runtime.getRuntime().exec(ffmpegpath);
-      InputStream inStream = proc.getErrorStream();
-      ArrayList<String> check = new ArrayList<>();
-      check.add("cannot");
-      FFmpegInputErrorChecker errorchecker = new FFmpegInputErrorChecker(inStream, check, false);
-      Thread t = new Thread(errorchecker);
+		  Process proc = Runtime.getRuntime().exec(ffmpegpath);
+		  InputStream inStream = proc.getErrorStream();
+		  ArrayList<String> check = new ArrayList<>();
+		  check.add("cannot");
+		  FFmpegInputErrorChecker errorchecker = new FFmpegInputErrorChecker(inStream, check, false);
+		  Thread t = new Thread(errorchecker);
 
-      t.run();
+		  t.run();
 
-      boolean existerrors = errorchecker.existerrors();
-      if (existerrors)
-        valid = false;
+		  boolean existerrors = errorchecker.existerrors();
+		  if (existerrors)
+			  valid = false;
 
-    } catch (IOException e) {
-      Logger.error(e);
-      valid = false;
-    }
+	  } catch (IOException e) {
+		  Logger.error(e);
+		  valid = false;
+	  }
 
-    return valid;
+	  return valid;
   }
 
   /**

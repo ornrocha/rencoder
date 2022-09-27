@@ -39,7 +39,7 @@ public class LogManager {
 
 	public static Level getLogLevel(String loglevel) {
 		loglevel = loglevel.toLowerCase();
-		
+
 		switch (loglevel) {
 		case "error":
 			return Level.ERROR;
@@ -49,7 +49,7 @@ public class LogManager {
 			return Level.TRACE;
 		case "debug":
 			return Level.DEBUG;
-				case "off":
+		case "off":
 			return Level.OFF;	
 		default:
 			return Level.INFO;
