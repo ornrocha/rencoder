@@ -94,9 +94,9 @@ public class ConfigureFFmpegExecutablePath {
 
     if (!isvalidOSystemExecutable()) {
       errors = new ArrayList<>();
-      System.out.println(rb);
+
       if (rb != null) {
-    	  String msg=LangTools.getResourceBundleWordLanguage(rb,"Close","general.close");
+    	  String msg=LangTools.getResourceBundleWordLanguage(rb,"Invalid FFmpeg Executable for this Operating System.","ffmpegconfgui.ffmpeg.invalid");
     	  errors.add(msg);
     	  Logger.error(msg);
       }
@@ -234,17 +234,20 @@ public class ConfigureFFmpegExecutablePath {
   // https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
   private ArrayList<String> getURLFFMPEG() {
     ArrayList<String> errors = new ArrayList<>();
+    String basemsg="Get Static Version On:";
+    if(rb!=null)
+    	basemsg=LangTools.getResourceBundleWordLanguage(rb,"Get Static Version On:","ffmpegconfgui.ffmpeg.get.version");
     if (OSystem.isLinux()) {
       errors.add("\n");
-      errors.add("Get Static Version On: https://johnvansickle.com/ffmpeg/");
+      errors.add(basemsg+" https://johnvansickle.com/ffmpeg/");
     }
     if (OSystem.isWindows()) {
       errors.add("\n");
-      errors.add("Get Static Version On: http://ffmpeg.zeranoe.com/builds/");
+      errors.add(basemsg+" http://ffmpeg.zeranoe.com/builds/");
     }
     if (OSystem.isMacOS()) {
       errors.add("\n");
-      errors.add("Get Static Version On: https://www.evermeet.cx/ffmpeg/");
+      errors.add(basemsg+" https://www.evermeet.cx/ffmpeg/");
     }
 
     return errors;
