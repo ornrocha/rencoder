@@ -128,30 +128,30 @@ public class ConfigureFFmpegExecutablePath {
    * Copy ffmpeg to internal directory.
    */
   private void copyFFmpegToInternalDirectory() {
-    try {
-      Path filepath = Paths.get(ffmpegpath);
-      String name = filepath.getFileName().toString();
-      String newdest = null;
+	  try {
+		  Path filepath = Paths.get(ffmpegpath);
+		  String name = filepath.getFileName().toString();
+		  String newdest = null;
 
-      String internencoderfolder = new File(StaticGlobalFields.FFMPEGFOLDERPATH).getAbsolutePath();
-      File ffmpegfuturefolder = new File(internencoderfolder);
-      ffmpegfuturefolder.setWritable(true);
+		  String internencoderfolder = new File(StaticGlobalFields.FFMPEGFOLDERPATH).getAbsolutePath();
+		  File ffmpegfuturefolder = new File(internencoderfolder);
+		  ffmpegfuturefolder.setWritable(true);
 
-      newdest = internencoderfolder + OSystem.getSystemSeparator() + name;
+		  newdest = internencoderfolder + OSystem.getSystemSeparator() + name;
 
-      File orig = new File(ffmpegpath);
-      File dest = new File(newdest);
+		  File orig = new File(ffmpegpath);
+		  File dest = new File(newdest);
 
-      if (dest.exists())
-        dest.delete();
+		  if (dest.exists())
+			  dest.delete();
 
-      Files.copy(orig.toPath(), dest.toPath());
-      this.ffmpegpath = newdest;
-      Logger.info("FFmpeg binary was copied from " + orig.getAbsolutePath() + " to "
-          + dest.getAbsolutePath());
-    } catch (IOException e) {
-      Logger.error(e);
-    }
+		  Files.copy(orig.toPath(), dest.toPath());
+		  this.ffmpegpath = newdest;
+		  Logger.info("FFmpeg binary was copied from " + orig.getAbsolutePath() + " to "
+				  + dest.getAbsolutePath());
+	  } catch (IOException e) {
+		  Logger.error(e);
+	  }
 
   }
 
