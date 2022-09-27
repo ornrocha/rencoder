@@ -96,13 +96,17 @@ public class ConfigureFFmpegExecutablePath {
       errors = new ArrayList<>();
       System.out.println(rb);
       if (rb != null) {
-    	  errors.add(LangTools.getResourceBundleWordLanguage(rb,"Close","general.close"));
+    	  String msg=LangTools.getResourceBundleWordLanguage(rb,"Close","general.close");
+    	  errors.add(msg);
+    	  Logger.error(msg);
       }
       else {
-    	 errors.add("Invalid FFmpeg Executable for this Operating System" + "\n"); 
+    	 String msg="Invalid FFmpeg Executable for this Operating System" + "\n";
+    	 errors.add(msg); 
+    	 Logger.error(msg);
       }
       errors.addAll(getURLFFMPEG());
-      Logger.error("Invalid FFmpeg Executable for this Operating System");
+      
     } else if (!validFFmpegExecutable()) {
       errors = new ArrayList<>();
       errors.addAll(declareErrors());
